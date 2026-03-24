@@ -1,89 +1,51 @@
 {
   "name": "냉온수 배관 관경 산정 시스템",
   "short_name": "냉온수배관",
-  "description": "냉온수·냉각수·강관·동관 배관 관경 자동 산정 — 기계설비 기술기준 (국토교통부 고시 제2021-851호) · William-Hazen / 연속방정식",
+  "description": "냉온수·냉각수·강관·동관 배관 관경 자동 산정 — 기계설비 기술기준 (국토교통부 고시 제2021-851호)",
   "start_url": "./index.html",
-  "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#f0f9ff",
+  "background_color": "#0369a1",
   "theme_color": "#0369a1",
   "lang": "ko",
-  "categories": ["utilities", "productivity", "engineering"],
+  "scope": "./",
+  "categories": ["utilities", "productivity"],
   "icons": [
-    {
-      "src": "./icons/icon-16x16.png",
-      "sizes": "16x16",
-      "type": "image/png"
-    },
-    {
-      "src": "./icons/icon-32x32.png",
-      "sizes": "32x32",
-      "type": "image/png"
-    },
-    {
-      "src": "./icons/icon-48x48.png",
-      "sizes": "48x48",
-      "type": "image/png"
-    },
-    {
-      "src": "./icons/icon-72x72.png",
-      "sizes": "72x72",
-      "type": "image/png"
-    },
-    {
-      "src": "./icons/icon-96x96.png",
-      "sizes": "96x96",
-      "type": "image/png"
-    },
-    {
-      "src": "./icons/icon-128x128.png",
-      "sizes": "128x128",
-      "type": "image/png"
-    },
-    {
-      "src": "./icons/icon-144x144.png",
-      "sizes": "144x144",
-      "type": "image/png"
-    },
-    {
-      "src": "./icons/icon-152x152.png",
-      "sizes": "152x152",
-      "type": "image/png"
-    },
-    {
-      "src": "./icons/icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "./icons/icon-384x384.png",
-      "sizes": "384x384",
-      "type": "image/png"
-    },
-    {
-      "src": "./icons/icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
+    { "src": "./icons/icon-16x16.png",   "sizes": "16x16",   "type": "image/png" },
+    { "src": "./icons/icon-32x32.png",   "sizes": "32x32",   "type": "image/png" },
+    { "src": "./icons/icon-48x48.png",   "sizes": "48x48",   "type": "image/png" },
+    { "src": "./icons/icon-72x72.png",   "sizes": "72x72",   "type": "image/png" },
+    { "src": "./icons/icon-96x96.png",   "sizes": "96x96",   "type": "image/png" },
+    { "src": "./icons/icon-128x128.png", "sizes": "128x128", "type": "image/png" },
+    { "src": "./icons/icon-144x144.png", "sizes": "144x144", "type": "image/png" },
+    { "src": "./icons/icon-152x152.png", "sizes": "152x152", "type": "image/png" },
+    { "src": "./icons/icon-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "./icons/icon-384x384.png", "sizes": "384x384", "type": "image/png" },
+    { "src": "./icons/icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ],
-  "screenshots": [],
   "shortcuts": [
     {
       "name": "관경 산정",
       "short_name": "산정",
-      "description": "배관 관경 즉시 산정",
+      "description": "냉온수 배관 관경 즉시 산정",
       "url": "./index.html#calc",
       "icons": [{ "src": "./icons/icon-96x96.png", "sizes": "96x96" }]
     },
     {
-      "name": "A4 출력",
-      "short_name": "출력",
-      "description": "A4 산정서 출력",
-      "url": "./index.html#a4",
+      "name": "관경 표준표",
+      "short_name": "표준표",
+      "description": "배관 관경 표준 참조표",
+      "url": "./index.html#stdtable",
       "icons": [{ "src": "./icons/icon-96x96.png", "sizes": "96x96" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "냉온수 배관 관경 산정 시스템"
     }
   ]
 }
