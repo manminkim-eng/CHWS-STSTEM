@@ -1,0 +1,3401 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+<title>냉온수 배관 관경 산정 시스템 [MANMIN-Ver2.0]</title>
+<meta name="description" content="냉온수·냉각수·강관·동관 배관 관경 자동 산정 — 기계설비 기술기준 (국토교통부 고시 제2021-851호)"/>
+<meta name="theme-color" content="#0369a1"/>
+<!-- PWA -->
+<link rel="manifest" href="./manifest.json"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="냉온수배관"/>
+<meta name="msapplication-TileColor" content="#0369a1"/>
+<meta name="msapplication-TileImage" content="./icons/icon-144x144.png"/>
+<meta name="msapplication-config" content="none"/>
+<!-- Favicon & Icons -->
+<link rel="icon" type="image/x-icon" href="./favicon.ico"/>
+<link rel="icon" type="image/png" sizes="16x16" href="./icons/icon-16x16.png"/>
+<link rel="icon" type="image/png" sizes="32x32" href="./icons/icon-32x32.png"/>
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png"/>
+<link rel="apple-touch-icon" sizes="152x152" href="./icons/icon-152x152.png"/>
+<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192x192.png"/>
+<!-- Open Graph -->
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="냉온수 배관 관경 산정 시스템"/>
+<meta property="og:description" content="기계설비 기술기준 기반 냉온수 배관 관경 자동 산정"/>
+<meta property="og:image" content="./icons/icon-512x512.png"/>
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif!important;}
+html,body{min-height:100vh;background:#f0f9ff;color:#0c1a2e;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:#f0f9ff;}
+::-webkit-scrollbar-thumb{background:#bae6fd;border-radius:10px;}
+input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+input[type="number"]{-moz-appearance:textfield;}
+.mono{font-family:'JetBrains Mono','Courier New',monospace!important;}
+
+/* ── HEADER ── */
+.app-header{background:#e0f2fe;position:sticky;top:0;z-index:50;box-shadow:0 2px 16px rgba(3,105,161,.3);}
+.header-inner{max-width:1300px;margin:0 auto;padding:0 14px;height:58px;display:flex;align-items:center;gap:10px;}
+.brand-logo{display:flex;align-items:center;gap:9px;flex:1;min-width:0;}
+.brand-icon{width:36px;height:36px;background:#0369a1;border-radius:9px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(3,105,161,.4);flex-shrink:0;font-size:18px;}
+.brand-texts{min-width:0;}
+.brand-title{font-size:13px;font-weight:900;color:#0c2340;letter-spacing:-.02em;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.brand-sub{font-size:9px;color:#0284c7;margin-top:1px;font-weight:700;white-space:nowrap;}
+.hdr-btns{display:flex;gap:5px;flex-shrink:0;}
+.btn-g{background:#fff;color:#374151;border:1.5px solid #cbd5e1;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:inherit;transition:all .15s;white-space:nowrap;}
+.btn-g:hover{border-color:#0369a1;color:#0369a1;background:#f0f9ff;}
+.btn-b{background:#0369a1;color:#fff;border:none;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:inherit;transition:all .15s;white-space:nowrap;}
+.btn-b:hover{background:#075985;}
+@media(max-width:600px){.brand-title{font-size:11px;}.btn-g .btn-txt,.btn-b .btn-txt{display:none;}.hdr-btns{gap:3px;}.btn-g,.btn-b{padding:6px 8px;}}
+@media(max-width:380px){.brand-title{font-size:10px;}}
+
+/* ── TAB BAR ── */
+.tab-bar{background:#bae6fd;border-top:1px solid rgba(3,105,161,.25);overflow-x:auto;scrollbar-width:none;}
+.tab-bar::-webkit-scrollbar{display:none;}
+.tab-bar-inner{max-width:1300px;margin:0 auto;padding:0 5px;display:flex;}
+.tb{background:none;border:none;cursor:pointer;color:#075985;font-family:inherit;padding:8px 12px;font-size:11px;font-weight:700;position:relative;transition:color .15s,background .15s;display:flex;align-items:center;gap:4px;white-space:nowrap;flex-shrink:0;}
+.tb:hover{color:#0c2340;background:rgba(3,105,161,.08);}
+.tb.active{color:#0c2340;}
+.tb.active::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:#f97316;border-radius:2px 2px 0 0;}
+
+/* ── LAYOUT ── */
+.main-wrap{max-width:1300px;margin:0 auto;padding:13px 13px 80px;}
+.tab-panel{display:none;}.tab-panel.active{display:block;}
+
+/* 3열 메인 그리드: [STEP1+3 고정] [STEP2] [결과 sticky] */
+.calc-grid{
+  display:grid;
+  grid-template-columns:300px 1fr 1fr;
+  grid-template-rows:auto;
+  gap:13px;
+  align-items:start;
+}
+/* 공사정보 — 전폭 */
+.calc-project-row{
+  grid-column:1/-1;
+}
+/* 좌열: STEP1+STEP3 */
+.calc-col-left{ grid-column:1; }
+/* 중열: STEP2 */
+.calc-col-mid { grid-column:2; }
+/* 우열: STEP4 결과 sticky */
+.calc-col-right{
+  grid-column:3;
+  position:sticky;
+  top:72px; /* header+tabbar 높이 */
+  max-height:calc(100vh - 82px);
+  overflow-y:auto;
+  scrollbar-width:thin;
+  scrollbar-color:#bae6fd transparent;
+}
+.calc-col-right::-webkit-scrollbar{width:4px;}
+.calc-col-right::-webkit-scrollbar-thumb{background:#bae6fd;border-radius:4px;}
+
+/* 1100px 이하: 좌열 축소 */
+@media(max-width:1100px){
+  .calc-grid{grid-template-columns:260px 1fr 1fr;}
+}
+/* 900px 이하: 2열 (좌+중 | 우) */
+@media(max-width:900px){
+  .calc-grid{grid-template-columns:1fr 1fr;}
+  .calc-col-left{grid-column:1;}
+  .calc-col-mid {grid-column:2;}
+  .calc-col-right{grid-column:1/-1;position:static;max-height:none;}
+}
+/* 640px 이하: 1열 */
+@media(max-width:640px){
+  .calc-grid{grid-template-columns:1fr;}
+  .calc-col-left,.calc-col-mid,.calc-col-right{grid-column:1;}
+  .calc-col-right{position:static;max-height:none;}
+}
+/* 구형 two-col 호환 (부하탭 등) */
+.two-col{display:grid;grid-template-columns:440px 1fr;gap:13px;align-items:start;}
+@media(max-width:1100px){.two-col{grid-template-columns:1fr 1fr;}}
+@media(max-width:760px){.two-col{grid-template-columns:1fr;}}
+
+/* ── CARD ── */
+.card{background:#fff;border:1px solid #dbeafe;border-radius:12px;box-shadow:0 1px 4px rgba(3,105,161,.07);overflow:hidden;margin-bottom:12px;}
+.card-head{display:flex;align-items:center;gap:8px;padding:10px 13px;border-bottom:1px solid #e0f2fe;}
+.card-ico{width:25px;height:25px;border-radius:6px;background:#f0f9ff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;}
+.card-tit{font-size:11px;font-weight:800;color:#0c1a2e;letter-spacing:.04em;flex:1;}
+.cbadge{font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:20px;background:#f0f9ff;color:#0369a1;border:1px solid #bae6fd;white-space:nowrap;}
+.cbadge.org{background:#fff7ed;color:#c2410c;border-color:#fed7aa;}
+.cbadge.grn{background:#f0fdf4;color:#15803d;border-color:#bbf7d0;}
+.cbadge.red{background:#fef2f2;color:#dc2626;border-color:#fecaca;}
+.cbadge.pur{background:#faf5ff;color:#7e22ce;border-color:#e9d5ff;}
+.cbadge.sky{background:#f0f9ff;color:#0369a1;border-color:#bae6fd;}
+.card-body{padding:12px 13px;}
+
+/* ── FORM ── */
+.flbl{font-size:9.5px;font-weight:700;color:#4a6585;letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px;display:block;}
+.finput{width:100%;padding:7px 10px;background:#f8fafc;border:1.5px solid #bfdbfe;border-radius:7px;color:#0c1a2e;font-size:12.5px;font-weight:600;font-family:inherit;outline:none;transition:border-color .15s,box-shadow .15s;}
+.finput:focus{border-color:#0369a1;box-shadow:0 0 0 3px rgba(3,105,161,.12);background:#fff;}
+.fselect{width:100%;padding:7px 24px 7px 9px;background:#f8fafc;border:1.5px solid #bfdbfe;border-radius:7px;color:#0c1a2e;font-size:11.5px;font-weight:700;font-family:inherit;outline:none;cursor:pointer;transition:border-color .15s;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%230369a1' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;}
+.fselect:focus{border-color:#0369a1;box-shadow:0 0 0 3px rgba(3,105,161,.12);}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+@media(max-width:360px){.frow{grid-template-columns:1fr;}}
+.frow3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;}
+@media(max-width:480px){.frow3{grid-template-columns:1fr 1fr;}}
+.fgrp{display:flex;flex-direction:column;gap:3px;}
+.fgrp.full{grid-column:1/-1;}
+.input-sfx{display:flex;}
+.input-sfx .finput{border-radius:7px 0 0 7px;}
+.sfx{padding:7px 10px;background:#f0f9ff;border:1.5px solid #bfdbfe;border-left:none;border-radius:0 7px 7px 0;font-size:11.5px;font-weight:700;color:#0284c7;white-space:nowrap;display:flex;align-items:center;}
+
+/* ── STEP BAR ── */
+.step-bar{display:flex;align-items:center;margin-bottom:13px;background:#fff;border:1px solid #dbeafe;border-radius:10px;padding:8px 12px;overflow-x:auto;gap:0;scrollbar-width:none;}
+.step-bar::-webkit-scrollbar{display:none;}
+.step-item{display:flex;align-items:center;gap:5px;flex-shrink:0;}
+.sc{width:22px;height:22px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#94a3b8;flex-shrink:0;transition:all .2s;}
+.sc.done{background:#22c55e;color:#fff;}
+.sc.active{background:#0369a1;color:#fff;box-shadow:0 0 0 3px rgba(3,105,161,.2);}
+.sl{font-size:10.5px;font-weight:700;color:#94a3b8;white-space:nowrap;}
+.sl.active{color:#0369a1;}.sl.done{color:#16a34a;}
+.sdiv{width:16px;height:2px;background:#e2e8f0;margin:0 3px;flex-shrink:0;transition:background .2s;}
+.sdiv.done{background:#22c55e;}
+
+/* ── NOTICE BOX ── */
+.nb{border-radius:9px;padding:9px 11px;margin-bottom:9px;}
+.nb.blue{background:#f0f9ff;border:1.5px solid #bae6fd;}
+.nb.org{background:#fff7ed;border:1.5px solid #fed7aa;}
+.nb.grn{background:#f0fdf4;border:1.5px solid #bbf7d0;}
+.nb.red{background:#fef2f2;border:1.5px solid #fecaca;}
+.nb.sky{background:#ecfeff;border:1.5px solid #a5f3fc;}
+.nb-tit{font-size:10.5px;font-weight:800;margin-bottom:4px;display:flex;align-items:center;gap:4px;}
+.nb.blue .nb-tit{color:#075985;}.nb.org .nb-tit{color:#c2410c;}.nb.grn .nb-tit{color:#15803d;}.nb.red .nb-tit{color:#dc2626;}.nb.sky .nb-tit{color:#155e75;}
+.nb-txt{font-size:10.5px;line-height:1.75;}
+.nb.blue .nb-txt{color:#0c2340;}.nb.org .nb-txt{color:#78350f;}.nb.grn .nb-txt{color:#14532d;}.nb.red .nb-txt{color:#7f1d1d;}.nb.sky .nb-txt{color:#164e63;}
+
+/* ── PIPE TYPE GRID ── */
+.ptype-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:5px;margin-bottom:10px;}
+.ptype-card{border:1.5px solid #bfdbfe;border-radius:9px;padding:8px 5px;cursor:pointer;transition:all .15s;text-align:center;background:#f8fafc;}
+.ptype-card:hover{border-color:#0284c7;background:#f0f9ff;}
+.ptype-card.sel{border-color:#0369a1;background:#dbeafe;box-shadow:0 0 0 2px rgba(3,105,161,.15);}
+.pt-ico{font-size:18px;margin-bottom:3px;}
+.pt-nm{font-size:10px;font-weight:800;color:#0c1a2e;}
+.pt-cat{font-size:9px;color:#0284c7;font-weight:700;margin-top:1px;}
+
+/* ── PIPE RESULT HERO ── */
+.pipe-result-hero{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+@media(max-width:360px){.pipe-result-hero{grid-template-columns:1fr;}}
+.prh-box{border-radius:11px;padding:14px;text-align:center;color:#fff;}
+.prh-box.cold{background:linear-gradient(135deg,#0c2340,#0369a1);}
+.prh-box.hot{background:linear-gradient(135deg,#7c2d12,#b45309);}
+.prh-box.chiller{background:linear-gradient(135deg,#1a2e05,#365314);}
+.prh-box.general{background:linear-gradient(135deg,#1e1b4b,#4338ca);}
+.prh-lbl{font-size:9.5px;font-weight:700;opacity:.7;margin-bottom:3px;}
+.prh-val{font-size:36px;font-weight:900;font-family:'JetBrains Mono',monospace!important;color:#fde047;line-height:1;}
+.prh-unit{font-size:12px;font-weight:700;opacity:.8;margin-top:2px;}
+.prh-sub{font-size:9px;opacity:.65;margin-top:4px;line-height:1.5;}
+
+/* ── STAT GRID ── */
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+@media(max-width:380px){.stat-grid{grid-template-columns:repeat(2,1fr);}}
+.sbox{background:#fff;border:1px solid #dbeafe;border-radius:10px;padding:10px;text-align:center;}
+.sico{font-size:16px;margin-bottom:3px;}
+.sval{font-size:18px;font-weight:900;color:#0369a1;font-family:'JetBrains Mono',monospace!important;line-height:1.1;}
+.slbl{font-size:9.5px;color:#4a6585;font-weight:700;margin-top:2px;}
+
+/* ── TABLE ── */
+.twrap{overflow-x:auto;border-radius:9px;border:1px solid #dbeafe;}
+.rtbl{width:100%;border-collapse:collapse;font-size:11px;}
+.rtbl th{background:#f0f9ff;padding:7px 8px;text-align:center;font-weight:800;color:#075985;border:1px solid #bae6fd;font-size:10px;}
+.rtbl td{padding:7px 8px;text-align:center;border:1px solid #dbeafe;color:#0c1a2e;font-weight:600;}
+.rtbl tr:nth-child(even) td{background:#f8fafc;}
+.rtbl .highlight td{background:#dbeafe!important;border-color:#93c5fd;font-weight:900;}
+.rtbl tfoot td{background:#f0f9ff!important;font-weight:900;}
+
+/* ── GUIDE TABLE ── */
+.gtbl{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:12px;}
+.gtbl th{background:#f0f9ff;padding:7px 8px;text-align:center;font-weight:800;color:#075985;border:1px solid #bae6fd;font-size:10px;}
+.gtbl td{padding:6px 8px;text-align:center;border:1px solid #dbeafe;font-weight:600;color:#0c1a2e;}
+.gtbl tr:nth-child(even) td{background:#f8fafc;}
+
+/* ── CALC BOX ── */
+.cbox{background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:10px;margin-top:9px;}
+.cbox-tit{font-size:9.5px;font-weight:800;color:#4a6585;letter-spacing:.06em;margin-bottom:7px;}
+.crow{display:flex;justify-content:space-between;font-size:10.5px;padding:3px 0;border-bottom:1px dashed #bae6fd;}
+.crow:last-child{border-bottom:none;font-weight:800;color:#0369a1;}
+.ck{color:#475569;font-weight:600;}
+.cv{font-weight:700;font-family:'JetBrains Mono',monospace!important;}
+
+/* ── REF BOX ── */
+.ref-box{background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:11px;margin-top:12px;}
+.ref-tit{font-size:10.5px;font-weight:800;color:#475569;margin-bottom:6px;}
+.ref-item{font-size:10px;color:#64748b;line-height:1.8;display:flex;gap:5px;}
+.ref-item::before{content:'•';color:#0284c7;flex-shrink:0;}
+
+/* ── PIPE SIZE TAG ── */
+.pipe-tag{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11.5px;font-weight:900;font-family:'JetBrains Mono',monospace!important;}
+.pipe-tag.cold{background:#0369a1;color:#fff;}
+.pipe-tag.hot{background:#b45309;color:#fff;}
+.pipe-tag.chiller{background:#365314;color:#fff;}
+.pipe-tag.general{background:#4338ca;color:#fff;}
+.pipe-tag.ok{background:#f0f9ff;color:#0369a1;border:1px solid #bae6fd;}
+
+/* ── SEGMENT CONTROL ── */
+.seg-ctrl{display:flex;background:#f0f9ff;border:1.5px solid #bfdbfe;border-radius:9px;padding:2px;gap:2px;margin-bottom:10px;}
+.seg-btn{flex:1;padding:5px 8px;border:none;border-radius:6px;background:none;font-size:10.5px;font-weight:700;color:#4a6585;cursor:pointer;transition:all .15s;font-family:inherit;white-space:nowrap;}
+.seg-btn.active{background:#0369a1;color:#fff;box-shadow:0 2px 6px rgba(3,105,161,.3);}
+
+/* ── GUIDE MODAL TABS ── */
+.gm-tab{background:none;border:none;padding:9px 13px;font-size:10.5px;font-weight:700;color:#4a6585;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;border-bottom:2px solid transparent;transition:all .15s;}
+.gm-tab:hover{color:#0369a1;background:rgba(3,105,161,.06);}
+.gm-tab.active{color:#0369a1;border-bottom-color:#0369a1;background:#fff;}
+.gm-panel{display:none;}
+.gm-panel.active{display:block;}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%) translateY(14px);background:#0c2340;color:#fff;padding:8px 16px;border-radius:16px;font-size:12px;font-weight:700;opacity:0;transition:all .28s;z-index:999;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── MODAL ── */
+.modal-ov{position:fixed;inset:0;background:rgba(12,26,46,.55);z-index:200;display:flex;align-items:center;justify-content:center;padding:12px;}
+.modal-box{background:#fff;border-radius:15px;max-width:740px;width:100%;max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(3,105,161,.2);}
+.modal-head{padding:15px 17px 13px;border-bottom:1px solid #dbeafe;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1;border-radius:15px 15px 0 0;}
+.modal-tit{font-size:14px;font-weight:900;color:#075985;}
+.modal-cls{width:29px;height:29px;border:none;background:#f0f9ff;border-radius:7px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;}
+.modal-cls:hover{background:#dbeafe;}
+.modal-body{padding:15px 17px;}
+@media(max-width:479px){.modal-ov{padding:6px;}.modal-box{border-radius:12px;max-height:95vh;}.modal-head{padding:12px 14px 10px;}.modal-tit{font-size:13px;}}
+
+/* ── PWA 설치 버튼 ── */
+#pwa-install-btn{
+  display:none;align-items:center;gap:5px;
+  background:linear-gradient(135deg,#0369a1,#0284c7);
+  color:#fff;border:none;padding:6px 12px;border-radius:8px;
+  font-size:11px;font-weight:800;cursor:pointer;
+  font-family:inherit;white-space:nowrap;flex-shrink:0;
+  transition:all .15s;animation:pwa-glow 2.2s ease-in-out infinite;
+}
+#pwa-install-btn.visible{display:flex;}
+#pwa-install-btn:hover{background:linear-gradient(135deg,#075985,#0369a1);transform:translateY(-1px);}
+@keyframes pwa-glow{
+  0%,100%{box-shadow:0 0 0 0 rgba(3,105,161,.5);}
+  50%{box-shadow:0 0 0 7px rgba(3,105,161,0);}
+}
+@media(max-width:520px){#pwa-install-btn .pwa-txt{display:none;}}
+/* ── PWA 설치 배너 ── */
+#pwa-banner{
+  display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;
+  background:linear-gradient(135deg,#0c2340,#0369a1);
+  border-top:1px solid rgba(3,105,161,.35);
+  padding:14px 18px;border-radius:16px 16px 0 0;
+  box-shadow:0 -6px 28px rgba(3,105,161,.45);
+  animation:banner-up .35s cubic-bezier(.16,1,.3,1);
+}
+#pwa-banner.visible{display:block;}
+@keyframes banner-up{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.pwa-inner{max-width:540px;margin:0 auto;display:flex;align-items:center;gap:12px;}
+.pwa-icon{width:50px;height:50px;border-radius:12px;overflow:hidden;flex-shrink:0;border:1.5px solid rgba(3,105,161,.4);background:#0369a1;display:flex;align-items:center;justify-content:center;font-size:24px;}
+.pwa-texts{flex:1;min-width:0;}
+.pwa-title{font-size:.88rem;font-weight:900;color:#bae6fd;margin-bottom:2px;}
+.pwa-desc{font-size:.72rem;color:#7dd3fc;line-height:1.5;}
+.pwa-btns{display:flex;gap:7px;flex-shrink:0;}
+.pwa-ok{background:#0369a1;color:#fff;border:none;padding:9px 16px;border-radius:7px;font-size:.8rem;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background .15s;}
+.pwa-ok:hover{background:#075985;}
+.pwa-no{background:rgba(255,255,255,.1);color:#bae6fd;border:1px solid rgba(3,105,161,.3);padding:9px 11px;border-radius:7px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;}
+.pwa-no:hover{color:#e0f2fe;}
+@media(max-width:460px){.pwa-desc{display:none;}}
+
+/* ── 모바일 미리보기 ── */
+.mobile-preview-wrap{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;}
+.mobile-device-frame{flex-shrink:0;}
+.phone-frame{
+  width:390px;height:720px;
+  border:10px solid #1e293b;border-radius:44px;
+  box-shadow:0 0 0 2px #334155,0 30px 80px rgba(0,0,0,.45),inset 0 0 0 1px #475569;
+  position:relative;overflow:hidden;background:#000;
+}
+.phone-notch{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:120px;height:30px;background:#1e293b;border-radius:0 0 20px 20px;z-index:10;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.notch-cam{width:10px;height:10px;background:#0f172a;border-radius:50%;border:1px solid #334155;}
+.phone-screen{
+  width:100%;height:100%;
+  border-radius:34px;overflow:hidden;position:relative;
+}
+.phone-screen iframe{
+  width:390px;height:100%;border:none;
+  transform-origin:top left;pointer-events:auto;
+}
+.phone-home-bar{
+  position:absolute;bottom:8px;left:50%;transform:translateX(-50%);
+  width:100px;height:4px;background:#475569;border-radius:2px;z-index:10;
+}
+.tablet-frame{
+  width:768px;height:580px;
+  border:12px solid #1e293b;border-radius:20px;
+  box-shadow:0 0 0 2px #334155,0 20px 60px rgba(0,0,0,.4),inset 0 0 0 1px #475569;
+  position:relative;overflow:hidden;background:#000;
+  flex-shrink:0;
+}
+.tablet-screen{width:100%;height:100%;border-radius:10px;overflow:hidden;}
+.tablet-screen iframe{width:768px;height:100%;border:none;transform-origin:top left;}
+.preview-controls{background:#fff;border:1px solid #dbeafe;border-radius:10px;padding:12px;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.device-btn{padding:6px 14px;border:1.5px solid #bfdbfe;border-radius:8px;background:#f0f9ff;color:#0369a1;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;display:flex;align-items:center;gap:5px;}
+.device-btn.active{background:#0369a1;color:#fff;border-color:#0369a1;}
+.device-btn:hover:not(.active){border-color:#0369a1;}
+.preview-size-info{font-size:10px;color:#64748b;font-weight:600;margin-left:auto;}
+.preview-outer{background:#e2e8f0;padding:24px;border-radius:12px;display:flex;justify-content:center;align-items:flex-start;min-height:400px;overflow:auto;}
+
+/* ── A4 PREVIEW ── */
+.a4-export-bar{background:#fff;border:1px solid #dbeafe;border-radius:10px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.bar-lbl{font-size:11px;font-weight:700;color:#4a6585;}
+.btn-export{padding:6px 12px;border:none;border-radius:7px;cursor:pointer;font-size:11px;font-weight:700;font-family:inherit;transition:all .15s;display:flex;align-items:center;gap:4px;white-space:nowrap;}
+.btn-print{background:#0369a1;color:#fff;}.btn-print:hover{background:#075985;}
+.btn-jpg{background:linear-gradient(135deg,#059669,#10b981);color:#fff;}.btn-jpg:hover{background:linear-gradient(135deg,#047857,#059669);}
+.btn-pdf{background:linear-gradient(135deg,#7c3aed,#8b5cf6);color:#fff;}.btn-pdf:hover{background:linear-gradient(135deg,#6d28d9,#7c3aed);}
+@keyframes share-appear{from{opacity:0;transform:translateX(-8px);}to{opacity:1;transform:translateX(0);}}
+.a4-wrap{background:#64748b;padding:20px 20px 32px;min-height:300px;display:flex;justify-content:center;align-items:flex-start;border-radius:10px;overflow:hidden;}
+.a4-scale-wrap{display:block;transform-origin:top center;flex-shrink:0;}
+.a4-page{background:#fff;width:794px;min-height:1123px;margin:0;padding:56px 70px 64px;box-shadow:0 8px 40px rgba(0,0,0,.35);font-size:10.5px;color:#0c1a2e;position:relative;}
+.a4-page *{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif!important;}
+.a4-tit{font-size:16px;font-weight:900;color:#0c2340;text-align:center;border-bottom:2.5px solid #0369a1;padding-bottom:8px;margin-bottom:10px;}
+.a4-sub{font-size:10.5px;font-weight:800;color:#0369a1;margin-bottom:5px;margin-top:12px;padding-left:7px;border-left:3px solid #0369a1;}
+.a4-tbl{width:100%;border-collapse:collapse;font-size:9.5px;margin-bottom:8px;}
+.a4-tbl th{background:#dbeafe;padding:4px 6px;text-align:center;font-weight:800;color:#0c2340;border:1px solid #93c5fd;}
+.a4-tbl td{padding:4px 7px;border:1px solid #dbeafe;font-weight:600;line-height:1.5;}
+.a4-tbl tr:nth-child(even) td{background:#f0f9ff;}
+.a4-tbl tr.hl td{background:#dbeafe!important;font-weight:900!important;}
+.a4-tbl tr.hl td:first-child{border-left:3px solid #0369a1;}
+.a4-info-row{display:flex;justify-content:space-between;font-size:9px;color:#64748b;margin-bottom:14px;border-bottom:1px solid #e2e8f0;padding-bottom:8px;}
+.a4-footer{border-top:1px solid #dbeafe;padding-top:8px;font-size:8px;color:#94a3b8;margin-top:18px;line-height:1.6;display:flex;justify-content:space-between;font-weight:600;}
+/* ── 인쇄 전용 스타일 ── */
+@media print{
+  html,body{background:#fff!important;margin:0;padding:0;}
+  .app-header,.tab-bar,.main-wrap .tab-panel:not(#panel-a4),.a4-export-bar,
+  .modal-ov,.fab-calc,.fab-tooltip,.toast{display:none!important;}
+  #panel-a4{display:block!important;}
+  .a4-wrap{background:#fff!important;padding:0!important;min-height:unset!important;border-radius:0!important;display:block!important;}
+  .a4-scale-wrap{transform:none!important;margin:0!important;}
+  .a4-page{box-shadow:none!important;width:100%!important;min-height:unset!important;padding:14mm 18mm!important;}
+  @page{size:A4;margin:0;}
+}
+
+/* ── FAB ── */
+.fab-calc{position:fixed;right:14px;bottom:18px;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#0369a1,#0284c7);color:#fff;border:none;cursor:pointer;font-size:20px;box-shadow:0 4px 20px rgba(3,105,161,.45);z-index:100;transition:all .2s;display:flex;align-items:center;justify-content:center;}
+.fab-calc:hover{transform:scale(1.08);}
+.fab-tooltip{position:fixed;bottom:72px;right:14px;background:#0c2340;color:#fff;padding:5px 11px;border-radius:8px;font-size:11px;font-weight:700;opacity:0;pointer-events:none;transition:opacity .15s;z-index:101;white-space:nowrap;}
+.fab-tooltip.show{opacity:1;}
+
+/* ── FLOW DIAGRAM ── */
+.flow-diagram{background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:12px;margin-bottom:10px;}
+.flow-title{font-size:10.5px;font-weight:800;color:#075985;margin-bottom:8px;display:flex;align-items:center;gap:4px;}
+.flow-line{display:flex;align-items:center;gap:4px;margin-bottom:5px;flex-wrap:wrap;}
+.flow-node{padding:3px 8px;border-radius:5px;font-size:10px;font-weight:800;white-space:nowrap;}
+.fn-cold{background:#0369a1;color:#fff;}
+.fn-hot{background:#b45309;color:#fff;}
+.fn-chiller{background:#365314;color:#fff;}
+.fn-branch{background:#0284c7;color:#fff;}
+.fn-fixture{background:#dbeafe;color:#0369a1;border:1px solid #bae6fd;}
+.flow-arrow{color:#94a3b8;font-size:12px;}
+.flow-pipe{font-size:9px;font-weight:800;color:#0369a1;font-family:'JetBrains Mono',monospace!important;background:#fff;border:1px solid #bae6fd;padding:1px 5px;border-radius:4px;}
+
+/* ── GUIDE GRID ── */
+.guide-grid-2col{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:767px){.guide-grid-2col{grid-template-columns:1fr;}}
+
+/* ── STD PIPE TAG ── */
+.std-pipe{display:inline-block;padding:2px 7px;border-radius:5px;font-size:10.5px;font-weight:800;font-family:'JetBrains Mono',monospace!important;}
+.std-ok{background:#dbeafe;color:#0369a1;}
+.std-ov{background:#fef2f2;color:#dc2626;}
+
+/* ── VELOCITY GAUGE ── */
+.vel-gauge{background:#f8fafc;border:1.5px solid #bfdbfe;border-radius:8px;padding:10px;margin-top:8px;}
+.vel-bar-wrap{height:8px;background:#e2e8f0;border-radius:4px;margin:5px 0;overflow:hidden;}
+.vel-bar-fill{height:100%;border-radius:4px;transition:width .4s cubic-bezier(.4,0,.2,1);}
+.vel-ok{background:linear-gradient(90deg,#0284c7,#22d3ee);}
+.vel-warn{background:linear-gradient(90deg,#f97316,#fb923c);}
+.vel-over{background:linear-gradient(90deg,#dc2626,#f87171);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:767px){
+  .main-wrap{padding:10px 9px 70px;}
+  .guide-grid-2col{grid-template-columns:1fr!important;}
+  .seg-ctrl{flex-wrap:wrap;}
+  .seg-btn{flex:0 0 auto;font-size:10px;padding:4px 8px;}
+  .brand-sub{display:none;}
+  .rtbl,.gtbl{font-size:10px;}
+  .rtbl th,.rtbl td,.gtbl th,.gtbl td{padding:5px 5px;}
+}
+@media(max-width:479px){
+  .main-wrap{padding:8px 7px 65px;}
+  .header-inner{height:52px;padding:0 10px;}
+  .brand-icon{width:30px;height:30px;font-size:15px;}
+  .tb{padding:7px 9px;font-size:10px;}
+  .card-body{padding:10px 10px;}
+  .card-head{padding:8px 10px;}
+  .card-tit{font-size:10px;}
+  .frow{grid-template-columns:1fr 1fr;gap:6px;}
+  .finput{padding:6px 8px;}
+  .flbl{font-size:9px;}
+  .pipe-result-hero{grid-template-columns:1fr 1fr!important;}
+  .prh-val{font-size:28px!important;}
+  .stat-grid{grid-template-columns:repeat(3,1fr);}
+  .sval{font-size:15px;}
+}
+@media(max-width:360px){
+  .frow{grid-template-columns:1fr;}
+  .ptype-grid{grid-template-columns:repeat(3,1fr);}
+  .pipe-result-hero{grid-template-columns:1fr!important;}
+  .seg-btn{font-size:9px;padding:4px 5px;}
+}
+@media(hover:none) and (pointer:coarse){
+  .tb{min-height:40px;}
+  .btn-g,.btn-b,.btn-export{min-height:38px;}
+  .ptype-card{min-height:60px;}
+  .finput,.fselect{min-height:40px;}
+}
+@media screen and (max-width:768px){
+  input[type="text"],input[type="number"],input[type="date"],select,textarea{font-size:16px!important;}
+}
+@media print{.modal-ov,.fab-calc,.fab-tooltip,.tab-bar,.hdr-btns{display:none!important;}}
+#grp-sch{transition:opacity .2s;}
+#grp-sch select:disabled{cursor:not-allowed;color:#94a3b8;background:#f1f5f9;}
+</style>
+</head>
+<body>
+<div id="root-app">
+
+<!-- ─── HEADER ─── -->
+<header class="app-header">
+  <div class="header-inner">
+    <div class="brand-logo">
+      <div class="brand-icon">🌡️</div>
+      <div class="brand-texts">
+        <div class="brand-title">냉온수 배관 관경 산정 시스템 [MANMIN-Ver2.0]</div>
+        <div class="brand-sub">기계설비 기술기준 국토교통부 고시 제2021-851호 · William-Hazen / Darcy-Weisbach</div>
+      </div>
+    </div>
+    <div class="hdr-btns">
+      <button id="pwa-install-btn" onclick="pwaTriggerInstall()">📲 <span class="pwa-txt">앱 설치</span></button>
+      <button class="btn-g" onclick="resetAll()">🔄 <span class="btn-txt">초기화</span></button>
+      <button class="btn-b" onclick="exportJpg()">🖼️ <span class="btn-txt">JPG</span></button>
+      <button class="btn-b" onclick="printA4()">🖨️ <span class="btn-txt">출력</span></button>
+    </div>
+  </div>
+</header>
+
+<!-- ─── TAB BAR ─── -->
+<nav class="tab-bar">
+  <div class="tab-bar-inner">
+    <button class="tb active" onclick="switchTab('calc',this)">🔧 관경 산정</button>
+    <button class="tb" onclick="switchTab('stdtable',this)">📋 관경 표준표</button>
+    <button class="tb" onclick="switchTab('spec',this)">📐 배관 규격표</button>
+    <button class="tb" onclick="switchTab('guide',this)">📖 설계 기준</button>
+    <button class="tb" onclick="switchTab('a4',this)">📄 A4 미리보기</button>
+    <button class="tb" onclick="switchTab('mobile',this)">📱 모바일 미리보기</button>
+  </div>
+</nav>
+
+<div class="main-wrap">
+
+<!-- ████ TAB 1: 관경 산정 ████ -->
+<div class="tab-panel active" id="panel-calc">
+
+  <!-- 진행 단계 -->
+  <div class="step-bar">
+    <div class="step-item"><div class="sc active" id="sc1">1</div><span class="sl active" id="sl1">배관 조건</span></div>
+    <div class="sdiv" id="sd1"></div>
+    <div class="step-item"><div class="sc" id="sc2">2</div><span class="sl" id="sl2">유량 입력</span></div>
+    <div class="sdiv" id="sd2"></div>
+    <div class="step-item"><div class="sc" id="sc3">3</div><span class="sl" id="sl3">설계 파라미터</span></div>
+    <div class="sdiv" id="sd3"></div>
+    <div class="step-item"><div class="sc" id="sc4">4</div><span class="sl" id="sl4">산정 결과</span></div>
+  </div>
+
+  <div class="calc-grid">
+
+  <!-- ── 공사 정보 (전폭) ── -->
+  <div class="calc-project-row">
+    <div class="card" id="project-info-card">
+      <div class="card-head"><div class="card-ico">🏗️</div><span class="card-tit">공사 정보</span><span class="cbadge sky">산정서 자동반영</span></div>
+      <div class="card-body">
+        <div style="display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:end">
+          <div class="fgrp">
+            <label class="flbl">공사명</label>
+            <input type="text" class="finput" id="inp-project-name" value="만민 건축사 신사옥 신축공사"
+                   placeholder="공사명을 입력하세요" oninput="onProjectInfoChange()">
+          </div>
+          <div class="fgrp" style="min-width:130px">
+            <label class="flbl">작성일</label>
+            <input type="date" class="finput" id="inp-project-date" oninput="onProjectInfoChange()">
+          </div>
+          <div class="fgrp" style="min-width:100px">
+            <label class="flbl">작성자</label>
+            <input type="text" class="finput" id="inp-project-author" value="김만민" oninput="onProjectInfoChange()">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 좌열: STEP 1 재질 + STEP 3 파라미터 ── -->
+  <div class="calc-col-left">
+
+    <!-- STEP 1: 배관 재질 -->
+    <div class="card">
+      <div class="card-head"><div class="card-ico">🔩</div><span class="card-tit">STEP 1 — 배관 재질</span><span class="cbadge sky" id="mat-badge">미선택</span></div>
+      <div class="card-body">
+
+        <label class="flbl">배관 재질 선택</label>
+        <div class="ptype-grid" id="ptypeGrid"></div>
+
+        <div class="frow" style="margin-top:4px">
+          <div class="fgrp">
+            <label class="flbl">배관 용도</label>
+            <select class="fselect" id="sel-purpose" onchange="onPurposeChange()">
+              <option value="cold">냉수 배관 (냉방)</option>
+              <option value="hot">온수 배관 (난방)</option>
+              <option value="chiller">냉각수 배관 (냉동기)</option>
+              <option value="general">일반 냉온수</option>
+            </select>
+          </div>
+          <div class="fgrp" id="grp-sch">
+            <label class="flbl">강관 스케쥴</label>
+            <select class="fselect" id="sel-sch" onchange="onSchChange()">
+              <option value="normal">일반 (SGP / KS D 3507)</option>
+              <option value="sch40">SCH #40 (KS D 3562)</option>
+              <option value="sch80">SCH #80 (KS D 3562)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="frow" style="margin-bottom:0">
+          <div class="fgrp">
+            <label class="flbl">허용 압력강하 <span style="color:#0284c7">(mmAq/m)</span></label>
+            <select class="fselect" id="sel-pdrop" onchange="onPdropChange()">
+              <option value="20">20 mmAq/m — 경제적</option>
+              <option value="30" selected>30 mmAq/m — 표준</option>
+              <option value="50">50 mmAq/m — 고압</option>
+              <option value="custom">직접 입력</option>
+            </select>
+          </div>
+          <div class="fgrp" id="grp-pdrop-custom" style="display:none">
+            <label class="flbl">압력강하 직접 입력</label>
+            <div class="input-sfx"><input type="number" class="finput" id="inp-pdrop-custom" value="25" min="1" max="200" oninput="liveCalc()"><span class="sfx">mmAq/m</span></div>
+          </div>
+          <div class="fgrp" id="grp-pdrop-empty" style="display:block">
+            <label class="flbl">적용 단위 마찰손실</label>
+            <div class="input-sfx"><input type="text" class="finput" id="disp-pdrop" value="30" readonly style="background:#f8fafc;color:#0369a1;font-weight:800"><span class="sfx">mmAq/m</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: 설계 파라미터 -->
+    <div class="card">
+      <div class="card-head"><div class="card-ico">⚙️</div><span class="card-tit">STEP 3 — 설계 파라미터</span><span class="cbadge org">자동반영</span></div>
+      <div class="card-body">
+
+        <div class="frow">
+          <div class="fgrp">
+            <label class="flbl">설계 목표 유속</label>
+            <select class="fselect" id="sel-vel" onchange="onVelChange()">
+              <option value="1.0">1.0 m/s — 저소음</option>
+              <option value="1.5" selected>1.5 m/s — 동관 권장</option>
+              <option value="2.0">2.0 m/s — 강관 권장</option>
+              <option value="2.5">2.5 m/s — SCH40 최대</option>
+              <option value="3.0">3.0 m/s — STS·PVC</option>
+              <option value="custom">직접 입력</option>
+            </select>
+          </div>
+          <div class="fgrp" id="grp-vel-custom" style="display:none">
+            <label class="flbl">유속 직접 입력</label>
+            <div class="input-sfx"><input type="number" class="finput" id="inp-vel-custom" value="1.5" step="0.1" min="0.1" max="10" oninput="liveCalc()"><span class="sfx">m/s</span></div>
+          </div>
+          <div class="fgrp" id="grp-vel-empty">
+            <label class="flbl">적용 목표 유속</label>
+            <div class="input-sfx"><input type="text" class="finput" id="disp-vel" value="1.5" readonly style="background:#f8fafc;color:#0369a1;font-weight:800"><span class="sfx">m/s</span></div>
+          </div>
+        </div>
+
+        <div class="frow" style="margin-bottom:0">
+          <div class="fgrp">
+            <label class="flbl">총 층수</label>
+            <div class="input-sfx"><input type="number" class="finput" id="inp-floors" value="1" min="1" max="100" oninput="liveCalc()"><span class="sfx">층</span></div>
+          </div>
+          <div class="fgrp">
+            <label class="flbl">층 높이</label>
+            <div class="input-sfx"><input type="number" class="finput" id="inp-floorht" value="3.0" min="2" max="15" step="0.1" oninput="liveCalc()"><span class="sfx">m</span></div>
+          </div>
+        </div>
+
+        <!-- 연동 파라미터 현황 (축약) -->
+        <div class="cbox" style="margin-top:10px">
+          <div class="cbox-tit">▣ 연동 파라미터 현황</div>
+          <div class="crow"><span class="ck">C 계수</span><span class="cv" id="p-c-value">—</span></div>
+          <div class="crow"><span class="ck">압력강하 기준</span><span class="cv" id="p-pdrop">—</span></div>
+          <div class="crow"><span class="ck">설계 목표 유속</span><span class="cv" id="p-vel">—</span></div>
+          <div class="crow"><span class="ck">절대 최대 유속</span><span class="cv" id="p-vmax">—</span></div>
+          <div class="crow"><span class="ck">권장 유속 범위</span><span class="cv" id="p-vrec">—</span></div>
+          <div class="crow"><span class="ck">배관 재질</span><span class="cv" id="p-mat">—</span></div>
+          <div class="crow"><span class="ck">총 높이 / 정수두</span><span class="cv" id="p-height">—</span></div>
+          <div class="crow"><span class="ck">정수두 압력</span><span class="cv" id="p-static">—</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 진행 상태 배지 -->
+    <div id="calc-step-status" style="display:flex;gap:5px;align-items:center;padding:8px 12px;background:#fff;border:1px solid #dbeafe;border-radius:10px;flex-wrap:wrap;margin-bottom:0">
+      <span id="cst-1" style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;background:#e2e8f0;color:#94a3b8">① 재질</span>
+      <span style="color:#cbd5e1;font-size:10px">›</span>
+      <span id="cst-2" style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;background:#e2e8f0;color:#94a3b8">② 유량</span>
+      <span style="color:#cbd5e1;font-size:10px">›</span>
+      <span id="cst-3" style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;background:#e2e8f0;color:#94a3b8">③ 파라미터</span>
+      <span style="color:#cbd5e1;font-size:10px">›</span>
+      <span id="cst-4" style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;background:#e2e8f0;color:#94a3b8">④ 결과</span>
+    </div>
+
+  </div><!-- /calc-col-left -->
+
+  <!-- ── 중열: STEP 2 유량/부하 ── -->
+  <div class="calc-col-mid">
+
+    <!-- STEP 2: 유량 입력 -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-ico">💧</div>
+        <span class="card-tit">STEP 2 — 유량 / 부하 입력</span>
+        <span class="cbadge" id="flow-badge">미입력</span>
+      </div>
+      <div class="card-body">
+
+        <!-- 입력 모드 전환 -->
+        <div class="seg-ctrl" style="margin-bottom:10px">
+          <button class="seg-btn active" id="mode-flow" onclick="setInputMode('flow',this)">💧 유량 직접 입력</button>
+          <button class="seg-btn"        id="mode-load" onclick="setInputMode('load',this)">🌡️ 부하로 유량 환산</button>
+        </div>
+
+        <!-- ① 유량 직접 입력 -->
+        <div id="panel-flow-input">
+          <div class="frow3" style="margin-bottom:0">
+            <div class="fgrp">
+              <label class="flbl">유량 단위</label>
+              <select class="fselect" id="sel-flow-unit" onchange="onFlowUnitChange()">
+                <option value="kgh">KG/H</option>
+                <option value="lpm">LPM</option>
+                <option value="m3h">㎥/H</option>
+              </select>
+            </div>
+            <div class="fgrp" style="grid-column:span 2">
+              <label class="flbl">유량 <span id="flow-unit-lbl" style="color:#0284c7">KG/H</span></label>
+              <div class="input-sfx">
+                <input type="number" class="finput" id="inp-flow"
+                       placeholder="예: 45000" min="0"
+                       oninput="onFlowInput()">
+                <span class="sfx" id="flow-sfx">KG/H</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ② 부하 입력 -->
+        <div id="panel-load-input" style="display:none">
+          <!-- 시스템 선택 (온도 프리셋 자동 적용) -->
+          <div class="frow" style="margin-bottom:8px">
+            <div class="fgrp full">
+              <label class="flbl">시스템 종류 <span style="color:#0284c7;font-size:8.5px">— 선택 시 공급/환수 온도 자동 설정</span></label>
+              <select class="fselect" id="sel-sys-preset" onchange="onSysPresetChange()">
+                <option value="custom">직접 설정</option>
+                <option value="cold">❄️ 냉방 냉수 (공급 7℃ / 환수 12℃)</option>
+                <option value="hot">🔥 난방 온수 (공급 45℃ / 환수 40℃)</option>
+                <option value="chiller">🧊 냉동기 냉각수 (공급 32℃ / 환수 37℃)</option>
+                <option value="hw60">♨️ 고온 온수 (공급 60℃ / 환수 50℃)</option>
+              </select>
+            </div>
+          </div>
+          <div class="frow">
+            <div class="fgrp">
+              <label class="flbl">부하 단위</label>
+              <select class="fselect" id="sel-load-unit" onchange="onLoadUnitChange()">
+                <option value="kcalh">kcal/h</option>
+                <option value="kw">kW</option>
+                <option value="rt">냉동톤 (RT)</option>
+              </select>
+            </div>
+            <div class="fgrp">
+              <label class="flbl">부하량 <span id="load-unit-lbl" style="color:#0284c7">kcal/h</span></label>
+              <div class="input-sfx">
+                <input type="number" class="finput" id="inp-load" placeholder="예: 100000" min="0" oninput="onLoadInput()">
+                <span class="sfx" id="load-sfx">kcal/h</span>
+              </div>
+            </div>
+          </div>
+          <div class="frow" style="margin-bottom:0">
+            <div class="fgrp">
+              <label class="flbl">공급 온도 Ts</label>
+              <div class="input-sfx"><input type="number" class="finput" id="inp-ts" value="7" step="0.5" min="-10" max="100" oninput="onTempInput()"><span class="sfx">℃</span></div>
+            </div>
+            <div class="fgrp">
+              <label class="flbl">환수 온도 Tr</label>
+              <div class="input-sfx"><input type="number" class="finput" id="inp-tr" value="12" step="0.5" min="-10" max="100" oninput="onTempInput()"><span class="sfx">℃</span></div>
+            </div>
+          </div>
+          <!-- ΔT + 공식 표시 -->
+          <div style="display:flex;align-items:center;gap:6px;margin-top:6px;padding:8px 11px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:7px;flex-wrap:wrap">
+            <div style="display:flex;align-items:center;gap:4px">
+              <span style="font-size:10px;color:#4a6585;font-weight:700">ΔT =</span>
+              <span class="mono" id="disp-dt" style="font-size:16px;font-weight:900;color:#0369a1">5.0</span>
+              <span style="font-size:10px;color:#4a6585;font-weight:700">℃</span>
+            </div>
+            <span style="font-size:10px;color:#64748b;flex:1" id="disp-load-formula">Q = H ÷ (1 × ΔT)</span>
+          </div>
+          <!-- 전환산 결과 미니박스 -->
+          <div class="cbox" style="margin-top:8px" id="load-conv-box">
+            <div class="cbox-tit">▣ 부하 전환산 결과</div>
+            <div class="crow"><span class="ck">kcal/h</span><span class="cv" id="cv-kcal">—</span></div>
+            <div class="crow"><span class="ck">kW</span><span class="cv" id="cv-kw">—</span></div>
+            <div class="crow"><span class="ck">냉동톤 (RT)</span><span class="cv" id="cv-rt">—</span></div>
+            <div class="crow"><span class="ck">환산 유량 (KG/H)</span><span class="cv" id="cv-flow">—</span></div>
+          </div>
+        </div>
+
+        <!-- ③ 실시간 연동 환산 박스 -->
+        <div class="cbox" style="margin-top:10px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
+            <span class="cbox-tit" style="margin:0">▣ 유량·부하 실시간 연동</span>
+            <span id="sync-indicator" style="font-size:9.5px;font-weight:700;color:#94a3b8">대기</span>
+          </div>
+          <div class="crow"><span class="ck">KG/H</span><span class="cv" id="conv-kgh">—</span></div>
+          <div class="crow"><span class="ck">LPM</span><span class="cv" id="conv-lpm">—</span></div>
+          <div class="crow"><span class="ck">㎥/H</span><span class="cv" id="conv-m3h">—</span></div>
+          <div class="crow"><span class="ck">㎥/s</span><span class="cv" id="conv-m3s">—</span></div>
+          <div class="crow" id="crow-load-rev"><span class="ck">역산 부하 (kcal/h)</span><span class="cv" id="conv-load-kcal">—</span></div>
+          <div class="crow" id="crow-kw-rev" ><span class="ck">역산 부하 (kW)</span><span class="cv" id="conv-load-kw">—</span></div>
+          <div class="crow" id="crow-rt-rev" ><span class="ck">역산 부하 (RT)</span><span class="cv" id="conv-load-rt">—</span></div>
+          <div class="crow" id="crow-dt-rev" style="display:none"><span class="ck">온도차 ΔT</span><span class="cv" id="conv-dt">—</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 이력 저장 (중열 하단) -->
+    <div class="card">
+      <div class="card-head"><div class="card-ico">📋</div><span class="card-tit">산정 이력</span>
+        <button onclick="clearHistory()" style="margin-left:auto;font-size:10px;background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:3px 9px;border-radius:6px;cursor:pointer;font-family:inherit;font-weight:700;">전체삭제</button>
+      </div>
+      <div class="card-body" style="padding:8px 13px">
+        <div id="historyList"><div style="text-align:center;padding:18px 0;color:#94a3b8;font-size:11px">산정 이력이 없습니다</div></div>
+        <button class="btn-b" style="width:100%;justify-content:center;margin-top:8px;padding:8px" onclick="saveHistory()">💾 현재 결과 저장</button>
+      </div>
+    </div>
+
+  </div><!-- /calc-col-mid -->
+
+  <!-- ── 우열: STEP 4 결과 (sticky) ── -->
+  <div class="calc-col-right">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-ico">📊</div>
+        <span class="card-tit">STEP 4 — 관경 산정 결과</span>
+        <span class="cbadge" id="result-badge">대기</span>
+      </div>
+      <div class="card-body">
+
+        <!-- 결과 대기 메시지 -->
+        <div id="result-placeholder" style="padding:36px 0;text-align:center;color:#94a3b8">
+          <div style="font-size:36px;margin-bottom:10px">🔧</div>
+          <div style="font-size:13px;font-weight:700">조건을 입력하면<br>자동 산정됩니다</div>
+          <div style="font-size:10.5px;margin-top:5px;line-height:1.8">① 재질 선택<br>② 유량 입력<br>③ 파라미터 확인</div>
+        </div>
+
+        <!-- 실제 결과 -->
+        <div id="result-content" style="display:none">
+
+          <div class="pipe-result-hero" id="pipeHero"></div>
+          <div class="stat-grid" id="statGrid"></div>
+
+          <!-- 유속 게이지 -->
+          <div class="vel-gauge">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
+              <span style="font-size:10px;font-weight:800;color:#075985">유속 적정성</span>
+              <span class="mono" id="vel-pct-lbl" style="font-size:10px;font-weight:800;color:#0369a1">—</span>
+            </div>
+            <div class="vel-bar-wrap"><div class="vel-bar-fill" id="vel-bar" style="width:0%"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:9px;color:#94a3b8;font-weight:600;margin-top:2px">
+              <span>0 m/s</span><span id="vel-max-lbl">2.0 m/s</span>
+            </div>
+          </div>
+
+          <!-- 플로우 다이어그램 -->
+          <div class="flow-diagram" style="margin-top:10px">
+            <div class="flow-title">🔀 배관 계통 흐름도</div>
+            <div id="flowDiagram"></div>
+          </div>
+
+          <!-- 관경 상세표 -->
+          <div class="pipe-result-section" style="margin-top:12px">
+            <div style="font-size:11px;font-weight:800;color:#0369a1;margin-bottom:7px">💧 관경별 유량·유속 비교표</div>
+            <div class="twrap"><table class="rtbl" id="tbl-pipes"></table></div>
+          </div>
+
+          <!-- 산정 핵심 수치 -->
+          <div class="cbox" style="margin-top:10px">
+            <div class="cbox-tit">▣ 관경 산정 핵심 수치</div>
+            <div class="crow"><span class="ck">설계 유량</span><span class="cv" id="res-flow">—</span></div>
+            <div class="crow"><span class="ck">채택 관경</span><span class="cv" id="res-pipe">—</span></div>
+            <div class="crow"><span class="ck">내경 (ID)</span><span class="cv" id="res-id">—</span></div>
+            <div class="crow"><span class="ck">실제 유속</span><span class="cv" id="res-vel">—</span></div>
+            <div class="crow"><span class="ck">압력강하 (실제)</span><span class="cv" id="res-pdrop">—</span></div>
+            <div class="crow"><span class="ck">적용 공식</span><span class="cv" id="res-formula">—</span></div>
+            <div class="crow"><span class="ck">유속 판정</span><span class="cv" id="res-status">—</span></div>
+          </div>
+
+          <!-- 대안 관경 비교 -->
+          <div style="margin-top:12px">
+            <div style="font-size:11px;font-weight:800;color:#4a6585;margin-bottom:7px">🔄 인접 관경 비교</div>
+            <div class="twrap"><table class="rtbl" id="tbl-alt"></table></div>
+          </div>
+
+          <div class="ref-box">
+            <div class="ref-tit">📌 적용 기준</div>
+            <div class="ref-item">기계설비 기술기준 [별표 8] (국토교통부 고시 제2021-851호)</div>
+            <div class="ref-item">William-Hazen: Q = 0.35464 × C × d²·⁶³ × I⁰·⁵⁴</div>
+            <div class="ref-item">연속방정식: d = √(4Q / πV)</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div><!-- /calc-col-right -->
+
+  </div><!-- /calc-grid -->
+</div>
+
+<!-- ████ TAB 3: 관경 표준표 ████ -->
+<div class="tab-panel" id="panel-stdtable">
+  <div class="nb blue"><div class="nb-tit">📋 냉온수 배관 관경 표준표</div><div class="nb-txt">기계설비 기술기준 [별표 8] · William-Hazen 공식 기반 — 유량 범위별 권장 관경 일람</div></div>
+
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-head"><div class="card-ico">💧</div><span class="card-tit">압력강하별 관경 선정표 (강관 일반, C=120)</span><span class="cbadge">별표 8</span></div>
+    <div class="card-body">
+      <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+        <button class="seg-btn active" id="seg-20" onclick="showStdTable(20,this)">20 mmAq/m</button>
+        <button class="seg-btn" id="seg-30" onclick="showStdTable(30,this)">30 mmAq/m</button>
+        <button class="seg-btn" id="seg-vel2" onclick="showStdTable('vel2',this)">유속 2 m/s 기준</button>
+        <button class="seg-btn" id="seg-vel3" onclick="showStdTable('vel3',this)">유속 3 m/s 기준</button>
+      </div>
+      <div class="twrap"><table class="gtbl" id="stdTblMain"></table></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="card-ico">🔩</div><span class="card-tit">재질별 Hazen-Williams C 계수 및 권장 유속</span></div>
+    <div class="card-body">
+      <div class="twrap">
+        <table class="gtbl">
+          <thead><tr><th>배관 재질</th><th>C 계수(신설)</th><th>C 계수(노후)</th><th>권장 유속</th><th>최대 유속</th><th>비고</th></tr></thead>
+          <tbody>
+            <tr><td>강관 SGP (일반)</td><td class="mono">120</td><td class="mono">100</td><td>1.0 ~ 2.0 m/s</td><td>2.5 m/s</td><td>20년 후 C=100 설계 권장</td></tr>
+            <tr><td>강관 SCH #40</td><td class="mono">120</td><td class="mono">100</td><td>1.0 ~ 2.0 m/s</td><td>2.5 m/s</td><td>고압 배관 적용</td></tr>
+            <tr><td>동관 (Cu)</td><td class="mono">140</td><td class="mono">130</td><td>1.0 ~ 1.5 m/s</td><td>2.0 m/s</td><td>고유속 시 침식 주의</td></tr>
+            <tr><td>스테인리스 (STS)</td><td class="mono">140</td><td class="mono">135</td><td>1.0 ~ 2.0 m/s</td><td>3.0 m/s</td><td>위생설비 적합</td></tr>
+            <tr><td>PVC/PE 합성수지</td><td class="mono">150</td><td class="mono">145</td><td>1.0 ~ 2.0 m/s</td><td>3.0 m/s</td><td>마찰저항 최소</td></tr>
+            <tr><td>주철관 (CI)</td><td class="mono">100</td><td class="mono">80</td><td>0.6 ~ 1.5 m/s</td><td>2.0 m/s</td><td>배수·주철 한정</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ████ TAB 4: 배관 규격표 ████ -->
+<div class="tab-panel" id="panel-spec">
+  <div class="nb blue"><div class="nb-tit">📐 배관 규격표</div><div class="nb-txt">강관 (KS D 3507 · KS D 3562) · 동관 (KS D 5301) · 스테인리스관 규격 일람</div></div>
+
+  <div class="guide-grid-2col">
+    <div class="card">
+      <div class="card-head"><div class="card-ico">🔩</div><span class="card-tit">강관 일반 (KS D 3507)</span><span class="cbadge">SGP</span></div>
+      <div class="card-body">
+        <div class="twrap"><table class="gtbl" id="spec-steel"></table></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div class="card-ico">🔩</div><span class="card-tit">강관 SCH #40 (KS D 3562)</span><span class="cbadge org">고압</span></div>
+      <div class="card-body">
+        <div class="twrap"><table class="gtbl" id="spec-sch40"></table></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="guide-grid-2col" style="margin-top:0">
+    <div class="card">
+      <div class="card-head"><div class="card-ico">🔩</div><span class="card-tit">강관 SCH #80 (KS D 3562)</span><span class="cbadge red">초고압</span></div>
+      <div class="card-body">
+        <div class="nb org" style="margin-bottom:8px"><div class="nb-tit">⚠️ SCH #80 특성</div><div class="nb-txt">벽 두께가 두껍고 내경이 좁아 동일 유량 기준 유속이 SCH40 대비 최대 15~20% 높아집니다. 고압 배관·냉동 계통에 주로 사용됩니다.</div></div>
+        <div class="twrap"><table class="gtbl" id="spec-sch80"></table></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div class="card-ico">🟡</div><span class="card-tit">동관 (KS D 5301)</span><span class="cbadge grn">Cu</span></div>
+      <div class="card-body">
+        <div class="twrap"><table class="gtbl" id="spec-copper"></table></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="guide-grid-2col" style="margin-top:0">
+    <div class="card">
+      <div class="card-head"><div class="card-ico">⚪</div><span class="card-tit">배관 지지 간격 기준 (별표 8)</span><span class="cbadge">표 1</span></div>
+      <div class="card-body">
+        <div class="twrap">
+          <table class="gtbl">
+            <thead><tr><th>호칭지름</th><th>강관(수평)</th><th>동관(수평)</th><th>STS/PVC</th><th>강관(수직)</th></tr></thead>
+            <tbody>
+              <tr><td>20A 이하</td><td>1.8 m</td><td>1.0 m</td><td>1.0 m</td><td>3.0 m</td></tr>
+              <tr><td>25A ~ 40A</td><td>2.0 m</td><td>1.5 m</td><td>1.5 m</td><td>3.0 m</td></tr>
+              <tr><td>50A</td><td>3.0 m</td><td>2.0 m</td><td>2.0 m</td><td>4.0 m</td></tr>
+              <tr><td>65A ~ 100A</td><td>4.0 m</td><td>2.5 m</td><td>2.5 m</td><td>4.0 m</td></tr>
+              <tr><td>125A 이상</td><td>5.0 m</td><td>3.0 m</td><td>3.0 m</td><td>5.0 m</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ████ TAB 5: 설계 기준 ████ -->
+<div class="tab-panel" id="panel-guide">
+  <div class="nb blue"><div class="nb-tit">📖 냉온수 배관 설계 기술기준 요약</div><div class="nb-txt">기계설비 기술기준 국토교통부 고시 제2021-851호 [별표 8] · 산정 결과와 실시간 연동</div></div>
+
+  <!-- ★ 실시간 산정 결과 판정 패널 -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-head">
+      <div class="card-ico">📊</div>
+      <span class="card-tit">현재 산정 결과 종합 판정</span>
+      <span class="cbadge" id="guide-result-badge">산정 대기</span>
+    </div>
+    <div class="card-body">
+      <div id="guide-no-result" style="text-align:center;padding:18px 0;color:#94a3b8;font-size:11px">
+        관경 산정 탭에서 계산을 먼저 완료하세요
+      </div>
+      <div id="guide-result-panel" style="display:none">
+        <!-- 판정 요약 그리드 -->
+        <div id="guide-judge-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:12px"></div>
+        <!-- 상세 판정 테이블 -->
+        <div class="twrap">
+          <table class="rtbl" id="guide-judge-table"></table>
+        </div>
+        <!-- 층수 연동 분석 -->
+        <div id="guide-floor-analysis" style="margin-top:10px"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="guide-grid-2col">
+    <div>
+      <!-- 유속 기준 -->
+      <div class="card">
+        <div class="card-head"><div class="card-ico">💧</div><span class="card-tit">유속 기준 (별표 8)</span><span class="cbadge">기술기준</span></div>
+        <div class="card-body">
+          <div class="nb blue">
+            <div class="nb-tit">🔵 재질별 설계 유속 기준</div>
+            <div class="nb-txt">
+              • 강관 SGP/SCH : 권장 <b>1.0~2.0 m/s</b> · 최대 2.5 m/s<br>
+              • 동관 (Cu) : 권장 <b>1.0~1.5 m/s</b> · 최대 2.0 m/s<br>
+              • STS·PVC : 권장 <b>1.0~2.0 m/s</b> · 최대 3.0 m/s<br>
+              • 대구경(150A↑) : 2.5 m/s 허용 (기술기준 특례)
+            </div>
+          </div>
+          <div class="nb org" style="margin-top:7px">
+            <div class="nb-tit">⚠️ 유속 초과 단계별 현상</div>
+            <div class="nb-txt">
+              • &gt; 1.5 m/s → 소음 증가, 수격(워터해머) 발생 주의<br>
+              • &gt; 2.0 m/s → 배관 진동, 이음부 마모 가속<br>
+              • &gt; 3.0 m/s → <b>캐비테이션 (Critical Failure)</b><br>
+              • &lt; 1.0 m/s → 슬라임·스케일 퇴적 위험
+            </div>
+          </div>
+          <div class="nb grn" style="margin-top:7px">
+            <div class="nb-tit">✅ 설계 목표 유속 vs 절대 최대 유속</div>
+            <div class="nb-txt">
+              <b>설계 목표 유속 (STATE.vel)</b><br>
+              → 연속방정식 d=√(4Q/πV)의 V 기준<br>
+              → 이 값 이하가 되는 최소 관경을 선정<br>
+              → 사용자가 경제성·소음을 고려해 직접 설정<br><br>
+              <b>절대 최대 유속 (vmax)</b><br>
+              → 기술기준상 초과 불가 상한선<br>
+              → 시스템이 자동으로 경고·재검토 요구
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 단위 마찰손실 기준 -->
+      <div class="card">
+        <div class="card-head"><div class="card-ico">📉</div><span class="card-tit">단위 마찰손실 기준</span><span class="cbadge">경제적 관경</span></div>
+        <div class="card-body">
+          <div class="nb grn">
+            <div class="nb-tit">🟢 압력강하 설계 기준</div>
+            <div class="nb-txt">
+              • <b>20 mmAq/m</b> — 고층·장거리 배관 권장<br>
+              • <b>30 mmAq/m</b> — 표준 설계 기준<br>
+              • <b>50 mmAq/m</b> — 단거리·소규모 허용 상한<br>
+              • 10층 이상: <b>20 mmAq/m 이하</b> 강력 권장<br>
+              • 15층 이상: <b>15 mmAq/m 이하</b> 권장
+            </div>
+          </div>
+          <div class="nb blue" style="margin-top:7px">
+            <div class="nb-tit">🔵 층수에 따른 압력강하 기준 자동 권고 로직</div>
+            <div class="nb-txt">
+              층수가 높을수록 입상관 전체 마찰손실이 누적됩니다.<br>
+              • 1~9층 : 30 mmAq/m 기준 적용<br>
+              • 10~14층 : 20 mmAq/m 이하 권장<br>
+              • 15층↑ : 15 mmAq/m 이하 권장<br>
+              → 현재 설정값이 권고치 초과 시 파라미터 박스에 경고 표시
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <!-- 층수·층높이 연동 로직 해설 -->
+      <div class="card">
+        <div class="card-head"><div class="card-ico">🏢</div><span class="card-tit">총 층수·층높이 연동 로직</span><span class="cbadge org">핵심 연동</span></div>
+        <div class="card-body">
+          <div class="nb org">
+            <div class="nb-tit">🏗️ 층수·층높이가 관경 계산에 연동되는 3가지 방식</div>
+            <div class="nb-txt">
+              <b>① 정수두 (Static Head) 계산</b><br>
+              &nbsp;&nbsp;총 높이 H = 층수 × 층높이<br>
+              &nbsp;&nbsp;정수두 = H × 9.81 kPa/m<br>
+              &nbsp;&nbsp;→ 순환 펌프 양정 산출의 핵심 기초값<br><br>
+              <b>② 고층 압력강하 자동 권고</b><br>
+              &nbsp;&nbsp;입상관 길이 = 총 높이 × 1.3 (굴곡 보정)<br>
+              &nbsp;&nbsp;전체 마찰손실 = 입상관 길이 × 단위 손실<br>
+              &nbsp;&nbsp;→ 10층↑ : 20 mmAq/m 이하 권장<br>
+              &nbsp;&nbsp;→ 15층↑ : 15 mmAq/m 이하 권장<br><br>
+              <b>③ 감압밸브(PRV) 예비 판정</b><br>
+              &nbsp;&nbsp;정수두 ≥ 300 kPa (약 30m 이상) 시 경고<br>
+              &nbsp;&nbsp;= 대략 10층 × 3m = 30m 이상 건물<br>
+              &nbsp;&nbsp;→ 구간별 감압밸브 설치 검토 필요
+            </div>
+          </div>
+          <div class="nb blue" style="margin-top:7px">
+            <div class="nb-tit">📐 정수두 계산 예시</div>
+            <div class="nb-txt mono" style="background:#f8fafc;border:1px solid #bfdbfe;border-radius:6px;padding:8px;margin-top:4px">
+              15층 건물, 층높이 3.5m<br>
+              총 높이 H = 15 × 3.5 = 52.5 m<br>
+              정수두   = 52.5 × 9.81 = 515 kPa<br>
+              → 550 kPa 접근 → 감압밸브 검토 ⚠
+            </div>
+          </div>
+          <div class="nb red" style="margin-top:7px">
+            <div class="nb-tit">🔴 고층 건물 설계 주의사항</div>
+            <div class="nb-txt">
+              • 정수두 &gt; 550 kPa → 감압밸브 의무 설치<br>
+              • 고층일수록 관경을 키워 단위 손실을 낮춰야 함<br>
+              • 배수 수직관: 6층↑ +1단계, 16층↑ +2단계 상향<br>
+              • 환탕 배관: 층수×층높이×1.3 &gt; 15m 시 순환펌프 의무
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 설계 체크리스트 -->
+      <div class="card">
+        <div class="card-head"><div class="card-ico">📋</div><span class="card-tit">설계 체크리스트</span><span class="cbadge grn">필수 확인</span></div>
+        <div class="card-body" id="checklistDiv"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 공식 해설 + 연관성 -->
+  <div class="guide-grid-2col" style="margin-top:0">
+    <div class="card">
+      <div class="card-head"><div class="card-ico">📐</div><span class="card-tit">관경 산정 공식 해설</span><span class="cbadge pur">공학 기준</span></div>
+      <div class="card-body">
+        <div class="nb blue">
+          <div class="nb-tit">📐 William-Hazen 공식</div>
+          <div class="nb-txt mono" style="background:#f8fafc;border:1px solid #bfdbfe;border-radius:6px;padding:8px;margin-top:4px">
+            Q = 0.35464 × C × d²·⁶³ × I⁰·⁵⁴<br><br>
+            Q : 유량 (m³/s)<br>
+            C : Hazen-Williams 계수<br>
+            d : 관 내경 (m)<br>
+            I : 동수구배 (m/m) = ΔP[mmAq/m] ÷ 1000
+          </div>
+        </div>
+        <div class="nb grn" style="margin-top:7px">
+          <div class="nb-tit">📐 연속방정식 (설계 목표 유속 기준 역산)</div>
+          <div class="nb-txt mono" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:8px;margin-top:4px">
+            d = √(4Q / π·V)<br><br>
+            Q : 유량 (m³/s)<br>
+            V : 설계 목표 유속 (m/s) ← STATE.vel<br>
+            d : 최소 필요 내경 (m)
+          </div>
+        </div>
+        <div class="nb blue" style="margin-top:7px">
+          <div class="nb-tit">📐 관경 채택 우선순위 로직</div>
+          <div class="nb-txt">
+            <b>①</b> W-H 유량 조건 만족 <b>AND</b> 실제유속 ≤ 설계목표유속<br>
+            <b>②</b> 조건① 없으면: 절대최대(vmax) 미초과 최소 관경<br>
+            <b>③</b> 그래도 없으면: 목록 최대 관경 (초과 경고 표시)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div class="card-ico">⚠️</div><span class="card-tit">설계 리스크 분석 (LCC 관점)</span><span class="cbadge org">경제적 관경</span></div>
+      <div class="card-body">
+        <div class="nb red"><div class="nb-tit">🔴 과소 설계 리스크</div><div class="nb-txt">• 유속 과다 → 압력손실 V²에 비례 폭증<br>• 펌프 동력비 기하급수 상승 (20년 누적)<br>• 캐비테이션(Critical Failure) 위험<br>• 소음·진동·수격현상 불가피</div></div>
+        <div class="nb blue" style="margin-top:7px"><div class="nb-tit">🔵 과다 설계 리스크</div><div class="nb-txt">• 초기 자재비 상승<br>• 유속 저하 → 슬라임·스케일 침적<br>• 열손실 증가 (방열 면적 증가)<br>• 공간 점유 과다</div></div>
+        <div class="nb grn" style="margin-top:7px"><div class="nb-tit">🟢 경제적 관경 도출 원칙</div><div class="nb-txt">• 허용 압력강하 : <b>20 ~ 30 mmAq/m</b><br>• 유속 범위 : <b>1.0 ~ 2.0 m/s</b><br>• 두 조건 모두 만족하는 관경 선택<br>• 강관 노후화 C=100 적용 → 안전측 설계</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ████ TAB: 모바일 미리보기 ████ -->
+<div class="tab-panel" id="panel-mobile">
+  <div class="nb blue" style="margin-bottom:12px">
+    <div class="nb-tit">📱 Samsung Galaxy S24 Ultra 미리보기</div>
+    <div class="nb-txt">Galaxy S24 Ultra (384×832) 화면 비율로 산정 결과가 표시됩니다. JPG 저장 후 공유하세요.</div>
+  </div>
+
+  <!-- 액션 바 -->
+  <div class="a4-export-bar" style="margin-bottom:20px;align-items:center">
+    <span class="bar-lbl">📱 Galaxy S24 Ultra 출력 :</span>
+    <button class="btn-export btn-jpg" id="btn-mobile-jpg" onclick="exportMobileJpg()">🖼️ JPG 저장</button>
+    <!-- 공유 버튼: JPG 저장 후 나타남 -->
+    <button class="btn-export" id="btn-mobile-share"
+      onclick="shareMobileJpg()"
+      style="display:none;background:linear-gradient(135deg,#7c3aed,#8b5cf6);color:#fff;animation:share-appear .3s ease">
+      📤 공유하기
+    </button>
+    <span id="mobile-action-hint" style="font-size:10px;color:#94a3b8;margin-left:4px">※ 관경 산정 탭에서 결과 입력 후 JPG 저장하세요</span>
+  </div>
+
+  <!-- Galaxy S24 Ultra 프레임 단독 중앙 배치 -->
+  <div style="display:flex;justify-content:center;align-items:flex-start">
+    <div style="flex-shrink:0">
+      <!-- 기기명 레이블 -->
+      <div style="font-size:10px;font-weight:700;color:#475569;text-align:center;margin-bottom:10px;letter-spacing:.04em">
+        Samsung Galaxy S24 Ultra &nbsp;·&nbsp; 384 × 832 px &nbsp;·&nbsp; 6.8"
+      </div>
+
+      <!-- Galaxy S24 Ultra 프레임 -->
+      <div id="frame-phone" style="
+        width:260px;
+        height:564px;
+        background:#0a0a0a;
+        border-radius:36px;
+        border:2px solid #2d2d2d;
+        box-shadow:
+          0 0 0 1px #1a1a1a,
+          inset 0 0 0 1px #3a3a3a,
+          0 30px 80px rgba(0,0,0,.55),
+          4px 0 0 0 #1e1e1e,
+          -4px 0 0 0 #1e1e1e;
+        position:relative;
+        overflow:hidden;">
+
+        <!-- 측면 버튼 (볼륨 - 좌측) -->
+        <div style="position:absolute;left:-4px;top:100px;width:3px;height:28px;background:#2a2a2a;border-radius:2px 0 0 2px"></div>
+        <div style="position:absolute;left:-4px;top:138px;width:3px;height:28px;background:#2a2a2a;border-radius:2px 0 0 2px"></div>
+        <!-- 측면 버튼 (전원 - 우측) -->
+        <div style="position:absolute;right:-4px;top:110px;width:3px;height:50px;background:#2a2a2a;border-radius:0 2px 2px 0"></div>
+        <!-- S펜 슬롯 표시 (하단 좌측) -->
+        <div style="position:absolute;bottom:12px;left:16px;width:3px;height:18px;background:#1e1e1e;border-radius:2px"></div>
+
+        <!-- 화면 영역 (상하 둥근 베젤) -->
+        <div style="
+          position:absolute;inset:4px;
+          background:#f0f9ff;
+          border-radius:33px;
+          overflow:hidden;">
+
+          <!-- 펀치홀 카메라 (상단 중앙) -->
+          <div style="
+            position:absolute;top:8px;left:50%;transform:translateX(-50%);
+            width:10px;height:10px;
+            background:#0a0a0a;
+            border-radius:50%;
+            z-index:10;
+            box-shadow:0 0 0 1px #1a1a1a">
+          </div>
+
+          <!-- 결과 렌더링 영역 -->
+          <div id="phone-result-render" style="
+            width:100%;height:100%;
+            overflow-y:auto;overflow-x:hidden;
+            background:#f0f9ff;
+            padding:22px 8px 12px;
+            box-sizing:border-box;
+            scrollbar-width:none;
+            -webkit-overflow-scrolling:touch">
+            <div style="text-align:center;padding:30px 0;color:#94a3b8">
+              <div style="font-size:28px;margin-bottom:8px">📱</div>
+              <div style="font-size:11px;font-weight:700;line-height:1.6">관경 산정 탭에서<br>조건을 입력하면<br>여기에 표시됩니다</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 하단 홈 인디케이터 바 -->
+        <div style="
+          position:absolute;bottom:6px;left:50%;transform:translateX(-50%);
+          width:80px;height:3px;
+          background:#3a3a3a;border-radius:2px;z-index:10">
+        </div>
+      </div>
+
+      <!-- 기기 하단 정보 -->
+      <div style="margin-top:10px;text-align:center;font-size:9.5px;color:#94a3b8;line-height:1.7">
+        Snapdragon 8 Gen 3 &nbsp;·&nbsp; 12GB RAM<br>
+        Dynamic AMOLED 2X &nbsp;·&nbsp; 120Hz
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ████ TAB 6: A4 미리보기 ████ -->
+<div class="tab-panel" id="panel-a4">
+  <div class="a4-export-bar">
+    <span class="bar-lbl">📄 A4 출력 :</span>
+    <button class="btn-export btn-print" onclick="printA4()">🖨️ 인쇄 / PDF 저장</button>
+    <button class="btn-export btn-jpg" onclick="exportJpg()">🖼️ JPG 저장</button>
+    <span style="font-size:10px;color:#64748b;margin-left:4px">※ 인쇄 대화상자에서 "PDF로 저장" 선택 시 PDF 저장 가능</span>
+  </div>
+  <div class="a4-wrap" id="a4Wrap">
+    <div class="a4-scale-wrap" id="a4ScaleWrap">
+      <div class="a4-page" id="a4Page">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;color:#94a3b8;gap:12px">
+          <div style="font-size:48px">📄</div>
+          <div style="font-size:14px;font-weight:700">산정 결과가 없습니다</div>
+          <div style="font-size:11px;text-align:center;line-height:1.7">관경 산정 탭에서 배관 재질·유량을 입력하면<br>A4 산정서가 자동으로 생성됩니다</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main-wrap -->
+</div><!-- /root-app -->
+
+<!-- TOAST -->
+<div class="toast" id="toastMsg"></div>
+
+<!-- JPG 공유 모달 (body 레벨 — 항상 최상위) -->
+<div id="share-modal" style="display:none;position:fixed;inset:0;background:rgba(12,26,46,.6);z-index:9000;align-items:center;justify-content:center;padding:16px" onclick="if(event.target===this)closeShareModal()">
+  <div style="background:#fff;border-radius:16px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(3,105,161,.25);overflow:hidden">
+    <div style="padding:14px 18px 12px;border-bottom:1px solid #dbeafe;display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:28px;height:28px;background:#0369a1;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px">📤</div>
+        <span style="font-size:14px;font-weight:900;color:#075985">JPG 공유하기</span>
+      </div>
+      <button onclick="closeShareModal()" style="background:#f0f9ff;border:none;border-radius:7px;width:28px;height:28px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center">✕</button>
+    </div>
+    <div style="padding:16px 18px">
+      <!-- 이미지 미리보기 -->
+      <div id="share-preview-wrap" style="text-align:center;margin-bottom:14px;min-height:80px;background:#f8fafc;border-radius:10px;border:1px solid #dbeafe;padding:12px;display:flex;align-items:center;justify-content:center">
+        <img id="share-preview-img" style="max-width:100%;max-height:200px;border-radius:6px;display:none" alt="산정결과"/>
+        <div id="share-loading" style="color:#94a3b8;font-size:12px;font-weight:700">
+          <div style="font-size:24px;margin-bottom:6px">🖼️</div>
+          이미지 생성 중...
+        </div>
+      </div>
+      <!-- 4개 공유 버튼 -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+        <button onclick="shareDownload()" style="padding:12px 8px;background:#0369a1;color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:5px">
+          💾 저장
+        </button>
+        <button onclick="shareNative()" id="btn-native-share" style="padding:12px 8px;background:linear-gradient(135deg,#7c3aed,#8b5cf6);color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:5px">
+          📤 앱으로 공유
+        </button>
+        <button onclick="shareCopyLink()" style="padding:12px 8px;background:#f0f9ff;color:#0369a1;border:1.5px solid #bae6fd;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:5px">
+          🔗 링크 복사
+        </button>
+        <button onclick="shareKakao()" style="padding:12px 8px;background:#fee500;color:#3c1e1e;border:none;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:5px">
+          💬 카카오 공유
+        </button>
+      </div>
+      <div id="share-hint" style="font-size:10px;color:#94a3b8;text-align:center;line-height:1.6">이미지를 저장한 후 원하는 앱으로 공유하세요<br><span style="color:#bae6fd">ESC 또는 배경 클릭으로 닫기</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- FAB -->
+<button class="fab-calc" id="fabCalc" title="설계기준 안내">📐</button>
+<div class="fab-tooltip" id="fabTooltip">설계기준 종합 안내</div>
+
+<!-- ═════ 설계기준 모달 ═════ -->
+<div class="modal-ov" id="guideModal" style="display:none" onclick="if(event.target===this)closeGuideModal()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div style="display:flex;align-items:center;gap:9px">
+        <div style="width:32px;height:32px;background:#0369a1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">📐</div>
+        <div>
+          <div class="modal-tit">냉온수 배관 설계기준 종합 안내</div>
+          <div style="font-size:9px;color:#0284c7;font-weight:700;margin-top:1px">기계설비 기술기준 국토교통부 고시 제2021-851호 [별표 8]</div>
+        </div>
+      </div>
+      <button class="modal-cls" onclick="closeGuideModal()">✕</button>
+    </div>
+    <div style="display:flex;background:#f0f9ff;border-bottom:1px solid #bae6fd;overflow-x:auto;scrollbar-width:none">
+      <button class="gm-tab active" id="gmt-0" onclick="switchGuideTab(0)">📘 이용방법</button>
+      <button class="gm-tab" id="gmt-1" onclick="switchGuideTab(1)">⚡ 유속 기준</button>
+      <button class="gm-tab" id="gmt-2" onclick="switchGuideTab(2)">📐 산정 공식</button>
+      <button class="gm-tab" id="gmt-3" onclick="switchGuideTab(3)">🔧 C 계수표</button>
+      <button class="gm-tab" id="gmt-4" onclick="switchGuideTab(4)">📋 체크리스트</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- ── 탭0: 이용방법 (업그레이드) ── -->
+      <div class="gm-panel active" id="gmp-0">
+
+        <!-- 시스템 소개 헤더 -->
+        <div style="background:linear-gradient(135deg,#0c2340,#0369a1);border-radius:10px;padding:14px 16px;margin-bottom:12px;color:#fff">
+          <div style="font-size:13px;font-weight:900;margin-bottom:4px;letter-spacing:.02em">🌡️ 냉온수 배관 관경 산정 시스템 Ver 2.0</div>
+          <div style="font-size:10px;opacity:.85;line-height:1.7">
+            기계설비 기술기준 국토교통부 고시 제2021-851호 [별표 8]<br>
+            William-Hazen + 연속방정식 기반 · 강관·동관·STS·PVC 전 재질 지원
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+            <span style="background:rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;font-size:9.5px;font-weight:700">✅ 실시간 자동산정</span>
+            <span style="background:rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;font-size:9.5px;font-weight:700">✅ 부하↔유량 양방향</span>
+            <span style="background:rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;font-size:9.5px;font-weight:700">✅ A4 산정서 자동생성</span>
+            <span style="background:rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;font-size:9.5px;font-weight:700">✅ Galaxy S24 출력</span>
+          </div>
+        </div>
+
+        <!-- 3열 레이아웃 화면 구조 안내 -->
+        <div style="background:#f8fafc;border:1px solid #dbeafe;border-radius:10px;padding:11px 13px;margin-bottom:12px">
+          <div style="font-size:10.5px;font-weight:800;color:#075985;margin-bottom:8px">🖥️ 화면 구조 — 3열 레이아웃</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;font-size:9.5px">
+            <div style="background:#dbeafe;border-radius:7px;padding:8px;text-align:center">
+              <div style="font-weight:800;color:#0369a1;margin-bottom:4px">📌 좌열</div>
+              <div style="color:#075985;line-height:1.7">STEP 1<br>배관재질·용도·스케쥴<br><br>STEP 3<br>유속·층수·파라미터<br><br>진행 상태 배지</div>
+            </div>
+            <div style="background:#dcfce7;border-radius:7px;padding:8px;text-align:center">
+              <div style="font-weight:800;color:#15803d;margin-bottom:4px">📌 중열</div>
+              <div style="color:#166534;line-height:1.7">STEP 2<br>유량 직접 입력<br>또는 부하→유량 환산<br>시스템 선택(온도 프리셋)<br>이력 저장</div>
+            </div>
+            <div style="background:#fef9c3;border-radius:7px;padding:8px;text-align:center">
+              <div style="font-weight:800;color:#854d0e;margin-bottom:4px">📌 우열 (Sticky)</div>
+              <div style="color:#713f12;line-height:1.7">STEP 4<br>채택 관경·유속·압력강하<br>유속 게이지·흐름도<br>관경 비교표<br>인접 관경 대안</div>
+            </div>
+          </div>
+          <div style="margin-top:7px;font-size:9.5px;color:#64748b;text-align:center">※ 우열 결과 패널은 <b>sticky 고정</b> — 입력 중에도 항상 화면에 표시됩니다</div>
+        </div>
+
+        <!-- 단계별 상세 가이드 -->
+        <div style="font-size:10.5px;font-weight:800;color:#0369a1;margin-bottom:8px;padding-left:3px">📋 단계별 입력 가이드</div>
+        <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:12px">
+
+          <!-- Step 0: 공사정보 -->
+          <div style="background:#fff;border:1.5px solid #e0f2fe;border-radius:10px;padding:10px 13px;display:flex;gap:10px">
+            <div style="width:26px;height:26px;background:#f0f9ff;border:2px solid #0369a1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#0369a1;flex-shrink:0;margin-top:1px">0</div>
+            <div style="flex:1">
+              <div style="font-size:11px;font-weight:800;color:#0c1a2e;margin-bottom:5px">🏗️ 공사 정보 입력 <span style="font-size:9px;font-weight:600;color:#94a3b8">(선택사항 · 산정서 자동반영)</span></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;font-size:9.5px">
+                <div style="background:#f0f9ff;border-radius:6px;padding:5px 8px"><b style="color:#0369a1">공사명</b><br><span style="color:#475569">기본값: 만민 건축사 신사옥 신축공사</span></div>
+                <div style="background:#f0f9ff;border-radius:6px;padding:5px 8px"><b style="color:#0369a1">작성일</b><br><span style="color:#475569">오늘 날짜 자동 설정</span></div>
+                <div style="background:#f0f9ff;border-radius:6px;padding:5px 8px"><b style="color:#0369a1">작성자</b><br><span style="color:#475569">기본값: 김만민</span></div>
+                <div style="background:#dbeafe;border-radius:6px;padding:5px 8px"><b style="color:#0369a1">→ 자동반영</b><br><span style="color:#475569">A4 산정서 · 모바일 출력</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 1: 배관 재질 -->
+          <div style="background:#fff;border:1.5px solid #bae6fd;border-radius:10px;padding:10px 13px;display:flex;gap:10px">
+            <div style="width:26px;height:26px;background:#0369a1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff;flex-shrink:0;margin-top:1px">1</div>
+            <div style="flex:1">
+              <div style="font-size:11px;font-weight:800;color:#0c1a2e;margin-bottom:5px">🔩 STEP 1 — 배관 재질 선택 <span style="font-size:9px;color:#0369a1;font-weight:700">(좌열)</span></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;font-size:9.5px;margin-bottom:5px">
+                <div style="background:#f8fafc;border-radius:6px;padding:5px 8px">
+                  <b style="color:#0c1a2e">재질 카드 클릭</b><br>
+                  <span style="color:#475569">🔩 강관 · 🟡 동관<br>⚪ 스테인리스 · 🔵 PVC/PE</span>
+                </div>
+                <div style="background:#f8fafc;border-radius:6px;padding:5px 8px">
+                  <b style="color:#0c1a2e">강관 스케쥴 연동</b><br>
+                  <span style="color:#475569">SGP (일반) → vmax 2.0 m/s<br>SCH40·SCH80 → vmax 2.5 m/s</span>
+                </div>
+                <div style="background:#f8fafc;border-radius:6px;padding:5px 8px">
+                  <b style="color:#0c1a2e">배관 용도</b><br>
+                  <span style="color:#475569">냉수·온수·냉각수·일반</span>
+                </div>
+                <div style="background:#fff7ed;border-radius:6px;padding:5px 8px">
+                  <b style="color:#c2410c">자동 설정</b><br>
+                  <span style="color:#78350f">재질 선택 시 권장유속 자동 반영<br>C계수·규격표 즉시 전환</span>
+                </div>
+              </div>
+              <div style="background:#f0f9ff;border-radius:6px;padding:5px 8px;font-size:9.5px">
+                <b style="color:#0369a1">허용 압력강하 :</b> <span style="color:#475569">20 mmAq/m (경제적) · 30 mmAq/m (표준 ★) · 50 mmAq/m (고압) · 직접입력</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: 유량 -->
+          <div style="background:#fff;border:1.5px solid #bae6fd;border-radius:10px;padding:10px 13px;display:flex;gap:10px">
+            <div style="width:26px;height:26px;background:#0369a1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff;flex-shrink:0;margin-top:1px">2</div>
+            <div style="flex:1">
+              <div style="font-size:11px;font-weight:800;color:#0c1a2e;margin-bottom:5px">💧 STEP 2 — 유량 / 부하 입력 <span style="font-size:9px;color:#0369a1;font-weight:700">(중열)</span></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;font-size:9.5px">
+                <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:6px 8px">
+                  <b style="color:#15803d">💧 유량 직접 입력</b><br>
+                  <span style="color:#166534">KG/H · LPM · ㎥/H<br>단위 변경 시 값 자동 변환</span>
+                </div>
+                <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:6px;padding:6px 8px">
+                  <b style="color:#c2410c">🌡️ 부하로 역산</b><br>
+                  <span style="color:#78350f">kcal/h · kW · RT 입력<br>Q = H ÷ (Cp × ΔT)</span>
+                </div>
+              </div>
+              <div style="background:#f0f9ff;border-radius:6px;padding:6px 8px;font-size:9.5px;margin-top:5px">
+                <b style="color:#0369a1">시스템 선택 (부하 모드) :</b><br>
+                <span style="color:#475569">❄️ 냉방 냉수 (7/12℃) · 🔥 난방 온수 (45/40℃) · 🧊 냉동기 냉각수 (32/37℃) · ♨️ 고온온수 (60/50℃)</span><br>
+                <span style="color:#0284c7;font-size:9px">→ 선택 시 공급/환수 온도 자동 설정 · ΔT 즉시 반영</span>
+              </div>
+              <div style="background:#f8fafc;border-radius:6px;padding:5px 8px;font-size:9.5px;margin-top:4px;color:#64748b">
+                ✅ 어느 모드에서 입력해도 <b>KG/H · LPM · ㎥/H · kcal/h · kW · RT 전 단위 실시간 동기화</b>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: 파라미터 -->
+          <div style="background:#fff;border:1.5px solid #bae6fd;border-radius:10px;padding:10px 13px;display:flex;gap:10px">
+            <div style="width:26px;height:26px;background:#0369a1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff;flex-shrink:0;margin-top:1px">3</div>
+            <div style="flex:1">
+              <div style="font-size:11px;font-weight:800;color:#0c1a2e;margin-bottom:5px">⚙️ STEP 3 — 설계 파라미터 <span style="font-size:9px;color:#0369a1;font-weight:700">(좌열 하단)</span></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;font-size:9.5px">
+                <div style="background:#f8fafc;border-radius:6px;padding:5px 8px">
+                  <b style="color:#0c1a2e">설계 목표 유속</b><br>
+                  <span style="color:#475569">1.0~3.0 m/s · 직접입력<br>재질 선택 시 자동 설정</span>
+                </div>
+                <div style="background:#f8fafc;border-radius:6px;padding:5px 8px">
+                  <b style="color:#0c1a2e">층수 · 층높이</b><br>
+                  <span style="color:#475569">정수두 · 감압밸브 판정<br>고층 압력강하 권고 자동</span>
+                </div>
+              </div>
+              <div style="background:#fff7ed;border-radius:6px;padding:5px 8px;font-size:9.5px;margin-top:5px">
+                <b style="color:#c2410c">연동 자동판정 :</b>
+                <span style="color:#78350f"> 정수두(kPa) · 감압밸브 필요여부(300kPa 기준) · 층수별 압력강하 권고치</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4: 결과 -->
+          <div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:10px;padding:10px 13px;display:flex;gap:10px">
+            <div style="width:26px;height:26px;background:#15803d;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff;flex-shrink:0;margin-top:1px">4</div>
+            <div style="flex:1">
+              <div style="font-size:11px;font-weight:800;color:#14532d;margin-bottom:5px">📊 STEP 4 — 관경 산정 결과 <span style="font-size:9px;color:#15803d;font-weight:700">(우열 sticky · 실시간 자동갱신)</span></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;font-size:9.5px">
+                <div style="background:#fff;border-radius:6px;padding:5px 8px;border:1px solid #bbf7d0">
+                  <b style="color:#15803d">채택 관경 히어로</b><br>
+                  <span style="color:#166534">관경(A) · 내경(mm) · 유속(m/s)</span>
+                </div>
+                <div style="background:#fff;border-radius:6px;padding:5px 8px;border:1px solid #bbf7d0">
+                  <b style="color:#15803d">유속 적정성 게이지</b><br>
+                  <span style="color:#166534">🟢 적합 · 🟠 초과 · 🔴 위험</span>
+                </div>
+                <div style="background:#fff;border-radius:6px;padding:5px 8px;border:1px solid #bbf7d0">
+                  <b style="color:#15803d">관경별 비교표</b><br>
+                  <span style="color:#166534">전 관경 유량·유속·압력강하</span>
+                </div>
+                <div style="background:#fff;border-radius:6px;padding:5px 8px;border:1px solid #bbf7d0">
+                  <b style="color:#15803d">인접 관경 대안</b><br>
+                  <span style="color:#166534">상·하 1단계 비교 분석</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 출력 및 공유 -->
+        <div style="font-size:10.5px;font-weight:800;color:#0369a1;margin-bottom:8px;padding-left:3px">📤 출력 및 공유</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px">
+          <div style="background:#fff;border:1.5px solid #dbeafe;border-radius:10px;padding:10px 12px">
+            <div style="font-size:10.5px;font-weight:800;color:#0369a1;margin-bottom:6px">📄 A4 미리보기 탭</div>
+            <div style="font-size:9.5px;color:#475569;line-height:1.8">
+              • 산정서 자동 생성 (공사명·작성자 포함)<br>
+              • 🖨️ 인쇄 / PDF 저장<br>
+              • 🖼️ JPG 저장 (2x 고해상도)<br>
+              • 공사명 좌측 정렬 레이아웃
+            </div>
+          </div>
+          <div style="background:#fff;border:1.5px solid #dbeafe;border-radius:10px;padding:10px 12px">
+            <div style="font-size:10.5px;font-weight:800;color:#7c3aed;margin-bottom:6px">📱 모바일 미리보기 탭</div>
+            <div style="font-size:9.5px;color:#475569;line-height:1.8">
+              • Galaxy S24 Ultra 프레임<br>
+              • 🖼️ JPG 저장 → 공유하기 버튼 활성화<br>
+              • 📤 공유: 저장·앱공유·링크복사·카카오<br>
+              • ESC / 배경 클릭으로 모달 닫기
+            </div>
+          </div>
+        </div>
+
+        <!-- 빠른 사용 팁 -->
+        <div style="background:#fff7ed;border:1.5px solid #fed7aa;border-radius:10px;padding:11px 13px;margin-bottom:10px">
+          <div style="font-size:10.5px;font-weight:800;color:#c2410c;margin-bottom:7px">💡 실무 활용 팁</div>
+          <div style="display:flex;flex-direction:column;gap:5px;font-size:9.5px;color:#78350f;line-height:1.7">
+            <div>🔄 <b>이력 저장:</b> 중열 하단 「💾 현재 결과 저장」 → 여러 배관 구간 비교 후 최적안 선택</div>
+            <div>⚡ <b>실시간 자동산정:</b> 입력과 동시에 우열 결과 즉시 반영 — 별도 실행 버튼 불필요</div>
+            <div>🌡️ <b>부하 입력:</b> 냉동기 용량(RT) 또는 보일러 용량(kcal/h)으로 바로 유량 역산 가능</div>
+            <div>🏢 <b>고층 건물:</b> 층수 입력 시 감압밸브 필요여부·압력강하 권고치 자동 경고 표시</div>
+            <div>📱 <b>모바일 공유:</b> JPG 저장 완료 후 공유 버튼 → 카카오톡·문자·이메일 즉시 전송</div>
+            <div>📐 <b>FAB 버튼(우하단 📐):</b> 언제든 이 안내창 호출 가능</div>
+          </div>
+        </div>
+
+        <!-- 적용 법적 근거 -->
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 13px">
+          <div style="font-size:10px;font-weight:800;color:#475569;margin-bottom:5px">📌 적용 기술기준</div>
+          <div style="font-size:9.5px;color:#64748b;line-height:1.8">
+            • 기계설비 기술기준 [별표 8] 배관설비의 설계 및 시공 기준<br>
+            &nbsp;&nbsp;(국토교통부 고시 제2021-851호, 2021.06.07 시행)<br>
+            • William-Hazen 공식 : Q = 0.35464 × C × d²·⁶³ × I⁰·⁵⁴<br>
+            • 연속방정식 : d = √(4Q / π·V)<br>
+            • Darcy-Weisbach : hf = λ × (L/D) × (V²/2g)
+          </div>
+        </div>
+
+      </div>
+
+      <div class="gm-panel" id="gmp-1" style="display:none">
+        <div class="twrap"><table class="gtbl">
+          <thead><tr><th>재질</th><th>권장 유속</th><th>최대 유속</th><th>C계수(신설)</th><th>C계수(노후)</th><th>비고</th></tr></thead>
+          <tbody>
+            <tr><td>강관 SGP</td><td style="color:#15803d;font-weight:800">1.0~2.0 m/s</td><td>2.5 m/s</td><td class="mono">120</td><td class="mono">100</td><td>냉온수 표준</td></tr>
+            <tr><td>강관 SCH40</td><td style="color:#15803d;font-weight:800">1.0~2.0 m/s</td><td>2.5 m/s</td><td class="mono">120</td><td class="mono">100</td><td>고압 배관</td></tr>
+            <tr><td>동관</td><td style="color:#15803d;font-weight:800">1.0~1.5 m/s</td><td>2.0 m/s</td><td class="mono">140</td><td class="mono">130</td><td>침식 주의</td></tr>
+            <tr><td>STS관</td><td style="color:#15803d;font-weight:800">1.0~2.0 m/s</td><td>3.0 m/s</td><td class="mono">140</td><td class="mono">135</td><td>위생설비</td></tr>
+            <tr><td>PVC/PE</td><td style="color:#15803d;font-weight:800">1.0~2.0 m/s</td><td>3.0 m/s</td><td class="mono">150</td><td class="mono">145</td><td>마찰 최소</td></tr>
+          </tbody>
+        </table></div>
+        <div class="nb org" style="margin-top:10px"><div class="nb-tit">⚠️ 유속 초과 시 발생 현상</div><div class="nb-txt">• 유속 &gt; 1.5 m/s → 소음 증가, 수격(워터해머) 위험<br>• 유속 &gt; 2.0 m/s → 배관 진동, 이음부 마모 가속<br>• 유속 &gt; 3.0 m/s → 캐비테이션(Critical Failure) 위험</div></div>
+      </div>
+
+      <div class="gm-panel" id="gmp-2" style="display:none">
+        <div class="nb blue"><div class="nb-tit">📐 William-Hazen 공식</div><div class="nb-txt mono">Q = 0.35464 × C × d²·⁶³ × I⁰·⁵⁴<br>I (동수구배) = ΔP[mmAq/m] ÷ 1000</div></div>
+        <div class="nb grn" style="margin-top:8px"><div class="nb-tit">📐 연속방정식 (최소 내경 역산)</div><div class="nb-txt mono">d = √(4Q / π·V)<br>Q(m³/s), V(m/s), d(m)</div></div>
+        <div class="nb blue" style="margin-top:8px"><div class="nb-tit">📐 Darcy-Weisbach 공식 (정밀 산정)</div><div class="nb-txt mono">hf = λ × (L/D) × (V²/2g)<br>λ: 마찰계수, L: 배관길이, D: 내경</div></div>
+      </div>
+
+      <div class="gm-panel" id="gmp-3" style="display:none">
+        <div class="twrap"><table class="gtbl" id="modal-c-table"></table></div>
+        <div class="nb org" style="margin-top:10px"><div class="nb-tit">⚠️ 강관 노후화 C값 저하</div><div class="nb-txt">• 신설 강관 C=120 → 10년 후 C=110 → 20년 후 C=100<br>• C값 하락 시 동일 압력강하에서 허용 유량 약 20% 감소<br>• 장기 신뢰성 확보를 위해 C=100 기준 설계 강력 권장</div></div>
+      </div>
+
+      <div class="gm-panel" id="gmp-4" style="display:none">
+        <div id="modal-checklist"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════
+   MANMIN 냉온수 배관 관경 산정 시스템 Ver 2.0
+   기계설비 기술기준 국토교통부 고시 제2021-851호
+   [별표 8] William-Hazen / Darcy-Weisbach
+   ★ 완전 연동: 재질·유량·유속·압력강하·층수 자동반영
+════════════════════════════════════════════════ */
+
+/* ── 배관 재질 데이터 ── */
+const PIPE_TYPES = [
+  {id:'steel_sgp',   ico:'🔩', nm:'강관',      cat:'KS D 3507',  C:120, Ca:100, vmax:2.0, vrec:[1.0,2.0]},
+  {id:'copper',      ico:'🟡', nm:'동관',      cat:'KS D 5301',  C:140, Ca:130, vmax:1.5, vrec:[1.0,1.5]},
+  {id:'stainless',   ico:'⚪', nm:'스테인리스', cat:'STS',        C:140, Ca:135, vmax:3.0, vrec:[1.0,2.0]},
+  {id:'pvc',         ico:'🔵', nm:'PVC/PE',    cat:'합성수지',    C:150, Ca:145, vmax:3.0, vrec:[1.0,2.0]},
+];
+
+/* ── 배관 규격 데이터 ── */
+const STEEL_PIPES = [
+  {s:'15A',  od:21.7,  t:2.8,  id:13.84},
+  {s:'20A',  od:27.2,  t:2.9,  id:19.94},
+  {s:'25A',  od:34.0,  t:3.2,  id:26.04},
+  {s:'32A',  od:42.7,  t:3.5,  id:32.12},
+  {s:'40A',  od:48.6,  t:3.7,  id:38.24},
+  {s:'50A',  od:60.5,  t:3.8,  id:50.42},
+  {s:'65A',  od:76.3,  t:5.2,  id:62.62},
+  {s:'80A',  od:89.1,  t:5.5,  id:74.80},
+  {s:'100A', od:114.3, t:6.0,  id:99.20},
+  {s:'125A', od:139.8, t:6.5,  id:123.82},
+  {s:'150A', od:165.2, t:7.1,  id:148.46},
+  {s:'200A', od:216.3, t:8.2,  id:196.22},
+  {s:'250A', od:267.4, t:9.3,  id:244.48},
+  {s:'300A', od:318.5, t:10.3, id:295.64},
+  {s:'350A', od:355.6, t:11.1, id:330.18},
+  {s:'400A', od:406.4, t:12.7, id:376.68},
+  {s:'450A', od:457.2, t:14.3, id:422.72},
+  {s:'500A', od:508.0, t:15.1, id:471.52},
+];
+const SCH40_PIPES = [
+  {s:'15A',  od:21.34, t:2.77, id:15.80},
+  {s:'20A',  od:26.67, t:2.87, id:20.93},
+  {s:'25A',  od:33.40, t:3.38, id:26.64},
+  {s:'32A',  od:42.16, t:3.56, id:35.04},
+  {s:'40A',  od:48.26, t:3.68, id:40.90},
+  {s:'50A',  od:60.33, t:3.91, id:52.51},
+  {s:'65A',  od:73.03, t:5.16, id:62.71},
+  {s:'80A',  od:88.90, t:5.49, id:77.92},
+  {s:'100A', od:114.30,t:6.02, id:102.26},
+  {s:'125A', od:141.30,t:6.55, id:128.20},
+  {s:'150A', od:168.28,t:7.11, id:154.06},
+  {s:'200A', od:219.08,t:8.18, id:202.72},
+  {s:'250A', od:273.05,t:9.27, id:254.51},
+  {s:'300A', od:323.85,t:9.53, id:304.79},
+  {s:'350A', od:355.60,t:9.53, id:336.54},
+  {s:'400A', od:406.40,t:9.53, id:387.34},
+  {s:'450A', od:457.20,t:9.53, id:438.14},
+  {s:'500A', od:508.00,t:9.53, id:488.94},
+];
+const COPPER_PIPES = [
+  {s:'6A',  od:6.35,  t:0.71, id:4.93},
+  {s:'8A',  od:9.52,  t:0.89, id:7.74},
+  {s:'10A', od:12.70, t:0.89, id:10.92},
+  {s:'15A', od:15.88, t:1.02, id:13.84},
+  {s:'20A', od:22.22, t:1.14, id:19.94},
+  {s:'25A', od:28.58, t:1.27, id:26.04},
+  {s:'32A', od:34.93, t:1.40, id:32.13},
+  {s:'40A', od:41.28, t:1.52, id:38.24},
+  {s:'50A', od:53.98, t:1.78, id:50.42},
+  {s:'65A', od:66.68, t:2.03, id:62.62},
+  {s:'80A', od:79.38, t:2.29, id:74.80},
+  {s:'100A',od:104.78,t:2.79, id:99.20},
+  {s:'125A',od:130.18,t:3.18, id:123.82},
+  {s:'150A',od:155.58,t:3.56, id:148.46},
+];
+const SCH80_PIPES = [
+  {s:'15A',  od:21.34, t:3.73,  id:13.88},
+  {s:'20A',  od:26.67, t:3.91,  id:18.85},
+  {s:'25A',  od:33.40, t:4.55,  id:24.30},
+  {s:'32A',  od:42.16, t:4.85,  id:32.46},
+  {s:'40A',  od:48.26, t:5.08,  id:38.10},
+  {s:'50A',  od:60.33, t:5.54,  id:49.25},
+  {s:'65A',  od:73.03, t:7.01,  id:59.01},
+  {s:'80A',  od:88.90, t:7.62,  id:73.66},
+  {s:'100A', od:114.30,t:8.56,  id:97.18},
+  {s:'125A', od:141.30,t:9.53,  id:122.24},
+  {s:'150A', od:168.28,t:10.97, id:146.34},
+  {s:'200A', od:219.08,t:12.70, id:193.68},
+  {s:'250A', od:273.05,t:15.09, id:242.87},
+  {s:'300A', od:323.85,t:17.48, id:288.89},
+];
+
+function getPipeList(){
+  const s      = STATE.matId;
+  const schEl  = document.getElementById('sel-sch');
+  const schVal = schEl ? schEl.value : 'normal';
+  // 강관: 스케쥴에 따라 규격표 분기
+  if(s === 'steel_sgp' && schVal === 'sch40') return SCH40_PIPES;
+  if(s === 'steel_sgp' && schVal === 'sch80') return SCH80_PIPES;
+  if(s === 'steel_sgp')  return STEEL_PIPES;
+  if(s === 'copper')     return COPPER_PIPES;
+  if(s === 'stainless')  return STEEL_PIPES;  // STS: SGP 호칭경 사용
+  if(s === 'pvc')        return STEEL_PIPES;  // PVC: SGP 호칭경 기준
+  return STEEL_PIPES;
+}
+
+/* ── 스케쥴 연동 실효 vmax 반환 ── */
+function getVmax(){
+  if(STATE.matId === 'steel_sgp'){
+    const schVal = document.getElementById('sel-sch')?.value || 'normal';
+    // SCH40·SCH80: 고압 배관 → 2.5 m/s 허용
+    return (schVal === 'sch40' || schVal === 'sch80') ? 2.5 : 2.0;
+  }
+  const m = PIPE_TYPES.find(p=>p.id===STATE.matId);
+  return m ? m.vmax : 2.0;
+}
+
+/* ── STATE ── */
+const STATE = {
+  matId: 'steel_sgp',
+  purpose: 'cold',
+  flowKgh: 0,
+  loadKcalh: 0,
+  dt: 5,
+  pdrop: 30,
+  vel: 1.5,
+  floors: 1,
+  floorHt: 3.0,
+  result: null,
+  projectName: '만민 건축사 신사옥 신축공사',
+  projectDate: '',
+  projectAuthor: '김만민',
+};
+let calcHistory = [];
+
+/* ── utils ── */
+function fmt(n,d=0){ if(!n&&n!==0) return '—'; return parseFloat(n).toLocaleString('ko-KR',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+function fmtMono(n,d=0){ return `<span class="mono">${fmt(n,d)}</span>`; }
+function setEl(id,v){ const e=document.getElementById(id); if(e) e.innerHTML=v; }
+function toast(msg){ const t=document.getElementById('toastMsg'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000); }
+// alias showToast → toast
+function showToast(msg){ toast(msg); }
+
+/* ── INIT ── */
+window.addEventListener('DOMContentLoaded',()=>{
+  buildPtypeGrid();
+  buildSpecTables();
+  buildChecklist();
+  buildModalCTable();
+  buildStdTable(30);
+  setToday();
+  initA4Scale();
+  selectMat('steel_sgp');
+  document.getElementById('sel-pdrop').addEventListener('change', onPdropChange);
+  document.getElementById('sel-vel').addEventListener('change', onVelChange);
+  initFab();
+  // 날짜/작성자 기본값
+  const d=new Date(); const s=d.toISOString().split('T')[0];
+  const pdate=document.getElementById('inp-project-date');
+  if(pdate){ pdate.value=s; STATE.projectDate=s; }
+  const pauthor=document.getElementById('inp-project-author');
+  if(pauthor && !pauthor.value){ pauthor.value='김만민'; }
+  STATE.projectAuthor='김만민';
+  updateStepStatus();
+  // ESC 키로 공유 모달 닫기
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape'){
+      var m=document.getElementById('share-modal');
+      if(m && m.style.display==='flex') closeShareModal();
+      var g=document.getElementById('guideModal');
+      if(g && g.style.display==='flex') closeGuideModal();
+    }
+  });
+});
+
+function setToday(){
+  const d=new Date(); const s=d.toISOString().split('T')[0];
+  const e=document.getElementById('inp-projdate'); if(e) e.value=s;
+}
+
+/* ── 공사 정보 변경 ── */
+function onProjectInfoChange(){
+  STATE.projectName   = (document.getElementById('inp-project-name')?.value  || '').trim() || '만민 건축사 신사옥 신축공사';
+  STATE.projectDate   = document.getElementById('inp-project-date')?.value   || '';
+  STATE.projectAuthor = (document.getElementById('inp-project-author')?.value || '').trim() || '김만민';
+  if(STATE.result) renderA4(STATE.result);
+}
+
+/* ── STEP 상태 배지 업데이트 ── */
+function updateStepStatus(){
+  const st1ok = !!STATE.matId;
+  const st2ok = STATE.flowKgh > 0;
+  const st3ok = STATE.vel > 0 && STATE.floors > 0;
+  const st4ok = !!STATE.result;
+
+  function applyBadge(id, ok, doneColor){
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.style.background = ok ? doneColor : '#e2e8f0';
+    el.style.color = ok ? '#fff' : '#94a3b8';
+  }
+  applyBadge('cst-1', st1ok, '#0369a1');
+  applyBadge('cst-2', st2ok, '#0369a1');
+  applyBadge('cst-3', st3ok, '#0369a1');
+  applyBadge('cst-4', st4ok, '#15803d');
+}
+
+/* ── 관경 산정 실행 버튼 ── */
+function executeCalc(){
+  const st1ok = !!STATE.matId;
+  const st2ok = STATE.flowKgh > 0;
+  if(!st1ok){ toast('⚠ STEP 1: 배관 재질을 먼저 선택하세요'); return; }
+  if(!st2ok){ toast('⚠ STEP 2: 유량을 먼저 입력하세요'); return; }
+  liveCalc();
+  toast('✅ 관경 산정 완료 — 결과를 확인하세요');
+  // 결과 패널로 부드럽게 스크롤
+  const resultEl = document.getElementById('result-content');
+  if(resultEl && resultEl.style.display !== 'none'){
+    setTimeout(()=>{
+      resultEl.scrollIntoView({behavior:'smooth', block:'start'});
+    }, 120);
+  }
+}
+
+/* ── TAB ── */
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  btn.classList.add('active');
+  // A4 탭 전환 시 scale 재계산 + 결과 있으면 renderA4 재실행
+  if(id === 'a4'){
+    if(STATE.result) renderA4(STATE.result);
+    setTimeout(()=>{ if(window._scaleA4) window._scaleA4(); }, 60);
+  }
+  // 모바일 미리보기 탭 — 결과 렌더 확인
+  if(id === 'mobile'){
+    if(STATE.result) renderMobileResult(STATE.result);
+  }
+  // 설계기준 탭 전환 시 판정 패널 렌더
+  if(id === 'guide') renderGuide();
+}
+
+/* ── STEP MARKS ── */
+function markStep(n, done){
+  for(let i=1;i<=4;i++){
+    const sc=document.getElementById('sc'+i);
+    const sl=document.getElementById('sl'+i);
+    const sd=document.getElementById('sd'+(i));
+    if(!sc) continue;
+    if(i<n){sc.className='sc done';sl.className='sl done';if(sd)sd.className='sdiv done';}
+    else if(i===n){sc.className='sc active';sl.className='sl active';}
+    else{sc.className='sc';sl.className='sl';if(sd)sd.className='sdiv';}
+  }
+}
+
+/* ── 배관 재질 그리드 ── */
+function buildPtypeGrid(){
+  const grid=document.getElementById('ptypeGrid');
+  grid.innerHTML=PIPE_TYPES.map(p=>`
+    <div class="ptype-card" id="pt-${p.id}" onclick="selectMat('${p.id}')">
+      <div class="pt-ico">${p.ico}</div>
+      <div class="pt-nm">${p.nm}</div>
+      <div class="pt-cat">${p.cat}</div>
+    </div>`).join('');
+}
+
+function selectMat(id){
+  STATE.matId = id;
+  document.querySelectorAll('.ptype-card').forEach(c=>c.classList.remove('sel'));
+  const el = document.getElementById('pt-'+id);
+  if(el) el.classList.add('sel');
+
+  const m = PIPE_TYPES.find(p=>p.id===id);
+  const schSel  = document.getElementById('sel-sch');
+  const schWrap = document.getElementById('grp-sch');
+
+  if(m){
+    // 강관일 때만 스케쥴 select 활성화, 선택시 배지명 업데이트
+    const isSteel = (id === 'steel_sgp');
+    if(schWrap) schWrap.style.opacity = isSteel ? '1' : '0.35';
+    if(schSel)  schSel.disabled = !isSteel;
+    if(isSteel) _updateSteelBadge();
+    else document.getElementById('mat-badge').textContent = m.nm + ' ' + m.cat;
+
+    // 재질에 맞게 기본 유속 자동 설정: 권장 상한(vrec[1]) 적용
+    const velSel = document.getElementById('sel-vel');
+    const defaultVel = m.vrec[1].toString();
+    const hasOption = Array.from(velSel.options).some(o => o.value === defaultVel);
+    if(hasOption){
+      velSel.value = defaultVel;
+    } else {
+      velSel.value = 'custom';
+      document.getElementById('inp-vel-custom').value = defaultVel;
+    }
+    onVelChange();
+  }
+  markStep(2, false);
+  liveCalc();
+}
+
+/* ── 강관 배지 텍스트 갱신 (스케쥴 연동) ── */
+function _updateSteelBadge(){
+  const schVal = document.getElementById('sel-sch')?.value || 'normal';
+  const labels = {normal:'강관 SGP (일반)', sch40:'강관 SCH #40', sch80:'강관 SCH #80'};
+  const badge  = document.getElementById('mat-badge');
+  if(badge) badge.textContent = labels[schVal] || '강관';
+}
+
+/* ── 강관 스케쥴 변경 → 배지·vmax 즉시 반영 ── */
+function onSchChange(){
+  // 강관 선택 중일 때만 동작
+  if(STATE.matId !== 'steel_sgp') return;
+  _updateSteelBadge();
+  // 스케쥴 변경 시 유속 목표도 적정값으로 안내 (SCH40/80은 2.5 허용)
+  const schVal = document.getElementById('sel-sch').value;
+  const velSel = document.getElementById('sel-vel');
+  if((schVal === 'sch40' || schVal === 'sch80') && parseFloat(velSel.value) <= 2.0){
+    // SCH 고압 배관 선택 시 유속 상한 2.5 옵션으로 안내 (강제 변경 아님)
+    toast('💡 SCH 배관 선택 — 최대 유속 2.5 m/s 허용 (자동 변경 없음, 필요 시 직접 조정)');
+  }
+  liveCalc();
+}
+
+/* ── 압력강하 ── */
+function onPdropChange(){
+  const v=document.getElementById('sel-pdrop').value;
+  const c=document.getElementById('grp-pdrop-custom');
+  const e=document.getElementById('grp-pdrop-empty');
+  if(v==='custom'){c.style.display='block';e.style.display='none';}
+  else{c.style.display='none';e.style.display='block'; document.getElementById('disp-pdrop').value=v;}
+  liveCalc();
+}
+
+/* ── 유속 ── */
+function onVelChange(){
+  const v=document.getElementById('sel-vel').value;
+  const c=document.getElementById('grp-vel-custom');
+  const e=document.getElementById('grp-vel-empty');
+  if(v==='custom'){c.style.display='block';e.style.display='none';}
+  else{c.style.display='none';e.style.display='block';document.getElementById('disp-vel').value=v;}
+  liveCalc();
+}
+
+/* ══════════════════════════════════════════════════
+   ★ 유량 ↔ 부하 양방향 실시간 연동 엔진
+   ─ 공유 상태: STATE.flowKgh, STATE.loadKcalh, STATE.dt
+   ─ 입력 모드: 'flow' (유량 직접) / 'load' (부하 역산)
+   ─ 어느 쪽 변경해도 반대쪽 즉시 업데이트 + liveCalc 호출
+══════════════════════════════════════════════════ */
+
+let INPUT_MODE = 'flow'; // 현재 마스터 입력 모드
+
+/* ── 입력 모드 전환 ── */
+function setInputMode(mode, btn){
+  INPUT_MODE = mode;
+  document.querySelectorAll('.seg-ctrl .seg-btn').forEach(b => b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  document.getElementById('panel-flow-input').style.display = mode === 'flow' ? '' : 'none';
+  document.getElementById('panel-load-input').style.display = mode === 'load' ? '' : 'none';
+  // 역산 부하 행 표시 여부
+  ['crow-load-rev','crow-kw-rev','crow-rt-rev','crow-dt-rev'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = mode === 'flow' ? '' : 'none';
+  });
+  syncAll();
+}
+
+/* ── 유량 단위 레이블 업데이트 ── */
+function onFlowUnitChange(){
+  const u = document.getElementById('sel-flow-unit').value;
+  const labels = {kgh:'KG/H', lpm:'LPM', m3h:'㎥/H'};
+  setEl('flow-unit-lbl', labels[u]);
+  document.getElementById('flow-sfx').textContent = labels[u];
+  // 기존 KG/H 기준으로 역변환해서 inp-flow 표시값 업데이트
+  if(STATE.flowKgh > 0){
+    const el = document.getElementById('inp-flow');
+    if(u === 'kgh')      el.value = parseFloat(STATE.flowKgh.toFixed(1));
+    else if(u === 'lpm') el.value = parseFloat((STATE.flowKgh / 60).toFixed(2));
+    else if(u === 'm3h') el.value = parseFloat((STATE.flowKgh / 1000).toFixed(3));
+  }
+  syncAll();
+  liveCalc();
+}
+
+/* ── 부하 단위 레이블 업데이트 ── */
+function onLoadUnitChange(){
+  const u = document.getElementById('sel-load-unit').value;
+  const labels = {kcalh:'kcal/h', kw:'kW', rt:'냉동톤'};
+  setEl('load-unit-lbl', labels[u]);
+  // 부하값이 있으면 단위 변환해서 inp-load 업데이트
+  if(STATE.loadKcalh > 0){
+    const el = document.getElementById('inp-load');
+    if(u === 'kcalh') el.value = parseFloat(STATE.loadKcalh.toFixed(0));
+    else if(u === 'kw') el.value = parseFloat((STATE.loadKcalh/860).toFixed(1));
+    else if(u === 'rt') el.value = parseFloat((STATE.loadKcalh/3024).toFixed(2));
+  }
+}
+
+/* ── 유량 직접 입력 → 역산 부하 표시 ── */
+function onFlowInput(){
+  const u = document.getElementById('sel-flow-unit').value;
+  const rawStr = document.getElementById('inp-flow').value;
+  const raw = rawStr === '' ? 0 : (parseFloat(rawStr) || 0);
+  let kgh = raw;
+  if(u === 'lpm') kgh = raw * 60;
+  else if(u === 'm3h') kgh = raw * 1000;
+  STATE.flowKgh = kgh;           // 0 포함 항상 갱신
+  INPUT_MODE = 'flow';
+  syncAll();
+  liveCalc();
+}
+
+/* ── STEP2 부하 입력 → 유량 역산 ── */
+function onLoadInput(){
+  INPUT_MODE = 'load';
+  _calcLoadToKgh();
+  syncAll();
+  liveCalc();
+}
+
+/* ── STEP2 온도 입력 ── */
+function onTempInput(){
+  if(INPUT_MODE === 'load') _calcLoadToKgh();
+  else _calcFlowToLoad();
+  syncAll();
+  liveCalc();
+}
+
+/* ── 내부: 부하 → KGH 계산 ── */
+function _calcLoadToKgh(){
+  const lu  = document.getElementById('sel-load-unit').value;
+  const raw = parseFloat(document.getElementById('inp-load').value) || 0;
+  const ts  = parseFloat(document.getElementById('inp-ts').value) || 7;
+  const tr  = parseFloat(document.getElementById('inp-tr').value) || 12;
+  const dt  = Math.abs(tr - ts) || 1;
+  STATE.dt  = dt;
+  let kcalh = raw;
+  if(lu === 'kw') kcalh = raw * 860;
+  else if(lu === 'rt') kcalh = raw * 3024;
+  STATE.loadKcalh = kcalh;
+  STATE.flowKgh   = kcalh > 0 && dt > 0 ? kcalh / dt : 0;
+  // inp-flow에 환산값 표시
+  const fu = document.getElementById('sel-flow-unit').value;
+  const flowEl = document.getElementById('inp-flow');
+  if(flowEl && STATE.flowKgh > 0){
+    let v = STATE.flowKgh;
+    if(fu === 'lpm') v /= 60;
+    else if(fu === 'm3h') v /= 1000;
+    flowEl.value = parseFloat(v.toFixed(fu==='kgh'?0:fu==='lpm'?1:3));
+  }
+}
+
+/* ── 내부: 유량 → 부하 역산 ── */
+function _calcFlowToLoad(){
+  const ts = parseFloat(document.getElementById('inp-ts').value) || 7;
+  const tr = parseFloat(document.getElementById('inp-tr').value) || 12;
+  const dt = Math.abs(tr - ts) || 1;
+  STATE.dt = dt;
+  STATE.loadKcalh = STATE.flowKgh * dt;
+}
+
+/* ── 전체 동기화 ── */
+function syncAll(){
+  const kgh   = STATE.flowKgh || 0;
+  const kcalh = STATE.loadKcalh || (kgh * (STATE.dt || 5));
+  const dt    = STATE.dt || 5;
+  const kw    = kcalh / 860;
+  const rt    = kcalh / 3024;
+  const lpm   = kgh / 60;
+  const m3h   = kgh / 1000;
+  const m3s   = kgh / 1000 / 3600;
+
+  // 유량 환산 박스 (STEP2)
+  const sync = document.getElementById('sync-indicator');
+  if(kgh > 0){
+    setEl('conv-kgh',  fmt(kgh, 0)  + ' KG/H');
+    setEl('conv-lpm',  fmt(lpm, 1)  + ' LPM');
+    setEl('conv-m3h',  fmt(m3h, 3)  + ' ㎥/H');
+    setEl('conv-m3s',  m3s.toExponential(3) + ' ㎥/s');
+    if(sync){ sync.textContent = '✓ 연동됨'; sync.style.color='#15803d'; }
+    // 역산 부하 (유량 직접 입력 모드 시)
+    if(INPUT_MODE === 'flow'){
+      _calcFlowToLoad();
+      setEl('conv-load-kcal', fmt(STATE.loadKcalh, 0) + ' kcal/h');
+      setEl('conv-load-kw',   fmt(kw, 1) + ' kW');
+      setEl('conv-load-rt',   fmt(rt, 2) + ' RT');
+      setEl('conv-dt',        (STATE.dt||'—') + ' ℃ (ΔT 미설정 시 기본값 적용)');
+    }
+    // 상단 disp-dt 업데이트
+    const dispDt = document.getElementById('disp-dt');
+    if(dispDt) dispDt.textContent = (STATE.dt || 5).toFixed(1);
+    setEl('disp-load-formula', `Q = ${fmt(kcalh,0)} ÷ (1 × ${STATE.dt||5}) = ${fmt(kgh,0)} kg/h`);
+    // 부하 전환산 결과 미니박스 (STEP2 통합 버전)
+    setEl('cv-kcal', fmt(kcalh,0) + ' kcal/h');
+    setEl('cv-kw',   fmt(kw,1)    + ' kW');
+    setEl('cv-rt',   fmt(rt,2)    + ' RT');
+    setEl('cv-flow', fmt(kgh,0)   + ' KG/H');
+  } else {
+    ['conv-kgh','conv-lpm','conv-m3h','conv-m3s',
+     'conv-load-kcal','conv-load-kw','conv-load-rt','conv-dt'].forEach(id => setEl(id,'—'));
+    ['cv-kcal','cv-kw','cv-rt','cv-flow'].forEach(id => setEl(id,'—'));
+    if(sync){ sync.textContent = '대기'; sync.style.color='#94a3b8'; }
+  }
+}
+
+/* ── 시스템 프리셋 선택 (STEP2 통합) ── */
+function onSysPresetChange(){
+  const sys = document.getElementById('sel-sys-preset').value;
+  const presets = {
+    cold:    {ts:7,  tr:12},
+    hot:     {ts:45, tr:40},
+    chiller: {ts:32, tr:37},
+    hw60:    {ts:60, tr:50},
+  };
+  if(presets[sys]){
+    document.getElementById('inp-ts').value = presets[sys].ts;
+    document.getElementById('inp-tr').value = presets[sys].tr;
+    STATE.dt = Math.abs(presets[sys].tr - presets[sys].ts) || 1;
+    if(INPUT_MODE === 'load') _calcLoadToKgh();
+    else _calcFlowToLoad();
+    syncAll();
+    liveCalc();
+  }
+}
+
+/* ── 구버전 호환 함수 ── */
+function calcLoadToFlow(){ onLoadInput(); }
+
+/* ── 유량 환산 ── */
+function updateConvDisplay(kgh){
+  setEl('conv-kgh',kgh>0?fmt(kgh,0)+' KG/H':'—');
+  setEl('conv-lpm',kgh>0?fmt(kgh/60,1)+' LPM':'—');
+  setEl('conv-m3h',kgh>0?fmt(kgh/1000,2)+' ㎥/H':'—');
+  setEl('conv-m3s',kgh>0?(kgh/1000/3600).toExponential(3)+' ㎥/s':'—');
+}
+
+/* ══════════════════════════════════════════
+   ★ 메인 계산 (William-Hazen + 연속방정식)
+══════════════════════════════════════════ */
+function liveCalc(){
+  // 상태 수집
+  const mat  = PIPE_TYPES.find(p=>p.id===STATE.matId)||PIPE_TYPES[0];
+  const vmax = getVmax(); // 스케쥴 연동 실효 최대유속 (SGP:2.0, SCH40/80:2.5, 기타재질 고유값)
+  const pdropSel=document.getElementById('sel-pdrop').value;
+  STATE.pdrop = pdropSel==='custom'
+    ? parseFloat(document.getElementById('inp-pdrop-custom').value)||30
+    : parseFloat(pdropSel)||30;
+  document.getElementById('disp-pdrop').value=STATE.pdrop;
+
+  const velSel=document.getElementById('sel-vel').value;
+  STATE.vel = velSel==='custom'
+    ? parseFloat(document.getElementById('inp-vel-custom').value)||1.5
+    : parseFloat(velSel)||1.5;
+  document.getElementById('disp-vel').value=STATE.vel;
+
+  STATE.floors=parseInt(document.getElementById('inp-floors').value)||1;
+  STATE.floorHt=parseFloat(document.getElementById('inp-floorht').value)||3.0;
+
+  // 유량 — inp-flow 직접 편집 시 항상 STATE.flowKgh 갱신
+  const flowUnit = document.getElementById('sel-flow-unit').value;
+  const flowRaw  = parseFloat(document.getElementById('inp-flow').value);
+  if(!isNaN(flowRaw) && flowRaw >= 0){
+    let kgh = flowRaw;
+    if(flowUnit === 'lpm') kgh = flowRaw * 60;
+    else if(flowUnit === 'm3h') kgh = flowRaw * 1000;
+    // inp-flow가 직접 편집된 경우에도 STATE 갱신 (onFlowInput 미경유 케이스 대비)
+    STATE.flowKgh = kgh;
+  }
+  const flowKgh = STATE.flowKgh || 0;
+  updateConvDisplay(flowKgh);
+
+  // 파라미터 현황 업데이트
+  const totalH   = STATE.floors * STATE.floorHt;
+  const staticKpa = totalH * 9.81;   // 정수두 (kPa)
+
+  /*
+   * ★ 층수·층높이가 관경 계산에 연동되는 3가지 방식
+   *
+   * ① 정수두 (static head) 계산
+   *    - 총 배관 높이 H = 층수 × 층높이
+   *    - 정수두 = H × 9.81 kPa/m
+   *    - 순환 펌프 양정 산출 시 필수 반영 항목
+   *
+   * ② 고층 건물 압력강하 자동 권고
+   *    - 10층 이상: 20 mmAq/m 이하 권장 (입상관 압력 손실 누적 방지)
+   *    - 15층 이상: 15 mmAq/m 이하 권장
+   *    → 사용자 설정값이 권고치보다 높으면 경고 표시
+   *
+   * ③ 감압밸브(PRV) 필요 여부 판정
+   *    - 최하층 압력 = 급수압 + 정수두 > 550 kPa → 감압밸브 의무
+   *    - 이 시스템에서는 정수두만으로 PRV 필요성 예비 판정
+   *      (실제 설계는 급수압 별도 적용)
+   */
+
+  // 고층 압력강하 권고치
+  let pdropRec = 30; // mmAq/m 기본 권고
+  if(STATE.floors >= 15) pdropRec = 15;
+  else if(STATE.floors >= 10) pdropRec = 20;
+  const pdropOverRec = STATE.pdrop > pdropRec && STATE.floors >= 10;
+
+  // 감압밸브 예비 판정 (정수두 기준)
+  // 정수두 자체가 300 kPa 이상이면 감압 구간 필요 가능성 높음
+  const prvAlert = staticKpa >= 300;
+  // 고층 배수 수직관 보정 단계 (위생배관 기준 차용)
+  const vertBoost = STATE.floors > 15 ? 2 : STATE.floors > 5 ? 1 : 0;
+
+  const schVal = document.getElementById('sel-sch').value;
+  const schLabel = schVal==='sch40' ? 'SCH #40' : schVal==='sch80' ? 'SCH #80' : 'SGP(일반)';
+  const matLabel = (STATE.matId==='steel_sgp')
+    ? `${mat.nm} (${schLabel})` : `${mat.nm} ${mat.cat}`;
+
+  setEl('p-c-value',`${mat.C} (신설) / ${mat.Ca} (노후 설계 권장)`);
+  setEl('p-pdrop',`${STATE.pdrop} mmAq/m ${pdropOverRec ? '⚠ '+STATE.floors+'층 → '+pdropRec+'mmAq/m 이하 권장' : ''}`);
+  setEl('p-vel',`${STATE.vel} m/s → 이 유속 이하가 되는 최소 관경 선정`);
+  setEl('p-vmax',`${vmax} m/s (${mat.nm} 기술기준 절대 상한)`);
+  setEl('p-vrec',`${mat.vrec[0]} ~ ${mat.vrec[1]} m/s (경제적·소음 최적 구간)`);
+  setEl('p-mat', matLabel);
+  setEl('p-height',`${totalH.toFixed(1)} m (${STATE.floors}층 × ${STATE.floorHt}m) → 정수두 ${staticKpa.toFixed(0)} kPa`);
+  setEl('p-static',`${staticKpa.toFixed(1)} kPa${prvAlert ? ' ⚠ 300kPa 초과 — 구간별 감압밸브 검토' : ' ✅ 감압밸브 불필요 구간'}`);
+
+  // 유량 미입력 시 중단
+  if(flowKgh<=0){
+    document.getElementById('result-placeholder').style.display='';
+    document.getElementById('result-content').style.display='none';
+    setEl('result-badge','대기');
+    document.getElementById('result-badge').className='cbadge';
+    markStep(2,false);
+    return;
+  }
+
+  // flow badge
+  setEl('flow-badge',`${fmt(flowKgh,0)} KG/H`);
+  document.getElementById('flow-badge').className='cbadge grn';
+  markStep(3,false);
+
+  // ── 공학 계산 ──
+  const C=mat.C;
+  const I=STATE.pdrop/1000; // m/m (동수구배)
+  const flowM3s=flowKgh/1000/3600;
+  const pipes=getPipeList();
+
+  /*
+   * ★ 유속 두 가지 개념 명확히 분리
+   *
+   * ① STATE.vel  : 사용자가 설정한 "설계 목표 유속"
+   *                → 연속방정식 역산(최소 내경 계산)의 기준
+   *                → 이 값 이하가 되는 최소 관경을 구하는 목표
+   *
+   * ② vmax   : 재질별 "절대 최대 허용 유속" (기술기준)
+   *                → 이 값을 초과하면 무조건 부적합 (캐비테이션·소음·침식)
+   *                → STATE.vel이 vmax를 넘게 설정하면 경고 필요
+   *
+   * ③ mat.vrec   : 재질별 "권장 유속 범위" — 경제성·소음 최적 구간
+   *
+   * ok 판정 = W-H 압력강하 조건(maxQ) AND 설계 유속 이하
+   *           + 절대 최대(vmax) 초과 여부는 별도 경고로 표시
+   */
+
+  // 사용자 설계 유속이 재질 최대를 넘으면 경고 (계산은 진행)
+  const velInputOverMax = STATE.vel > vmax;
+
+  // 1. William-Hazen + 연속방정식: 각 관경 후보 계산
+  const candidates=pipes.map(p=>{
+    const d=p.id/1000;
+    const A=Math.PI*d*d/4;
+    // W-H: 해당 관경에서 설정 압력강하 내 최대 허용 유량
+    const maxQ_m3s=0.35464*C*Math.pow(d,2.63)*Math.pow(I,0.54);
+    const maxQ_kgh=maxQ_m3s*1000*3600;
+    // 실제 유속 (연속방정식: v = Q/A)
+    const vel=flowM3s/A;
+    // 실제 압력강하 역산
+    const actualI=Math.pow(flowM3s/(0.35464*C*Math.pow(d,2.63)),1/0.54);
+    const actualPdrop=actualI*1000;
+    // ★ ok 판정: W-H 유량 조건 AND 설계 목표 유속 이하
+    const ok = flowKgh <= maxQ_kgh && vel <= STATE.vel;
+    // 절대 최대 초과 여부 (별도 경고용)
+    const overAbsMax = vel > vmax;
+    return {...p, maxQ_kgh, vel, actualPdrop, ok, overAbsMax};
+  });
+
+  // 2. 연속방정식: 설계 유속 기준 최소 필요 내경
+  const minIdByVel=Math.sqrt(4*flowM3s/(Math.PI*STATE.vel))*1000;
+
+  // 3. 관경 채택:
+  //    우선순위① ok=true (W-H + 설계유속 모두 만족) 중 최소
+  //    우선순위② ok=false지만 절대최대(vmax) 미초과 중 최소
+  //    우선순위③ 그래도 없으면 목록 최대 관경
+  let selected = candidates.find(c => c.ok) || null;
+  if(!selected) selected = candidates.find(c => !c.overAbsMax) || candidates[candidates.length-1];
+
+  const selIdx=candidates.indexOf(selected);
+
+  // 결과 렌더링
+  document.getElementById('result-placeholder').style.display='none';
+  document.getElementById('result-content').style.display='block';
+  markStep(4,true);
+
+  // badge — 절대최대 초과 시 빨강, 설계유속 초과 시 노랑, 정상 초록
+  const purposeClass={cold:'cold',hot:'hot',chiller:'chiller',general:'general'}[document.getElementById('sel-purpose').value]||'cold';
+  const badgeEl = document.getElementById('result-badge');
+  if(selected.overAbsMax){
+    badgeEl.textContent='⚠ '+selected.s; badgeEl.className='cbadge red';
+  } else if(!selected.ok){
+    badgeEl.textContent='⚠ '+selected.s; badgeEl.className='cbadge org';
+  } else {
+    badgeEl.textContent='✓ '+selected.s; badgeEl.className='cbadge grn';
+  }
+
+  // 설계 유속이 재질 절대최대를 초과하면 상단에 경고 toast
+  if(velInputOverMax){
+    toast(`⚠ 설계 유속 ${STATE.vel} m/s가 ${mat.nm} 절대 최대(${vmax} m/s)를 초과합니다`);
+  }
+
+  STATE.result={mat,vmax,selected,selIdx,candidates,flowKgh,flowM3s,minIdByVel,C,I,purposeClass,schLabel,matLabel,velInputOverMax,totalH,staticKpa,pdropRec,pdropOverRec,prvAlert,vertBoost};
+
+  renderHero(STATE.result);
+  renderStatGrid(STATE.result);
+  renderVelGauge(STATE.result);
+  renderFlowDiagram(STATE.result);
+  renderPipeTable(STATE.result);
+  renderSummary(STATE.result);
+  renderAltTable(STATE.result);
+  renderA4(STATE.result);
+  renderGuide();
+  updateStepStatus();
+  renderMobileResult(STATE.result);
+}
+
+/* ── 히어로 렌더 ── */
+function renderHero({mat,vmax,selected,flowKgh,purposeClass,schLabel,matLabel}){
+  document.getElementById('pipeHero').innerHTML=`
+    <div class="prh-box ${purposeClass}">
+      <div class="prh-lbl">채택 관경</div>
+      <div class="prh-val">${selected.s.replace('A','')}</div>
+      <div class="prh-unit">A · 내경 ${selected.id.toFixed(1)} mm</div>
+      <div class="prh-sub">외경 ${selected.od}mm · 두께 ${selected.t}mm<br>${matLabel||mat.nm+' '+mat.cat}</div>
+    </div>
+    <div class="prh-box" style="background:linear-gradient(135deg,#1e3a5f,#2563eb)">
+      <div class="prh-lbl">실제 유속</div>
+      <div class="prh-val">${selected.vel.toFixed(2)}</div>
+      <div class="prh-unit">m/s</div>
+      <div class="prh-sub">권장: ${mat.vrec[0]}~${mat.vrec[1]} m/s<br>유량: ${fmt(flowKgh,0)} KG/H</div>
+    </div>`;
+}
+
+/* ── 통계 그리드 ── */
+function renderStatGrid({selected,flowKgh}){
+  const lpm=flowKgh/60;
+  const area=Math.PI*selected.id*selected.id/4;
+  document.getElementById('statGrid').innerHTML=`
+    <div class="sbox"><div class="sico">📏</div><div class="sval">${selected.id.toFixed(1)}</div><div class="slbl">내경 (mm)</div></div>
+    <div class="sbox"><div class="sico">💨</div><div class="sval">${selected.vel.toFixed(2)}</div><div class="slbl">유속 (m/s)</div></div>
+    <div class="sbox"><div class="sico">📉</div><div class="sval">${selected.actualPdrop.toFixed(1)}</div><div class="slbl">압력강하 (mmAq/m)</div></div>`;
+}
+
+/* ── 유속 게이지 ── */
+function renderVelGauge({selected, mat, vmax}){
+  // ★ 게이지 기준 = 설계 목표 유속(STATE.vel)의 120%를 풀스케일로 설정
+  //    → 설계 유속 초과 여부와 절대 최대 초과 여부를 동시에 시각화
+  const scale  = STATE.vel * 1.2;  // 게이지 풀스케일
+  const pct    = Math.min(100, (selected.vel / scale) * 100);
+  const designPct = Math.min(100, (STATE.vel  / scale) * 100); // 설계 유속 마커 위치
+  const vmaxPct   = Math.min(100, (vmax   / scale) * 100); // 절대최대 마커 위치
+
+  // 색상: 절대최대 초과→빨강, 설계유속 초과→주황, 권장 상한 초과→노랑, 정상→파랑
+  let cls;
+  if(selected.vel > vmax)         cls = 'vel-over';
+  else if(selected.vel > STATE.vel)   cls = 'vel-warn';
+  else if(selected.vel > mat.vrec[1]) cls = 'vel-warn';
+  else                                cls = 'vel-ok';
+
+  // 판정 텍스트
+  let judgeStr;
+  if(selected.vel > vmax)
+    judgeStr = `🔴 절대최대(${vmax}m/s) 초과 — 관경 즉시 재검토`;
+  else if(selected.vel > STATE.vel)
+    judgeStr = `🟠 설계 목표(${STATE.vel}m/s) 초과`;
+  else if(selected.vel > mat.vrec[1])
+    judgeStr = `🟡 권장범위 상한(${mat.vrec[1]}m/s) 초과`;
+  else if(selected.vel < mat.vrec[0])
+    judgeStr = `🔵 권장범위 하한(${mat.vrec[0]}m/s) 미만 — 퇴적 주의`;
+  else
+    judgeStr = `✅ 정상 범위 (권장: ${mat.vrec[0]}~${mat.vrec[1]} m/s)`;
+
+  document.getElementById('vel-bar').style.width  = pct + '%';
+  document.getElementById('vel-bar').className    = 'vel-bar-fill ' + cls;
+  document.getElementById('vel-pct-lbl').textContent =
+    `실제 ${selected.vel.toFixed(2)} m/s  /  목표 ${STATE.vel} m/s  /  최대 ${vmax} m/s`;
+  document.getElementById('vel-max-lbl').textContent = `${scale.toFixed(1)} m/s (풀스케일)`;
+
+  // 게이지 아래 판정 문자열
+  const gaugeEl = document.getElementById('vel-bar').closest('.vel-gauge');
+  let judgeDiv = document.getElementById('vel-judge');
+  if(!judgeDiv){
+    judgeDiv = document.createElement('div');
+    judgeDiv.id = 'vel-judge';
+    judgeDiv.style.cssText = 'font-size:10px;font-weight:700;margin-top:5px;padding:4px 8px;border-radius:5px;background:#f0f9ff;border:1px solid #bae6fd;';
+    gaugeEl.appendChild(judgeDiv);
+  }
+  judgeDiv.textContent = judgeStr;
+  judgeDiv.style.color = selected.vel > vmax ? '#dc2626'
+    : selected.vel > STATE.vel ? '#d97706'
+    : selected.vel > mat.vrec[1] ? '#b45309'
+    : selected.vel < mat.vrec[0] ? '#0369a1'
+    : '#15803d';
+}
+
+/* ── 플로우 다이어그램 ── */
+function renderFlowDiagram({selected,mat,purposeClass}){
+  const labels={cold:'냉수',hot:'온수',chiller:'냉각수',general:'냉온수'};
+  const purpose=document.getElementById('sel-purpose').value;
+  const lbl=labels[purpose]||'냉온수';
+  document.getElementById('flowDiagram').innerHTML=`
+    <div class="flow-line">
+      <span class="flow-node fn-${purposeClass}">${lbl} 공급원</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-pipe">${selected.s}</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-node fn-branch">주배관</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-pipe">${selected.s}</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-node fn-fixture">부하 기기</span>
+    </div>
+    <div style="font-size:9.5px;color:#475569;margin-top:4px">재질: ${mat.nm} ${mat.cat} · 유속: ${selected.vel.toFixed(2)} m/s · 압력강하: ${selected.actualPdrop.toFixed(1)} mmAq/m</div>`;
+}
+
+/* ── 관경별 비교표 ── */
+function renderPipeTable({candidates, selected, flowKgh, mat, vmax}){
+  const rows = candidates.map(c => {
+    const isSel = c.s === selected.s;
+    // ★ 색상: 절대최대→빨강 / 설계유속 초과→주황 / 권장상한 초과→노랑 / 정상→초록
+    const velColor = c.vel > vmax     ? '#dc2626'
+                   : c.vel > STATE.vel    ? '#d97706'
+                   : c.vel > mat.vrec[1]  ? '#b45309'
+                   : c.vel < mat.vrec[0]  ? '#0369a1'
+                   : '#15803d';
+    const velLabel = c.vel > vmax    ? `${c.vel.toFixed(3)} ▲최대초과`
+                   : c.vel > STATE.vel   ? `${c.vel.toFixed(3)} ▲목표초과`
+                   : c.vel.toFixed(3);
+    return `<tr class="${isSel ? 'highlight' : ''}">
+      <td class="mono" style="font-weight:${isSel?'900':'600'}">${isSel ? '◀ ' : ''}${c.s}</td>
+      <td class="mono">${c.id.toFixed(1)}</td>
+      <td class="mono" style="color:${velColor};font-weight:${c.vel>vmax||c.vel>STATE.vel?'800':'600'}">${velLabel}</td>
+      <td class="mono">${c.actualPdrop.toFixed(1)}</td>
+      <td class="mono">${fmt(c.maxQ_kgh, 0)}</td>
+      <td><span class="std-pipe ${c.ok ? 'std-ok' : 'std-ov'}">${c.ok ? '✓ 적합' : '✗ 부적합'}</span></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('tbl-pipes').innerHTML = `
+    <thead>
+      <tr>
+        <th>관경</th><th>내경(mm)</th>
+        <th>유속(m/s)<br><small style="font-weight:600;opacity:.8">설계목표: ${STATE.vel} / 절대최대: ${vmax}</small></th>
+        <th>압력강하(mmAq/m)</th><th>최대유량(KG/H)</th><th>W-H 판정</th>
+      </tr>
+    </thead>
+    <tbody>${rows}</tbody>`;
+}
+
+/* ── 요약 박스 ── */
+function renderSummary({selected, mat, vmax, flowKgh, minIdByVel, C, matLabel, velInputOverMax}){
+  // ★ 유속 3단계 판정
+  let statusTxt;
+  if(selected.vel > vmax)
+    statusTxt = `🔴 절대 최대(${vmax} m/s) 초과 — 한 단계 큰 관경으로 즉시 교체 필요`;
+  else if(selected.vel > STATE.vel)
+    statusTxt = `🟠 설계 목표 유속(${STATE.vel} m/s) 초과 — 압력강하 조건 재검토 권장`;
+  else if(selected.vel > mat.vrec[1])
+    statusTxt = `🟡 권장 범위 상한(${mat.vrec[1]} m/s) 초과 — 수격방지기 설치 검토`;
+  else if(selected.vel < mat.vrec[0])
+    statusTxt = `🔵 권장 범위 하한(${mat.vrec[0]} m/s) 미만 — 퇴적·스케일 리스크 검토`;
+  else
+    statusTxt = `✅ 적정 — 설계 유속·기술기준 모두 만족`;
+
+  const velInputWarn = velInputOverMax
+    ? `<br><span style="color:#dc2626;font-size:9.5px">⚠ 설계 입력 유속(${STATE.vel} m/s)이 ${mat.nm} 절대 최대(${vmax} m/s)를 초과 설정됨 — 유속 기준 재확인 필요</span>`
+    : '';
+
+  setEl('res-flow',  `${fmt(flowKgh,0)} KG/H &nbsp;·&nbsp; ${fmt(flowKgh/60,1)} LPM &nbsp;·&nbsp; ${fmt(flowKgh/1000,3)} ㎥/H`);
+  setEl('res-pipe',  `${selected.s} (내경 ${selected.id.toFixed(1)} mm)`);
+  setEl('res-id',    `${selected.id.toFixed(2)} mm &nbsp;·&nbsp; 유속역산 최소내경: ${minIdByVel.toFixed(2)} mm`);
+  setEl('res-vel',   `${selected.vel.toFixed(3)} m/s &nbsp;(설계목표: ${STATE.vel} m/s &nbsp;/&nbsp; 절대최대: ${vmax} m/s)`);
+  setEl('res-pdrop', `${selected.actualPdrop.toFixed(2)} mmAq/m &nbsp;(목표: ≤ ${STATE.pdrop} mmAq/m)`);
+  setEl('res-formula',`W-H: Q=0.35464×C×d²·⁶³×I⁰·⁵⁴ &nbsp;/&nbsp; C=${C} (${matLabel||mat.nm+' '+mat.cat})`);
+  setEl('res-status', statusTxt + velInputWarn);
+}
+
+/* ── 인접 관경 비교 ── */
+function renderAltTable({candidates,selected,selIdx}){
+  const range=candidates.slice(Math.max(0,selIdx-1),Math.min(candidates.length,selIdx+3));
+  const rows=range.map(c=>{
+    const isSel=c.s===selected.s;
+    return `<tr class="${isSel?'highlight':''}">
+      <td class="mono" style="font-weight:${isSel?'900':'600'}">${isSel?'◀ 채택':''} ${c.s}</td>
+      <td class="mono">${c.id.toFixed(1)}</td>
+      <td class="mono">${c.vel.toFixed(3)}</td>
+      <td class="mono">${c.actualPdrop.toFixed(1)}</td>
+      <td class="mono">${fmt(c.maxQ_kgh,0)}</td>
+      <td><span class="std-pipe ${c.ok?'std-ok':'std-ov'}">${c.ok?'✓':'✗'}</span></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('tbl-alt').innerHTML=`
+    <thead><tr><th>관경</th><th>내경(mm)</th><th>유속(m/s)</th><th>압력강하</th><th>최대유량(KG/H)</th><th>판정</th></tr></thead>
+    <tbody>${rows}</tbody>`;
+}
+
+/* ── 모바일 탭 결과 요약 렌더 (폰 화면 전용) ── */
+function renderMobileResult(r){
+  const phoneRender = document.getElementById('phone-result-render');
+  if(!phoneRender) return;
+
+  // 새 산정마다 shareCanvas 초기화 → 공유 버튼 숨김
+  _shareCanvas = null;
+  const shareBtn = document.getElementById('btn-mobile-share');
+  if(shareBtn) shareBtn.style.display='none';
+  const hint = document.getElementById('mobile-action-hint');
+  if(hint) hint.textContent = '※ JPG 저장 후 공유하기 버튼이 활성화됩니다';
+
+  const emptyHtml='<div style="text-align:center;padding:30px 0;color:#94a3b8"><div style="font-size:28px;margin-bottom:8px">📱</div><div style="font-size:11px;font-weight:700;line-height:1.6">관경 산정 탭에서<br>조건을 입력하면<br>여기에 표시됩니다</div></div>';
+
+  if(!r || !r.selected){
+    phoneRender.innerHTML=emptyHtml;
+    return;
+  }
+
+  const velColor = r.selected.vel>r.vmax?'#dc2626':r.selected.vel>STATE.vel?'#d97706':'#15803d';
+  const pdColor  = r.selected.actualPdrop>STATE.pdrop?'#d97706':'#15803d';
+  const purposeColors={cold:'linear-gradient(135deg,#0c2340,#0369a1)',hot:'linear-gradient(135deg,#7c2d12,#b45309)',chiller:'linear-gradient(135deg,#1a2e05,#365314)',general:'linear-gradient(135deg,#1e1b4b,#4338ca)'};
+  const heroGrad=purposeColors[r.purposeClass]||purposeColors.cold;
+  const today=new Date().toLocaleDateString('ko-KR');
+  const ok=r.selected.ok, overAbs=r.selected.overAbsMax;
+
+  const summaryHtml=`
+    <div style="background:#0369a1;color:#fff;padding:8px 10px;margin:-10px -8px 10px;font-size:10px;font-weight:800;letter-spacing:.04em">
+      냉온수 배관 관경 산정서 · MANMIN Ver2.0
+    </div>
+    <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:7px;padding:7px 9px;margin-bottom:8px">
+      <div style="font-size:11px;font-weight:800;color:#0369a1">${STATE.projectName||'만민 건축사 신사옥 신축공사'}</div>
+      <div style="display:flex;justify-content:space-between;margin-top:2px">
+        <span style="font-size:9px;color:#475569">작성자: ${STATE.projectAuthor||'김만민'}</span>
+        <span style="font-size:9px;color:#475569">${STATE.projectDate?STATE.projectDate.replace(/-/g,'.'):today}</span>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
+      <div style="background:${heroGrad};border-radius:9px;padding:10px;text-align:center;color:#fff">
+        <div style="font-size:8px;font-weight:700;opacity:.7">채택 관경</div>
+        <div style="font-size:28px;font-weight:900;font-family:'JetBrains Mono',monospace;color:#fde047;line-height:1">${r.selected.s.replace('A','')}</div>
+        <div style="font-size:9px;font-weight:700;opacity:.8">A · ⌀${r.selected.id.toFixed(1)}mm</div>
+        <div style="font-size:8px;opacity:.6;margin-top:2px">${r.matLabel||r.mat.nm}</div>
+      </div>
+      <div style="background:linear-gradient(135deg,#1e3a5f,#2563eb);border-radius:9px;padding:10px;text-align:center;color:#fff">
+        <div style="font-size:8px;font-weight:700;opacity:.7">실제 유속</div>
+        <div style="font-size:28px;font-weight:900;font-family:'JetBrains Mono',monospace;color:#fde047;line-height:1">${r.selected.vel.toFixed(2)}</div>
+        <div style="font-size:9px;font-weight:700;opacity:.8">m/s</div>
+        <div style="font-size:8px;opacity:.6;margin-top:2px">권장 ${r.mat.vrec[0]}~${r.mat.vrec[1]} m/s</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:8px">
+      ${[['📏','내경','mm',r.selected.id.toFixed(1),'#0369a1'],
+         ['📉','압력강하','mmAq/m',r.selected.actualPdrop.toFixed(1),pdColor],
+         ['💧','유량','KG/H',fmt(r.flowKgh,0),'#0369a1'],
+         ['🏢','정수두','kPa',r.staticKpa.toFixed(0),r.prvAlert?'#d97706':'#0369a1'],
+         ['📐','외경','mm',r.selected.od,'#475569'],
+         ['🔩','두께','mm',r.selected.t,'#475569']
+        ].map(([ico,lbl,unit,val,col])=>`
+        <div style="background:#fff;border:1px solid #dbeafe;border-radius:7px;padding:6px 4px;text-align:center">
+          <div style="font-size:12px">${ico}</div>
+          <div style="font-size:12px;font-weight:900;color:${col};font-family:'JetBrains Mono',monospace;line-height:1.1">${val}</div>
+          <div style="font-size:7.5px;color:#4a6585;font-weight:700;margin-top:1px">${lbl}<br><span style="color:#94a3b8">${unit}</span></div>
+        </div>`).join('')}
+    </div>
+    <div style="background:${ok&&!overAbs?'#f0fdf4':overAbs?'#fef2f2':'#fff7ed'};border:1.5px solid ${ok&&!overAbs?'#bbf7d0':overAbs?'#fecaca':'#fed7aa'};border-radius:7px;padding:8px 10px;margin-bottom:8px">
+      <div style="font-size:10px;font-weight:800;color:${ok&&!overAbs?'#15803d':overAbs?'#dc2626':'#c2410c'}">
+        ${overAbs?'🔴 절대최대 초과':ok?'✅ 기준 만족':'🟠 설계목표 초과'}
+      </div>
+      <div style="font-size:9px;color:#475569;line-height:1.7;margin-top:3px">
+        유속 ${r.selected.vel.toFixed(3)} m/s (목표 ≤${STATE.vel} · 최대 ${r.vmax} m/s)<br>
+        압력강하 ${r.selected.actualPdrop.toFixed(2)} mmAq/m (목표 ≤${STATE.pdrop})<br>
+        최대허용 ${fmt(r.selected.maxQ_kgh,0)} KG/H · 설계 ${fmt(r.flowKgh,0)} KG/H
+      </div>
+    </div>
+    <div style="font-size:9px;font-weight:800;color:#0369a1;margin-bottom:4px">🔄 인접 관경 비교</div>
+    <table style="width:100%;border-collapse:collapse;font-size:9px">
+      <thead><tr style="background:#f0f9ff">
+        <th style="padding:4px;border:1px solid #dbeafe;font-weight:800;color:#075985">관경</th>
+        <th style="padding:4px;border:1px solid #dbeafe;font-weight:800;color:#075985">내경</th>
+        <th style="padding:4px;border:1px solid #dbeafe;font-weight:800;color:#075985">유속</th>
+        <th style="padding:4px;border:1px solid #dbeafe;font-weight:800;color:#075985">판정</th>
+      </tr></thead>
+      <tbody>
+        ${r.candidates.slice(Math.max(0,r.selIdx-1),Math.min(r.candidates.length,r.selIdx+3)).map(c=>{
+          const isSel=c.s===r.selected.s;
+          return `<tr style="background:${isSel?'#dbeafe':''}">
+            <td style="padding:4px;border:1px solid #dbeafe;font-weight:${isSel?'900':'600'};color:${isSel?'#0369a1':'inherit'};font-family:'JetBrains Mono',monospace">${isSel?'★':''} ${c.s}</td>
+            <td style="padding:4px;border:1px solid #dbeafe;font-family:'JetBrains Mono',monospace">${c.id.toFixed(1)}</td>
+            <td style="padding:4px;border:1px solid #dbeafe;color:${c.vel>r.vmax?'#dc2626':c.vel>r.mat.vrec[1]?'#d97706':'#15803d'};font-family:'JetBrains Mono',monospace">${c.vel.toFixed(3)}</td>
+            <td style="padding:4px;border:1px solid #dbeafe;color:${c.ok?'#15803d':'#dc2626'};font-weight:800">${c.ok?'✓':'✗'}</td>
+          </tr>`;}).join('')}
+      </tbody>
+    </table>
+    <div style="margin-top:8px;font-size:8px;color:#94a3b8;text-align:center">
+      기계설비 기술기준 [별표 8] · 국토교통부 고시 제2021-851호<br>
+      William-Hazen: Q = 0.35464 × C × d²·⁶³ × I⁰·⁵⁴
+    </div>
+  `;
+
+  phoneRender.innerHTML = summaryHtml;
+}
+
+/* ── 모바일 JPG 저장 → 완료 후 공유 버튼 표시 ── */
+var _shareCanvas = null;
+window.exportMobileJpg = function(){
+  var el = document.getElementById('phone-result-render');
+  if(!el || !STATE.result){ toast('먼저 관경을 산정하세요'); return; }
+  var hint = document.getElementById('mobile-action-hint');
+  var shareBtn = document.getElementById('btn-mobile-share');
+  toast('📸 Galaxy S24 Ultra JPG 생성 중...');
+  if(hint) hint.textContent = '⏳ 이미지 생성 중...';
+  html2canvas(document.getElementById('frame-phone'), {
+    scale:2, useCORS:true, backgroundColor:'#0a0a0a', logging:false
+  }).then(function(canvas){
+    _shareCanvas = canvas;
+    var link=document.createElement('a');
+    var now=new Date();
+    var ts=now.getFullYear()+''+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0')+'_'+String(now.getHours()).padStart(2,'0')+String(now.getMinutes()).padStart(2,'0');
+    link.download='갤럭시S24Ultra_관경산정_'+ts+'.jpg';
+    link.href=canvas.toDataURL('image/jpeg',0.95);
+    link.click();
+    toast('✅ JPG 저장 완료! 공유 버튼이 활성화됐습니다');
+    // 공유 버튼 표시
+    if(shareBtn){
+      shareBtn.style.display='flex';
+      shareBtn.style.animation='share-appear .35s ease';
+    }
+    if(hint) hint.textContent = '✅ 저장 완료 — 공유하기 버튼으로 전송하세요';
+  }).catch(function(){ toast('❌ JPG 생성 실패'); if(hint) hint.textContent = '❌ 생성 실패, 다시 시도하세요'; });
+};
+
+/* ── 공유 모달 — JPG 저장 후 공유 ── */
+window.shareMobileJpg = function(){
+  if(!STATE.result){ toast('먼저 관경을 산정하세요'); return; }
+  var modal=document.getElementById('share-modal');
+  var img=document.getElementById('share-preview-img');
+  var loading=document.getElementById('share-loading');
+  if(!modal) return;
+  modal.style.display='flex';
+
+  // 이미 _shareCanvas 있으면 바로 표시
+  if(_shareCanvas){
+    img.src=_shareCanvas.toDataURL('image/jpeg',0.95);
+    img.style.display='block';
+    if(loading) loading.style.display='none';
+    return;
+  }
+
+  // 없으면 새로 생성
+  img.style.display='none';
+  if(loading){ loading.style.display='block'; loading.innerHTML='<div style="font-size:20px;margin-bottom:6px">🖼️</div>이미지 생성 중...'; }
+  var el = document.getElementById('frame-phone');
+  if(!el){ if(loading) loading.textContent='오류: 프레임을 찾을 수 없습니다'; return; }
+  html2canvas(el, {scale:2, useCORS:true, backgroundColor:'#0a0a0a', logging:false}).then(function(canvas){
+    _shareCanvas=canvas;
+    img.src=canvas.toDataURL('image/jpeg',0.95);
+    img.style.display='block';
+    if(loading) loading.style.display='none';
+  }).catch(function(){ if(loading) loading.textContent='이미지 생성 실패. 다시 시도하세요.'; });
+};
+window.closeShareModal = function(){
+  var m=document.getElementById('share-modal');
+  if(m){ m.style.display='none'; }
+};
+window.shareDownload = function(){
+  if(!_shareCanvas){ toast('이미지를 먼저 생성하세요'); return; }
+  var link=document.createElement('a');
+  var now=new Date();
+  var ts=now.getFullYear()+''+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0');
+  link.download='냉온수배관_관경산정_'+ts+'.jpg';
+  link.href=_shareCanvas.toDataURL('image/jpeg',0.95);
+  link.click();
+  toast('✅ 저장 완료');
+};
+window.shareNative = function(){
+  if(!_shareCanvas||!navigator.share){ toast('이 기기에서 지원하지 않습니다'); return; }
+  _shareCanvas.toBlob(function(blob){
+    var file=new File([blob],'관경산정결과.jpg',{type:'image/jpeg'});
+    navigator.share({title:'냉온수 배관 관경 산정 결과',text:STATE.projectName||'관경 산정 결과',files:[file]})
+      .then(function(){ toast('✅ 공유 완료'); })
+      .catch(function(){});
+  },'image/jpeg',0.95);
+};
+window.shareCopyLink = function(){
+  var url=window.location.href;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(url).then(function(){ toast('🔗 링크 복사 완료'); });
+  } else {
+    var t=document.createElement('textarea'); t.value=url; document.body.appendChild(t); t.select(); document.execCommand('copy'); document.body.removeChild(t);
+    toast('🔗 링크 복사 완료');
+  }
+};
+window.shareKakao = function(){
+  var hint=document.getElementById('share-hint');
+  if(hint) hint.textContent='카카오톡 → 이미지를 먼저 저장한 후 채팅방에서 첨부하세요';
+  toast('📥 JPG 저장 후 카카오톡으로 공유하세요');
+  shareDownload();
+};
+
+/* ── 규격표 빌드 ── */
+function buildSpecTables(){
+  const hd='<thead><tr><th>호칭경</th><th>외경(mm)</th><th>두께(mm)</th><th>내경(mm)</th><th>단면적(㎟)</th></tr></thead>';
+  document.getElementById('spec-steel').innerHTML=hd+'<tbody>'+STEEL_PIPES.map(p=>`<tr><td class="mono">${p.s}</td><td class="mono">${p.od}</td><td class="mono">${p.t}</td><td class="mono">${p.id.toFixed(2)}</td><td class="mono">${(Math.PI*p.id*p.id/4).toFixed(0)}</td></tr>`).join('')+'</tbody>';
+  document.getElementById('spec-sch40').innerHTML=hd+'<tbody>'+SCH40_PIPES.map(p=>`<tr><td class="mono">${p.s}</td><td class="mono">${p.od}</td><td class="mono">${p.t}</td><td class="mono">${p.id.toFixed(2)}</td><td class="mono">${(Math.PI*p.id*p.id/4).toFixed(0)}</td></tr>`).join('')+'</tbody>';
+  document.getElementById('spec-sch80').innerHTML=hd+'<tbody>'+SCH80_PIPES.map(p=>`<tr><td class="mono">${p.s}</td><td class="mono">${p.od}</td><td class="mono">${p.t}</td><td class="mono">${p.id.toFixed(2)}</td><td class="mono">${(Math.PI*p.id*p.id/4).toFixed(0)}</td></tr>`).join('')+'</tbody>';
+  document.getElementById('spec-copper').innerHTML=hd+'<tbody>'+COPPER_PIPES.map(p=>`<tr><td class="mono">${p.s}</td><td class="mono">${p.od}</td><td class="mono">${p.t}</td><td class="mono">${p.id.toFixed(2)}</td><td class="mono">${(Math.PI*p.id*p.id/4).toFixed(0)}</td></tr>`).join('')+'</tbody>';
+}
+
+/* ── 표준표 빌드 ── */
+function showStdTable(mode, btn){
+  document.querySelectorAll('#panel-stdtable .seg-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  buildStdTable(mode);
+}
+function buildStdTable(mode){
+  const C=120; const pipes=STEEL_PIPES;
+  let I, velMode=false, vel=0;
+  if(mode==='vel2'){velMode=true;vel=2.0;}
+  else if(mode==='vel3'){velMode=true;vel=3.0;}
+  else{I=parseFloat(mode)/1000;}
+
+  const hd=`<thead><tr><th>관경</th><th>내경(mm)</th>
+    <th>${velMode?`유속 ${vel}m/s 유량`:`${mode}mmAq/m 최대유량`}<br>KG/H</th>
+    <th>${velMode?`유속 ${vel}m/s 유량`:`${mode}mmAq/m 최대유량`}<br>LPM</th>
+    <th>단면적(㎟)</th></tr></thead>`;
+  const rows=pipes.map(p=>{
+    const d=p.id/1000;
+    const A=Math.PI*d*d/4;
+    let kgh,lpm;
+    if(velMode){kgh=A*vel*1000*3600;lpm=kgh/60;}
+    else{const q=0.35464*C*Math.pow(d,2.63)*Math.pow(I,0.54);kgh=q*1000*3600;lpm=q*1000*60;}
+    const area=Math.PI*p.id*p.id/4;
+    return `<tr><td class="mono" style="font-weight:800;color:#0369a1">${p.s}</td><td class="mono">${p.id.toFixed(2)}</td><td class="mono">${fmt(kgh,0)}</td><td class="mono">${fmt(lpm,1)}</td><td class="mono">${area.toFixed(0)}</td></tr>`;
+  }).join('');
+  document.getElementById('stdTblMain').innerHTML=hd+'<tbody>'+rows+'</tbody>';
+}
+
+/* ── 체크리스트 빌드 ── */
+const CHECK_ITEMS=[
+  {t:'연속방정식(Q=AV) 기반 유속 검토 수행 (권장 1.0~2.0 m/s)',c:true},
+  {t:'William-Hazen 공식 기반 압력강하 산정 완료',c:true},
+  {t:'강관 20년 후 C=100 적용한 미래보장 설계 검토'},
+  {t:'부속품 국부저항 상당길이 변환 및 전체 손실수두 합산 완료'},
+  {t:'냉동기·보일러 허용유량 및 내부 손실수두 확인',c:true},
+  {t:'순환펌프 양정 산출 시 장비·부속품 손실수두 반영'},
+  {t:'유속 1.5 m/s 초과 시 수격방지기 설치 검토'},
+  {t:'기계설비 기술기준 [별표 8] 준수 확인',c:true},
+];
+function buildChecklist(){
+  const html=CHECK_ITEMS.map((item,i)=>`
+    <div style="display:flex;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:1px solid #dbeafe">
+      <input type="checkbox" id="chk${i}" style="margin-top:2px;accent-color:#0369a1;width:14px;height:14px;flex-shrink:0">
+      <label for="chk${i}" style="font-size:11px;color:${item.c?'#0c1a2e':'#475569'};cursor:pointer;line-height:1.5">
+        ${item.c?'<span style="color:#0369a1;font-size:10px;font-weight:800;margin-right:5px">[필수]</span>':''}${item.t}
+      </label>
+    </div>`).join('');
+  document.getElementById('checklistDiv').innerHTML=html;
+  document.getElementById('modal-checklist').innerHTML=html;
+}
+function buildModalCTable(){
+  document.getElementById('modal-c-table').innerHTML=`
+    <thead><tr><th>재질</th><th>C(신설)</th><th>C(노후)</th><th>비고</th></tr></thead>
+    <tbody>
+      ${PIPE_TYPES.map(p=>`<tr><td>${p.ico} ${p.nm} ${p.cat}</td><td class="mono" style="font-weight:900;color:#0369a1">${p.C}</td><td class="mono" style="color:#d97706">${p.Ca}</td><td>${p.id==='copper'?'고유속 시 침식':p.id==='pvc'?'마찰손실 최소':p.id==='steel_sgp'?'표준 냉온수':'—'}</td></tr>`).join('')}
+    </tbody>`;
+}
+
+/* ── 이력 ── */
+function saveHistory(){
+  if(!STATE.result){toast('먼저 관경을 산정하세요');return;}
+  const r=STATE.result;
+  const item={
+    time:new Date().toLocaleTimeString('ko-KR'),
+    mat:r.mat.nm+' '+r.mat.cat,
+    pipe:r.selected.s,
+    flow:STATE.flowKgh,
+    vel:r.selected.vel.toFixed(3),
+    pdrop:r.selected.actualPdrop.toFixed(1),
+    ok:r.selected.ok,
+  };
+  calcHistory.unshift(item);
+  renderHistory();
+  toast('✓ 이력이 저장되었습니다');
+}
+function clearHistory(){
+  if(!calcHistory.length)return;
+  calcHistory=[];
+  renderHistory();
+  toast('이력이 삭제되었습니다');
+}
+function renderHistory(){
+  const el=document.getElementById('historyList');
+  if(!calcHistory.length){el.innerHTML='<div style="text-align:center;padding:18px 0;color:#94a3b8;font-size:11px">산정 이력이 없습니다</div>';return;}
+  el.innerHTML=calcHistory.map((h,i)=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 11px;background:#f8fafc;border:1px solid #dbeafe;border-radius:8px;margin-bottom:5px;gap:8px;flex-wrap:wrap">
+      <div>
+        <div style="font-size:11px;font-weight:800;color:#0c1a2e">${h.pipe} · ${h.mat}</div>
+        <div style="font-size:9.5px;color:#4a6585">${h.time} · 유량 ${fmt(h.flow,0)} KG/H · 유속 ${h.vel} m/s · ${h.pdrop} mmAq/m</div>
+      </div>
+      <span class="cbadge ${h.ok?'grn':'red'}">${h.ok?'✓ 적합':'✗ 재검토'}</span>
+    </div>`).join('');
+}
+
+/* ── 초기화 ── */
+function resetAll(){
+  if(!confirm('모든 입력 내용을 초기화하시겠습니까?')) return;
+  // 유량/부하 입력 초기화
+  document.getElementById('inp-flow').value  = '';
+  if(document.getElementById('inp-load')) document.getElementById('inp-load').value = '';
+  // 온도 초기화
+  document.getElementById('inp-ts').value = '7';
+  document.getElementById('inp-tr').value = '12';
+  // 시스템 프리셋 초기화
+  const sysSel = document.getElementById('sel-sys-preset');
+  if(sysSel) sysSel.value = 'custom';
+  // 파라미터 초기화
+  document.getElementById('sel-pdrop').value = '30';
+  document.getElementById('sel-vel').value   = '1.5';
+  document.getElementById('inp-floors').value  = '1';
+  document.getElementById('inp-floorht').value = '3.0';
+  // STATE 초기화
+  STATE.flowKgh   = 0;
+  STATE.loadKcalh = 0;
+  STATE.dt        = 5;
+  STATE.result    = null;
+  INPUT_MODE = 'flow';
+  setInputMode('flow', document.getElementById('mode-flow'));
+  selectMat('steel_sgp');
+  document.getElementById('result-placeholder').style.display = '';
+  document.getElementById('result-content').style.display     = 'none';
+  document.getElementById('result-badge').textContent         = '대기';
+  document.getElementById('result-badge').className           = 'cbadge';
+  markStep(1, false);
+  syncAll();
+  updateStepStatus();
+  renderMobileResult(null);
+  // 공유 버튼 초기화
+  var sb=document.getElementById('btn-mobile-share'); if(sb) sb.style.display='none';
+  var ah=document.getElementById('mobile-action-hint'); if(ah) ah.textContent='※ 관경 산정 탭에서 결과 입력 후 JPG 저장하세요';
+  toast('🔄 초기화 완료');
+}
+
+/* ── A4 미리보기 ── */
+function renderA4(r){
+  if(!r || !r.selected || !r.mat) return;
+  const today = new Date().toLocaleDateString('ko-KR');
+  const purposeEl = document.getElementById('sel-purpose');
+  const purposeTxt = purposeEl ? purposeEl.options[purposeEl.selectedIndex].text : '—';
+  const schEl  = document.getElementById('sel-sch');
+  const schTxt = schEl ? schEl.options[schEl.selectedIndex].text : '';
+  const isSteelFamily = (STATE.matId==='steel_sgp');
+  const matFullName = isSteelFamily
+    ? `${r.mat.nm} (${schTxt})`
+    : `${r.mat.nm} ${r.mat.cat}`;
+  const velOk = r.selected.vel <= r.mat.vrec[1] && r.selected.vel >= r.mat.vrec[0];
+  const velJdg = r.selected.vel > r.vmax ? '✗ 초과' : r.selected.vel > r.mat.vrec[1] ? '⚠ 검토' : '✓ 적합';
+  const pdropJdg = r.selected.actualPdrop <= STATE.pdrop ? '✓ 적합' : '⚠ 초과';
+  const flowJdg  = STATE.flowKgh <= r.selected.maxQ_kgh ? '✓ 적합' : '✗ 초과';
+
+  // 인접 관경 슬라이스 (안전하게)
+  const cands = Array.isArray(r.candidates) ? r.candidates : [];
+  const si = typeof r.selIdx === 'number' ? r.selIdx : 0;
+  const altRows = cands
+    .slice(Math.max(0, si - 1), Math.min(cands.length, si + 4))
+    .map(c => {
+      const isSel = c.s === r.selected.s;
+      return `<tr class="${isSel ? 'hl' : ''}">
+        <td style="font-weight:${isSel?'900':'600'};color:${isSel?'#0369a1':'inherit'}">${isSel ? '★ ' : ''}${c.s}</td>
+        <td>${c.id.toFixed(1)}</td>
+        <td style="color:${c.vel > r.vmax ? '#dc2626' : c.vel > r.mat.vrec[1] ? '#d97706' : '#15803d'}">${c.vel.toFixed(3)}</td>
+        <td>${c.actualPdrop.toFixed(2)}</td>
+        <td>${fmt(c.maxQ_kgh, 0)}</td>
+        <td style="color:${c.ok?'#15803d':'#dc2626'};font-weight:700">${c.ok ? '✓ 적합' : '✗ 부적합'}</td>
+      </tr>`;
+    }).join('');
+
+  const html = `
+    <div class="a4-tit">냉온수 배관 관경 산정서 [MANMIN-Ver2.0]</div>
+    <div style="font-size:13px;font-weight:800;color:#0c2340;margin-bottom:4px;padding-bottom:6px;border-bottom:2px solid #0369a1;display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px">
+      <span>📋 ${STATE.projectName || '만민 건축사 신사옥 신축공사'}</span>
+      <span style="font-size:10px;font-weight:700;color:#475569">작성자: ${STATE.projectAuthor || '김만민'}</span>
+    </div>
+    <div class="a4-info-row">
+      <span>기계설비 기술기준 [별표 8] 배관설비 설계 및 시공 기준 (국토교통부 고시 제2021-851호)</span>
+      <span>작성일: ${STATE.projectDate ? STATE.projectDate.replace(/-/g,'.') : today}</span>
+    </div>
+
+    <div class="a4-sub">1. 설계 입력 조건</div>
+    <table class="a4-tbl">
+      <colgroup><col style="width:18%"><col style="width:32%"><col style="width:18%"><col style="width:32%"></colgroup>
+      <tbody>
+        <tr><th>배관 재질</th><td>${matFullName}</td><th>배관 용도</th><td>${purposeTxt}</td></tr>
+        <tr><th>설계 유량</th><td>${fmt(STATE.flowKgh,0)} KG/H &nbsp;|&nbsp; ${fmt(STATE.flowKgh/60,1)} LPM</td><th>허용 압력강하</th><td>${STATE.pdrop} mmAq/m</td></tr>
+        <tr><th>최대 허용 유속</th><td>${STATE.vel} m/s</td><th>H-W C 계수</th><td>${r.C} (신설 기준)</td></tr>
+        <tr><th>총 층수</th><td>${STATE.floors} 층</td><th>층 높이</th><td>${STATE.floorHt} m</td></tr>
+        <tr><th>정수두</th><td>${(STATE.floors * STATE.floorHt * 9.81).toFixed(1)} kPa</td><th>총 높이</th><td>${(STATE.floors * STATE.floorHt).toFixed(1)} m</td></tr>
+      </tbody>
+    </table>
+
+    <div class="a4-sub">2. 관경 산정 결과</div>
+    <table class="a4-tbl">
+      <thead><tr><th>항목</th><th>산정값</th><th>비교 기준</th><th>판정</th></tr></thead>
+      <tbody>
+        <tr class="hl">
+          <td>★ 채택 관경</td>
+          <td style="font-size:14px;font-weight:900;color:#0369a1">${r.selected.s}</td>
+          <td>William-Hazen + 연속방정식</td>
+          <td style="color:#15803d;font-weight:800">✓ 산정 완료</td>
+        </tr>
+        <tr>
+          <td>관 내경 (ID)</td>
+          <td>${r.selected.id.toFixed(2)} mm</td>
+          <td>유속기준 최소 내경: ${r.minIdByVel.toFixed(2)} mm</td>
+          <td style="color:#15803d">✓ 적합</td>
+        </tr>
+        <tr>
+          <td>실제 유속</td>
+          <td>${r.selected.vel.toFixed(3)} m/s</td>
+          <td>권장: ${r.mat.vrec[0]} ~ ${r.mat.vrec[1]} m/s &nbsp;|&nbsp; 최대: ${r.vmax} m/s</td>
+          <td style="color:${velJdg.includes('✓')?'#15803d':velJdg.includes('⚠')?'#d97706':'#dc2626'};font-weight:700">${velJdg}</td>
+        </tr>
+        <tr>
+          <td>실제 압력강하</td>
+          <td>${r.selected.actualPdrop.toFixed(2)} mmAq/m</td>
+          <td>목표 압력강하: ${STATE.pdrop} mmAq/m</td>
+          <td style="color:${pdropJdg.includes('✓')?'#15803d':'#d97706'};font-weight:700">${pdropJdg}</td>
+        </tr>
+        <tr>
+          <td>최대 허용 유량</td>
+          <td>${fmt(r.selected.maxQ_kgh,0)} KG/H</td>
+          <td>설계 유량: ${fmt(STATE.flowKgh,0)} KG/H</td>
+          <td style="color:${flowJdg.includes('✓')?'#15803d':'#dc2626'};font-weight:700">${flowJdg}</td>
+        </tr>
+        <tr>
+          <td>유량 여유율</td>
+          <td>${((r.selected.maxQ_kgh / STATE.flowKgh - 1)*100).toFixed(1)} %</td>
+          <td>여유율 = (최대유량 / 설계유량 - 1) × 100</td>
+          <td style="color:${r.selected.maxQ_kgh/STATE.flowKgh>=1.2?'#15803d':'#d97706'};font-weight:700">${r.selected.maxQ_kgh/STATE.flowKgh>=1.2?'✓ 충분':'⚠ 협소'}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="a4-sub">3. 인접 관경 비교표</div>
+    <table class="a4-tbl">
+      <thead>
+        <tr>
+          <th>관경</th><th>내경 (mm)</th><th>유속 (m/s)</th>
+          <th>압력강하 (mmAq/m)</th><th>최대유량 (KG/H)</th><th>종합 판정</th>
+        </tr>
+      </thead>
+      <tbody>${altRows}</tbody>
+    </table>
+
+    <div class="a4-sub">4. 적용 기준 및 계산 공식</div>
+    <table class="a4-tbl">
+      <colgroup><col style="width:28%"><col></colgroup>
+      <tbody>
+        <tr><th style="text-align:left;padding-left:7px">William-Hazen 공식</th><td>Q = 0.35464 × C × d²·⁶³ × I⁰·⁵⁴ &nbsp;&nbsp;(Q: m³/s, d: m, I: m/m)</td></tr>
+        <tr><th style="text-align:left;padding-left:7px">연속방정식 (역산)</th><td>d = √(4Q / π·V) &nbsp;&nbsp;(Q: m³/s, V: m/s, d: m)</td></tr>
+        <tr><th style="text-align:left;padding-left:7px">적용 C 계수</th><td>${matFullName} — C=${r.C} (신설) / C=${r.mat.Ca} (노후 설계 권장)</td></tr>
+        <tr><th style="text-align:left;padding-left:7px">관경 채택 원칙</th><td>W-H 기준 관경 vs 유속역산 기준 관경 → 큰 값(안전측) 채택</td></tr>
+        <tr><th style="text-align:left;padding-left:7px">적용 기술기준</th><td>기계설비 기술기준 [별표 8] 배관설비 설계 및 시공 기준</td></tr>
+      </tbody>
+    </table>
+
+    <div class="a4-footer">
+      <span>냉온수 배관 관경 산정 시스템 [MANMIN-Ver2.0] · 기계설비 기술기준 국토교통부 고시 제2021-851호</span>
+      <span>작성일: ${today}</span>
+    </div>`;
+
+  document.getElementById('a4Page').innerHTML = html;
+}
+
+function printA4(){
+  if(!STATE.result){toast('먼저 관경을 산정하세요');return;}
+  window.print();
+}
+
+function initA4Scale(){
+  function scaleA4(){
+    const wrap = document.getElementById('a4ScaleWrap');
+    if(!wrap) return;
+    // panel-a4가 숨겨진 경우 부모의 실제 너비를 못 읽으므로 임시 표시
+    const panel = document.getElementById('panel-a4');
+    const wasHidden = panel && panel.style.display === 'none';
+    if(wasHidden){ panel.style.visibility='hidden'; panel.style.display='block'; }
+    const parentW = wrap.parentElement ? wrap.parentElement.clientWidth : 0;
+    if(wasHidden){ panel.style.display='none'; panel.style.visibility=''; }
+    if(parentW <= 0) return;
+    const available = parentW - 40;
+    const scale = Math.min(1.0, available / 794);
+    wrap.style.transform = `scale(${scale})`;
+    // scale 후 wrap 높이 보정 (transform은 레이아웃 공간을 바꾸지 않음)
+    const a4Page = document.getElementById('a4Page');
+    const naturalH = a4Page ? a4Page.offsetHeight : 1123;
+    wrap.style.height = (naturalH * scale) + 'px';
+  }
+  // 탭 전환 때마다 재계산
+  document.querySelectorAll('.tb').forEach(btn => {
+    btn.addEventListener('click', () => setTimeout(scaleA4, 30));
+  });
+  scaleA4();
+  window.addEventListener('resize', scaleA4);
+  // 폰트 로드 후 재계산
+  if(document.fonts && document.fonts.ready){
+    document.fonts.ready.then(scaleA4);
+  }
+  window._scaleA4 = scaleA4; // 외부 호출 가능하도록
+}
+
+/* ── 가이드 모달 ── */
+function openGuideModal(){ document.getElementById('guideModal').style.display='flex'; }
+function closeGuideModal(){ document.getElementById('guideModal').style.display='none'; }
+function switchGuideTab(n){
+  for(let i=0;i<5;i++){
+    const t=document.getElementById('gmt-'+i);
+    if(t) t.classList.toggle('active',i===n);
+    const p=document.getElementById('gmp-'+i);
+    if(p) p.style.display=i===n?'block':'none';
+  }
+  // C계수표 탭(3)은 renderGuide가 채워야 하므로 호출
+  if(n===3) renderGuide();
+}
+
+/* ── FAB ── */
+function initFab(){
+  const btn=document.getElementById('fabCalc');
+  const tip=document.getElementById('fabTooltip');
+  if(!btn) return;
+  let isDragging=false,hasMoved=false,startX,startY,startR,startB;
+  function getXY(e){const t=e.touches?e.touches[0]:e;return{x:t.clientX,y:t.clientY};}
+  function onDown(e){
+    const p=getXY(e);startX=p.x;startY=p.y;hasMoved=false;isDragging=false;
+    const rect=btn.getBoundingClientRect();
+    startR=window.innerWidth-rect.right;startB=window.innerHeight-rect.bottom;
+    document.addEventListener('mousemove',onMove);document.addEventListener('mouseup',onUp);
+    document.addEventListener('touchmove',onMove,{passive:false});document.addEventListener('touchend',onUp);
+    e.preventDefault();
+  }
+  function onMove(e){
+    const p=getXY(e);const dx=p.x-startX,dy=p.y-startY;
+    if(!hasMoved&&(Math.abs(dx)>5||Math.abs(dy)>5)){hasMoved=true;isDragging=true;tip.classList.remove('show');}
+    if(!isDragging)return;
+    let nr=Math.max(4,Math.min(startR-dx,window.innerWidth-btn.offsetWidth-4));
+    let nb=Math.max(4,Math.min(startB-dy,window.innerHeight-btn.offsetHeight-4));
+    btn.style.right=nr+'px';btn.style.bottom=nb+'px';
+    e.preventDefault();
+  }
+  function onUp(){
+    document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp);
+    document.removeEventListener('touchmove',onMove);document.removeEventListener('touchend',onUp);
+    if(!hasMoved) openGuideModal();
+    isDragging=false;
+  }
+  btn.addEventListener('mousedown',onDown);
+  btn.addEventListener('touchstart',onDown,{passive:false});
+  btn.addEventListener('mouseenter',()=>{if(!isDragging){const r=btn.getBoundingClientRect();tip.style.left=(r.left+r.width/2)+'px';tip.style.top=(r.top-36)+'px';tip.classList.add('show');}});
+  btn.addEventListener('mouseleave',()=>tip.classList.remove('show'));
+}
+
+/* ── purpose change ── */
+function onPurposeChange(){ liveCalc(); }
+
+/* ══════════════════════════════════════════
+   ★ 설계기준 탭 — 실시간 산정 결과 판정 렌더
+══════════════════════════════════════════ */
+function renderGuide(){
+  const r = STATE.result;
+  const noEl  = document.getElementById('guide-no-result');
+  const panEl = document.getElementById('guide-result-panel');
+  const badge = document.getElementById('guide-result-badge');
+  if(!r || !r.selected){
+    if(noEl)  noEl.style.display  = '';
+    if(panEl) panEl.style.display = 'none';
+    if(badge){ badge.textContent='산정 대기'; badge.className='cbadge'; }
+    return;
+  }
+  if(noEl)  noEl.style.display  = 'none';
+  if(panEl) panEl.style.display = 'block';
+
+  /* ─ 배지 ─ */
+  const overAbs  = r.selected.overAbsMax;
+  const overDes  = !r.selected.ok && !overAbs;
+  if(badge){
+    badge.textContent = overAbs ? '🔴 절대최대 초과' : overDes ? '🟠 목표유속 초과' : '✅ 기준 만족';
+    badge.className   = overAbs ? 'cbadge red' : overDes ? 'cbadge org' : 'cbadge grn';
+  }
+
+  /* ─ 판정 요약 카드 그리드 ─ */
+  function judgeCard(ico, lbl, val, color){
+    return `<div class="sbox" style="border-color:${color}20">
+      <div class="sico">${ico}</div>
+      <div class="sval" style="font-size:14px;color:${color}">${val}</div>
+      <div class="slbl">${lbl}</div>
+    </div>`;
+  }
+  const velColor = r.selected.vel > r.vmax ? '#dc2626'
+    : r.selected.vel > STATE.vel ? '#d97706' : '#15803d';
+  const pdColor  = r.selected.actualPdrop > STATE.pdrop ? '#d97706' : '#15803d';
+  const flrColor = r.prvAlert ? '#d97706' : '#0369a1';
+
+  document.getElementById('guide-judge-grid').innerHTML =
+    judgeCard('📏', '채택 관경', r.selected.s, '#0369a1') +
+    judgeCard('💨', '실제 유속', r.selected.vel.toFixed(2)+' m/s', velColor) +
+    judgeCard('📉', '압력강하', r.selected.actualPdrop.toFixed(1)+' mmAq/m', pdColor) +
+    judgeCard('🏢', '정수두', r.staticKpa.toFixed(0)+' kPa', flrColor) +
+    judgeCard('📏', '내경', r.selected.id.toFixed(1)+' mm', '#0369a1') +
+    judgeCard('🔩', '재질·스케쥴', r.matLabel||r.mat.nm, '#475569');
+
+  /* ─ 상세 판정 테이블 ─ */
+  function row(item, val, std, judge, judgeColor){
+    return `<tr>
+      <td style="font-weight:700">${item}</td>
+      <td class="mono" style="font-weight:800">${val}</td>
+      <td style="color:#64748b">${std}</td>
+      <td style="color:${judgeColor};font-weight:800">${judge}</td>
+    </tr>`;
+  }
+  // 유속 판정
+  let velJdg, velJColor;
+  if(r.selected.vel > r.vmax)        { velJdg='🔴 절대최대 초과 — 관경 재검토';  velJColor='#dc2626'; }
+  else if(r.selected.vel > STATE.vel)    { velJdg='🟠 설계목표 초과';               velJColor='#d97706'; }
+  else if(r.selected.vel > r.mat.vrec[1]){ velJdg='🟡 권장상한 초과 — 수격방지 검토'; velJColor='#b45309'; }
+  else if(r.selected.vel < r.mat.vrec[0]){ velJdg='🔵 권장하한 미만 — 퇴적 주의';   velJColor='#0369a1'; }
+  else                                   { velJdg='✅ 적정';                          velJColor='#15803d'; }
+
+  const pdJdg = r.selected.actualPdrop > STATE.pdrop
+    ? `🟠 목표(${STATE.pdrop}) 초과` : '✅ 목표 이하';
+  const pdJColor = r.selected.actualPdrop > STATE.pdrop ? '#d97706' : '#15803d';
+
+  const flowJdg = STATE.flowKgh <= r.selected.maxQ_kgh ? '✅ 허용 범위 내' : '🔴 초과';
+  const flowJColor = STATE.flowKgh <= r.selected.maxQ_kgh ? '#15803d' : '#dc2626';
+
+  const prvJdg = r.prvAlert ? '⚠ 구간별 감압밸브 검토' : '✅ 불필요 (300kPa 미만)';
+  const prvColor = r.prvAlert ? '#d97706' : '#15803d';
+
+  const pdrecJdg = r.pdropOverRec
+    ? `⚠ ${STATE.floors}층 → ${r.pdropRec}mmAq/m 이하 권장` : '✅ 층수 기준 적합';
+  const pdrecColor = r.pdropOverRec ? '#d97706' : '#15803d';
+
+  const circLen = (STATE.floors * STATE.floorHt * 1.3).toFixed(1);
+  const circJdg = parseFloat(circLen) > 15 ? `⚠ 추정길이 ${circLen}m → 환탕관+순환펌프 검토` : `✅ ${circLen}m ≤ 15m`;
+  const circColor = parseFloat(circLen) > 15 ? '#d97706' : '#15803d';
+
+  document.getElementById('guide-judge-table').innerHTML = `
+    <thead><tr><th>항목</th><th>산정값</th><th>기준</th><th>판정</th></tr></thead>
+    <tbody>
+      ${row('실제 유속', r.selected.vel.toFixed(3)+' m/s',
+            `설계목표 ${STATE.vel} m/s / 절대최대 ${r.vmax} m/s`, velJdg, velJColor)}
+      ${row('단위 압력강하', r.selected.actualPdrop.toFixed(2)+' mmAq/m',
+            `목표 ≤ ${STATE.pdrop} mmAq/m`, pdJdg, pdJColor)}
+      ${row('층수 기준 압력강하', STATE.pdrop+' mmAq/m',
+            `${STATE.floors}층 권고 ≤ ${r.pdropRec} mmAq/m`, pdrecJdg, pdrecColor)}
+      ${row('최대 허용 유량', fmt(r.selected.maxQ_kgh,0)+' KG/H',
+            `설계유량 ${fmt(STATE.flowKgh,0)} KG/H`, flowJdg, flowJColor)}
+      ${row('정수두', r.staticKpa.toFixed(1)+' kPa',
+            '300 kPa 이상 시 감압밸브 검토', prvJdg, prvColor)}
+      ${row('환탕 배관 판정', circLen+' m (추정)',
+            '15m 초과 시 환탕관 의무', circJdg, circColor)}
+      ${row('유량 여유율', ((r.selected.maxQ_kgh/STATE.flowKgh-1)*100).toFixed(1)+'%',
+            '20% 이상 권장', (r.selected.maxQ_kgh/STATE.flowKgh-1)*100 >= 20 ? '✅ 충분' : '⚠ 협소',
+            (r.selected.maxQ_kgh/STATE.flowKgh-1)*100 >= 20 ? '#15803d' : '#d97706')}
+    </tbody>`;
+
+  /* ─ 층수 연동 분석 박스 ─ */
+  const vertBoostTxt = r.vertBoost === 0 ? '보정 없음 (1~5층)'
+    : r.vertBoost === 1 ? '+1단계 상향 권장 (6~15층)' : '+2단계 상향 권장 (16층↑)';
+
+  document.getElementById('guide-floor-analysis').innerHTML = `
+    <div style="background:#fff7ed;border:1.5px solid #fed7aa;border-radius:9px;padding:11px">
+      <div style="font-size:10.5px;font-weight:800;color:#c2410c;margin-bottom:8px">
+        🏢 층수·층높이 연동 분석 — ${STATE.floors}층 × ${STATE.floorHt}m = 총 ${r.totalH.toFixed(1)}m
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:6px">
+        <div style="background:#fff;border-radius:7px;padding:8px;border:1px solid #fed7aa">
+          <div style="font-size:9px;color:#92400e;font-weight:700;margin-bottom:3px">정수두</div>
+          <div style="font-size:16px;font-weight:900;color:#c2410c;font-family:'JetBrains Mono',monospace">${r.staticKpa.toFixed(0)} kPa</div>
+          <div style="font-size:9px;color:#78350f">${r.totalH.toFixed(1)}m × 9.81</div>
+        </div>
+        <div style="background:#fff;border-radius:7px;padding:8px;border:1px solid ${r.pdropOverRec?'#fca5a5':'#fed7aa'}">
+          <div style="font-size:9px;color:#92400e;font-weight:700;margin-bottom:3px">압력강하 권고</div>
+          <div style="font-size:16px;font-weight:900;color:${r.pdropOverRec?'#dc2626':'#15803d'};font-family:'JetBrains Mono',monospace">≤ ${r.pdropRec} mmAq/m</div>
+          <div style="font-size:9px;color:#78350f">${STATE.floors}층 기준</div>
+        </div>
+        <div style="background:#fff;border-radius:7px;padding:8px;border:1px solid ${r.prvAlert?'#fca5a5':'#fed7aa'}">
+          <div style="font-size:9px;color:#92400e;font-weight:700;margin-bottom:3px">감압밸브 예비판정</div>
+          <div style="font-size:12px;font-weight:800;color:${r.prvAlert?'#dc2626':'#15803d'}">${r.prvAlert?'⚠ 검토 필요':'✅ 불필요'}</div>
+          <div style="font-size:9px;color:#78350f">300kPa 기준</div>
+        </div>
+        <div style="background:#fff;border-radius:7px;padding:8px;border:1px solid #fed7aa">
+          <div style="font-size:9px;color:#92400e;font-weight:700;margin-bottom:3px">배수수직관 보정</div>
+          <div style="font-size:11px;font-weight:800;color:${r.vertBoost>0?'#d97706':'#15803d'}">${vertBoostTxt}</div>
+        </div>
+      </div>
+    </div>`;
+}
+</script>
+
+<!-- ═══ PWA 설치 배너 ═══ -->
+<div id="pwa-banner">
+  <div class="pwa-inner">
+    <div class="pwa-icon">🌡️</div>
+    <div class="pwa-texts">
+      <div class="pwa-title">📲 냉온수배관 앱 설치</div>
+      <div class="pwa-desc">홈 화면에 추가하면 오프라인에서도 바로 사용 가능합니다</div>
+    </div>
+    <div class="pwa-btns">
+      <button class="pwa-ok" onclick="pwaTriggerInstall()">설치하기</button>
+      <button class="pwa-no" onclick="pwaDismiss()">✕</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PWA + JPG + 모바일 미리보기 JS ═══ -->
+<script>
+/* ─────────────────────────────────────────────────────
+   MANMIN PWA — Service Worker 등록 + 설치 버튼 로직
+   ───────────────────────────────────────────────────── */
+(function(){
+  var deferred = null;
+
+  /* ── 1. Service Worker 등록 ── */
+  if('serviceWorker' in navigator){
+    window.addEventListener('load', function(){
+      navigator.serviceWorker.register('./sw.js', { scope: './' })
+        .then(function(reg){
+          console.log('[PWA] SW 등록 완료:', reg.scope);
+
+          /* 새 버전 감지 → 업데이트 토스트 */
+          reg.addEventListener('updatefound', function(){
+            var installing = reg.installing;
+            if(!installing) return;
+            installing.addEventListener('statechange', function(){
+              if(installing.state === 'installed' && navigator.serviceWorker.controller){
+                _showUpdateBanner(reg);
+              }
+            });
+          });
+        })
+        .catch(function(err){ console.warn('[PWA] SW 등록 실패:', err); });
+
+      /* 컨트롤러 변경 시 자동 새로고침 */
+      var refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', function(){
+        if(!refreshing){ refreshing = true; window.location.reload(); }
+      });
+    });
+  }
+
+  /* ── 2. 업데이트 알림 배너 ── */
+  function _showUpdateBanner(reg){
+    var b = document.createElement('div');
+    b.id = 'sw-update-banner';
+    b.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:9999;background:#0369a1;color:#fff;padding:10px 20px;border-radius:12px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(3,105,161,.5);white-space:nowrap;font-family:inherit;';
+    b.innerHTML = '<span>🔄 새 버전 업데이트 완료</span>' +
+      '<button onclick="this.parentNode.remove();navigator.serviceWorker.ready.then(function(r){r.waiting&&r.waiting.postMessage({type:\'SKIP_WAITING\'});})" ' +
+      'style="background:rgba(255,255,255,.25);border:none;color:#fff;padding:4px 12px;border-radius:7px;cursor:pointer;font-weight:800;font-family:inherit;">지금 적용</button>' +
+      '<button onclick="this.parentNode.remove()" style="background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:16px;padding:0 4px;">✕</button>';
+    document.body.appendChild(b);
+    setTimeout(function(){ if(b.parentNode) b.remove(); }, 8000);
+  }
+
+  /* ── 3. beforeinstallprompt 캡처 ── */
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault();
+    deferred = e;
+
+    /* 헤더 설치 버튼 표시 */
+    var btn = document.getElementById('pwa-install-btn');
+    if(btn) btn.classList.add('visible');
+
+    /* 하단 배너 — dismissed 아닐 때 2.5초 후 */
+    if(!sessionStorage.getItem('pwa-dismissed')){
+      setTimeout(function(){
+        var banner = document.getElementById('pwa-banner');
+        if(banner) banner.classList.add('visible');
+      }, 2500);
+    }
+  });
+
+  /* ── 4. 설치 실행 (헤더 버튼 / 배너 버튼 공통) ── */
+  window.pwaTriggerInstall = function(){
+    var banner = document.getElementById('pwa-banner');
+    if(banner) banner.classList.remove('visible');
+
+    if(!deferred){
+      /* 이미 설치됐거나 미지원 브라우저 */
+      var guide = [
+        '📲 앱 설치 방법',
+        '',
+        '📱 iOS Safari:',
+        '   공유 버튼(□↑) → "홈 화면에 추가" 탭',
+        '',
+        '💻 Chrome / Edge:',
+        '   주소창 우측 ⊕ 또는 ⋮ 메뉴 → "앱 설치"',
+        '',
+        '🤖 Android Chrome:',
+        '   하단 배너 "설치" 또는 메뉴 → "홈 화면에 추가"',
+      ].join('\n');
+      alert(guide);
+      return;
+    }
+
+    deferred.prompt();
+    deferred.userChoice.then(function(result){
+      if(result.outcome === 'accepted'){
+        var btn = document.getElementById('pwa-install-btn');
+        if(btn) btn.classList.remove('visible');
+        console.log('[PWA] 설치 수락됨');
+      } else {
+        console.log('[PWA] 설치 거절됨');
+      }
+      deferred = null;
+    });
+  };
+
+  /* ── 5. 배너 닫기 ── */
+  window.pwaDismiss = function(){
+    var banner = document.getElementById('pwa-banner');
+    if(banner) banner.classList.remove('visible');
+    try{ sessionStorage.setItem('pwa-dismissed', '1'); }catch(e){}
+  };
+
+  /* ── 6. 설치 완료 처리 ── */
+  window.addEventListener('appinstalled', function(){
+    var btn    = document.getElementById('pwa-install-btn');
+    var banner = document.getElementById('pwa-banner');
+    if(btn)    btn.classList.remove('visible');
+    if(banner) banner.classList.remove('visible');
+    deferred = null;
+    console.log('[PWA] 앱 설치 완료');
+    /* 설치 완료 토스트 */
+    if(typeof toast === 'function') toast('✅ 앱이 홈 화면에 설치되었습니다!');
+  });
+
+  /* ── 7. standalone 모드면 설치 버튼 숨김 ── */
+  var isStandalone = (
+    window.matchMedia('(display-mode:standalone)').matches ||
+    window.navigator.standalone === true ||
+    document.referrer.includes('android-app://')
+  );
+  if(isStandalone){
+    document.addEventListener('DOMContentLoaded', function(){
+      var btn = document.getElementById('pwa-install-btn');
+      if(btn) btn.style.display = 'none';
+    });
+  }
+})();
+
+/* ─── JPG 저장 기능 ─── */
+window.exportJpg = function(targetEl){
+  var el = targetEl || document.getElementById('a4Page') || document.getElementById('result-content');
+  if(!el){ showToast('먼저 관경을 산정하세요'); return; }
+  var placeholder = document.getElementById('result-placeholder');
+  if(placeholder && placeholder.style.display !== 'none' && !targetEl){
+    showToast('먼저 관경을 산정한 후 JPG를 저장하세요'); return;
+  }
+  showToast('📸 JPG 생성 중...');
+  var scale = 2; // 2x 고해상도
+  html2canvas(el, {
+    scale: scale,
+    useCORS: true,
+    allowTaint: true,
+    backgroundColor: '#ffffff',
+    logging: false,
+    width: el.scrollWidth,
+    height: el.scrollHeight
+  }).then(function(canvas){
+    var link = document.createElement('a');
+    var now = new Date();
+    var ts = now.getFullYear()+''+
+      String(now.getMonth()+1).padStart(2,'0')+
+      String(now.getDate()).padStart(2,'0')+'_'+
+      String(now.getHours()).padStart(2,'0')+
+      String(now.getMinutes()).padStart(2,'0');
+    link.download = '냉온수배관_관경산정_'+ts+'.jpg';
+    link.href = canvas.toDataURL('image/jpeg', 0.95);
+    link.click();
+    showToast('✅ JPG 저장 완료!');
+  }).catch(function(err){
+    showToast('❌ JPG 저장 실패: '+err.message);
+  });
+};
+
+/* ─── A4 전체 JPG ─── */
+window.exportA4Jpg = function(){
+  var el = document.getElementById('a4Page');
+  if(!el){ showToast('A4 미리보기 탭으로 이동 후 시도하세요'); return; }
+  exportJpg(el);
+};
+
+
+</script>
+
+</body>
+</html>
