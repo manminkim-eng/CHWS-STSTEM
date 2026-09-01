@@ -625,7 +625,7 @@ input[type="number"]{-moz-appearance:textfield;}
 .fab-calc{
   background:linear-gradient(135deg,#0e7490,#0891b2);
   color:#fff;border:none;border-radius:14px;
-  padding:10px 14px;cursor:pointer;min-width:52px;position:relative;   /* 20 건물우수 규격 */
+  padding:10px 8px;cursor:pointer;width:68px;min-width:68px;position:relative;   /* 두 버튼 폭·높이 완전 동일 */
   box-shadow:0 4px 20px rgba(14,116,144,.45);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
   line-height:1.3;transition:transform .15s,box-shadow .15s;
@@ -3466,13 +3466,28 @@ window.exportJpg = function(targetEl){
   }
   showToast('📸 JPG 생성 중...');
   var isA4 = (el.id === 'a4Page');
+
+  /* ⛔ v5.0 — 미리보기 축소 배율을 반드시 먼저 푼다.
+     모바일에서는 _scaleA4() 가 .a4-scale-wrap 에 transform:scale(0.4) 수준을 건다.
+     그 상태로 캡처하면 내용이 좌상단에 작게 몰려 나오고,
+     getBoundingClientRect 로 재는 세그먼트 좌표까지 축소값이 되어 쪽 나눔이 어긋난다.
+     해제 → 리플로우 → 측정·캡처 → 복원 순서를 지킨다. */
+  var scaleWrap = document.getElementById('a4ScaleWrap');
+  var prevTransform = scaleWrap ? scaleWrap.style.transform : '';
+  if(scaleWrap) scaleWrap.style.transform = 'none';
+  void el.offsetHeight;
+  var restoreScale = function(){ if(scaleWrap) scaleWrap.style.transform = prevTransform; };
+
   var segs = isA4 ? mmSegments(el) : null;
   var fullH = isA4 ? Math.max(mmContentHeight(el),1) : el.scrollHeight;
   html2canvas(el, {
     scale: 2, useCORS: true, allowTaint: true,
     backgroundColor: '#ffffff', logging: false,
-    width: el.scrollWidth, height: fullH
+    width: el.scrollWidth, height: fullH,
+    windowWidth: el.scrollWidth, windowHeight: fullH,
+    scrollX: 0, scrollY: 0
   }).then(function(canvas){
+    restoreScale();
     var now = new Date();
     var ts = now.getFullYear()+''+
       String(now.getMonth()+1).padStart(2,'0')+
@@ -3520,6 +3535,7 @@ window.exportJpg = function(targetEl){
     mmOpenSheet(shots, base);
     showToast(shots.length>1 ? '📄 '+shots.length+'매로 나눴습니다' : '📄 미리보기에서 저장하세요');
   }).catch(function(err){
+    restoreScale();
     showToast('❌ JPG 저장 실패: '+err.message);
   });
 };
