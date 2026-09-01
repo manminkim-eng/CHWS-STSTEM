@@ -601,7 +601,7 @@ input[type="number"]{-moz-appearance:textfield;}
     font-size:9.5px!important;
   }
   /* 표 페이지 넘김 — 헤더 반복 · 행 분리 방지 */
-  /* ⛔ v5.0 — 표는 통째로 한 장에 둔다. JPG(mmPickCutPreferSection)와 같은 동작이다.
+  /* ⛔ v5.0 — 표는 통째로 한 장에 둔다. JPG(mmBlocks/mmSegments)와 같은 동작이다.
      남은 공간에 표가 안 들어가면 제목과 함께 통째로 다음 장으로 넘어간다. */
   .a4-tbl{break-inside:avoid;page-break-inside:avoid;}
   /* 한 장보다 긴 표만 예외 — 분할을 허용하고 thead 를 반복한다(§3-3). */
@@ -3354,62 +3354,64 @@ function markLongTables(page){
   });
 }
 
-function mmSectionTops(page){
-  var pr=page.getBoundingClientRect(), out=[];
-  page.querySelectorAll('.a4-sub').forEach(function(el){
-    out.push(el.getBoundingClientRect().top-pr.top);
-  });
-  out.sort(function(a,b){return a-b;});
-  return out;
-}
-function mmTableRanges(page){
-  var pr=page.getBoundingClientRect(), out=[];
-  page.querySelectorAll('table.a4-tbl').forEach(function(t){
-    var b=t.getBoundingClientRect();
-    out.push({top:b.top-pr.top, bot:b.bottom-pr.top});
-  });
-  return out;
-}
-/* ⛔ 섹션 경계는 "표를 가를 때만" 쓴다.
-   무조건 섹션 경계를 우선하면 앞 쪽이 덜 차서 쪽수가 늘어난다. */
-function mmPickCutPreferSection(cuts, secTops, tables, y, limit, usable){
-  var any=mmPickCut(cuts, y, limit);
-  if(!any) return 0;
-  var splits=false;
-  for(var t=0;t<tables.length;t++){
-    if(any>tables[t].top+1 && any<tables[t].bot-1){ splits=true; break; }
-  }
-  if(!splits) return any;
-  var sec=0;
-  for(var i=0;i<secTops.length;i++){
-    if(secTops[i]>y+1 && secTops[i]<=limit) sec=secTops[i];
-    else if(secTops[i]>limit) break;
-  }
-  if(sec && (sec-y) >= usable*0.5) return sec;
-  return any;
-}
+/* ⛔ v5.0.1 — JPG 쪽 나눔을 인쇄와 동일한 "블록 원자" 방식으로 바꾼다.
+   ───────────────────────────────────────────────────────────────
+   종전(높이 기준 + 안전절단선)은 앞 쪽을 유효높이까지 채운 뒤 잘랐다.
+   인쇄는 .a4-tbl{break-inside:avoid} 와 .a4-sub + table{break-before:avoid} 로
+   "제목과 표를 통째로" 넘기므로 PDF 와 JPG 의 쪽 나눔이 어긋났다.
+   → JPG 도 "블록이 남은 공간에 다 안 들어가면 통째로 다음 장" 으로 통일한다.
 
+   원자 블록 = #a4Page 직계 자식.
+   단 소제목(.a4-sub)은 바로 뒤 형제(표·그리드)와 한 덩어리로 묶는다.
+   인쇄의 `.a4-sub + table.a4-tbl{break-before:avoid}` 와 같은 동작이다. */
+function mmBlocks(page){
+  var pr=page.getBoundingClientRect(), out=[], pend=null;
+  Array.prototype.forEach.call(page.children, function(el){
+    var b=el.getBoundingClientRect();
+    if(b.height<=0) return;
+    var mb=parseFloat(getComputedStyle(el).marginBottom)||0;
+    var top=b.top-pr.top, bot=b.bottom-pr.top+mb;
+    if(el.classList.contains('a4-sub')){        /* 제목만 따로 남기지 않는다 */
+      if(pend) out.push(pend);
+      pend={top:top, bot:bot};
+      return;
+    }
+    if(pend){ out.push({top:pend.top, bot:bot}); pend=null; return; }
+    out.push({top:top, bot:bot});
+  });
+  if(pend) out.push(pend);
+  out.sort(function(a,b){ return a.top-b.top; });
+  return out;
+}
 function mmSegments(page){
-  var mmPerPx=210/MM_PAGE.W, pH=297;
+  var mmPerPx=210/MM_PAGE.W;
   var cs=getComputedStyle(page);
   var padTop=parseFloat(cs.paddingTop)||0, padBot=parseFloat(cs.paddingBottom)||0;
-  var usable=(pH-MM_PAGE.MT-MM_PAGE.MB)/mmPerPx;   /* 261mm ≈ 987px — 전 쪽 동일 */
-  var cuts=mmSafeCuts(page), docH=mmContentHeight(page);
-  var secTops=mmSectionTops(page), tables=mmTableRanges(page);
-  var start=padTop, stop=Math.max(start, docH-padBot);
-  var segs=[], y=start, pg=0;
-  while(y<stop-0.5 && pg<60){
-    var ideal=y+usable, end;
-    if(ideal>=stop-0.5){ end=stop; }
-    else { end=mmPickCutPreferSection(cuts,secTops,tables,y,ideal,usable); if(!end) end=ideal; }
-    segs.push([y,end]); y=end; pg++;
+  var usable=(297-MM_PAGE.MT-MM_PAGE.MB)/mmPerPx;   /* 261mm ≈ 987px — 전 쪽 동일 */
+  var docH=mmContentHeight(page);
+  var stop=Math.max(padTop, docH-padBot);
+  var blocks=mmBlocks(page);
+  if(!blocks.length) return [[padTop,stop]];
+  var cuts=mmSafeCuts(page);
+  var segs=[], y=padTop, i=0, guard=0;
+  while(i<blocks.length && guard++<120){
+    var limit=y+usable, j=i, end=y;
+    while(j<blocks.length && blocks[j].bot<=limit+0.5){ end=blocks[j].bot; j++; }
+    if(j===i){
+      /* ⛔ 블록 하나가 한 장보다 크다 — 이때만 내부에서 자른다.
+         인쇄에서도 avoid 가 무시되어 자동 분할되는 것과 같은 동작이다. */
+      var cut=mmPickCut(cuts, y, limit);
+      if(!cut || cut<=y+1) cut=limit;
+      segs.push([y,cut]);
+      if(cut>=blocks[i].bot-0.5) i++;
+      y=cut; continue;
+    }
+    segs.push([y,end]); y=end; i=j;
   }
-  return segs.length ? segs : [[start,stop]];
+  /* 마지막 블록 뒤 꼬리는 5px 이상일 때만 쪽으로 만든다(백지 쪽 방지) */
+  if(stop-y>5) segs.push([y,stop]);
+  return segs.length ? segs : [[padTop,stop]];
 }
-/* ⛔ v5.0 — 쪽 균형 배분은 쓰지 않는다.
-   MIN 지시: "강제로 2장을 만들지 말고, 표가 용지에 걸릴 때만 다음 장으로 넘겨라."
-   앞 쪽을 유효 높이까지 채우고 남는 것만 넘긴다. */
-
 function mmDownload(url,name){
   var a=document.createElement('a');
   a.download=name; a.href=url;
