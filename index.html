@@ -491,8 +491,11 @@ input[type="number"]{-moz-appearance:textfield;}
   transition:background .15s,box-shadow .15s,transform .1s;}
 .mm-btn-print{background:#0e7490;color:#fff;}
 .mm-btn-jpg{background:#7e22ce;color:#fff;}
+/* ⛔ v5.0 — width:100% 는 A4 출력바 안에서만 적용한다.
+   전역으로 두면 JPG 저장 시트의 닫기 버튼까지 100% 폭을 먹어
+   시트 제목이 0px 로 눌리고 글자가 세로로 한 자씩 쌓인다(실측 확인). */
 @media(max-width:480px){ .a4-export-bar{flex-direction:column;align-items:stretch;}
-  .btn-export,.mm-btn{width:100%;} }
+  .a4-export-bar .btn-export,.a4-export-bar .mm-btn{width:100%;} }
 .btn-print{background:#0369a1;color:#fff;}.btn-print:hover{background:#075985;}
 .btn-jpg{background:linear-gradient(135deg,#059669,#10b981);color:#fff;}.btn-jpg:hover{background:linear-gradient(135deg,#047857,#059669);}
 .btn-pdf{background:linear-gradient(135deg,#7c3aed,#8b5cf6);color:#fff;}.btn-pdf:hover{background:linear-gradient(135deg,#6d28d9,#7c3aed);}
@@ -555,15 +558,21 @@ input[type="number"]{-moz-appearance:textfield;}
 .mm-sheet-foot{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;
   padding:13px 18px;border-top:1px solid #e2e8f0;}
 .mm-btn-close{background:#e2e8f0;color:#334155;}
+/* ⛔ v5.0 — 시트 헤더는 좌측 텍스트가 폭을 갖고 닫기 버튼이 줄어들어야 한다.
+   min-width 를 풀지 않으면 좁은 화면에서 텍스트가 0폭으로 눌려 글자가 세로로 쌓인다. */
+.mm-sheet-head > div:first-child{flex:1 1 auto;min-width:0;}
+.mm-sheet-head .btn-export{flex:0 0 auto;}
 @media(max-width:480px){
-  .mm-sheet-body{grid-template-columns:repeat(2,1fr);padding:12px;}
+  .mm-sheet-body{grid-template-columns:1fr;padding:12px;}
+  .mm-sheet-body.multi{grid-template-columns:repeat(2,1fr);}
   .mm-sheet-foot{justify-content:stretch;} .mm-sheet-foot .btn-export{flex:1;}
-  /* 좁은 폭에서 안내 문구가 눌리지 않도록 닫기 버튼을 줄인다 */
-  .mm-sheet-head{padding:12px 14px;}
-  .mm-sheet-note{font-size:10.5px;line-height:1.5;}
-  .mm-sheet-head .btn-export{padding:6px 10px!important;min-height:30px!important;
-    font-size:11px!important;flex-shrink:0;align-self:flex-start;}
+  .mm-sheet-head{padding:12px 14px;gap:8px;}
+  .mm-sheet-title{font-size:10px;}
+  .mm-sheet-note{font-size:10px;line-height:1.45;}
+  .mm-sheet-head .btn-export{padding:6px 9px!important;min-height:28px!important;
+    font-size:10.5px!important;align-self:flex-start;}
   .mm-shot{padding:7px;} .mm-shot-btn{padding:6px;font-size:11px;}
+  .mm-shot img{max-height:46vh;object-fit:contain;}
 }
 
 /* v5.0 — 버전 각인 (§3-3). position:fixed 라 인쇄 시 매 페이지 우하단에 찍힌다.
@@ -579,6 +588,9 @@ input[type="number"]{-moz-appearance:textfield;}
   .hdr-shell,.app-header,.tab-bar,.main-wrap .tab-panel:not(#panel-a4),.a4-export-bar,
   .modal-ov,.fab-wrap,.fab-calc,.toast{display:none!important;}
   #panel-a4{display:block!important;}
+  /* ⛔ v5.0 — 컨테이너 패딩이 남으면 A4 가 아래로 밀린다(11 소방시설 실측 31.8mm).
+     A4 패널이 .main-wrap 안에 있으므로 숨길 수는 없고 패딩만 해제한다. */
+  .main-wrap{padding:0!important;margin:0!important;max-width:none!important;}
   .a4-wrap{background:#fff!important;padding:0!important;min-height:unset!important;border-radius:0!important;display:block!important;}
   .a4-scale-wrap{transform:none!important;margin:0!important;}
   /* v5.0 — 여백은 @page 하나로만 일원화한다(§3-3). .a4-page 자체 패딩은 인쇄 시 해제. */
@@ -589,11 +601,18 @@ input[type="number"]{-moz-appearance:textfield;}
     font-size:9.5px!important;
   }
   /* 표 페이지 넘김 — 헤더 반복 · 행 분리 방지 */
-  .a4-tbl{page-break-inside:auto;}
+  /* ⛔ v5.0 — 표는 통째로 한 장에 둔다. JPG(mmPickCutPreferSection)와 같은 동작이다.
+     남은 공간에 표가 안 들어가면 제목과 함께 통째로 다음 장으로 넘어간다. */
+  .a4-tbl{break-inside:avoid;page-break-inside:avoid;}
+  /* 한 장보다 긴 표만 예외 — 분할을 허용하고 thead 를 반복한다(§3-3). */
+  .a4-tbl.long{break-inside:auto!important;page-break-inside:auto!important;}
   .a4-tbl thead{display:table-header-group;}
   .a4-tbl tfoot{display:table-footer-group;}
   .a4-tbl tr{page-break-inside:avoid;page-break-after:auto;}
   .a4-sub{page-break-after:avoid;page-break-before:auto;}
+  /* v5.0 — 제목 바로 뒤 표는 제목과 같은 장에서 시작한다 */
+  .a4-sub + table.a4-tbl{break-before:avoid;page-break-before:avoid;}
+  /* ⛔ v5.0 — tr:nth-child 행 묶음은 철회했다. thead 반복 처리를 방해한다(§16-11). */
   @page{size:A4 portrait;margin:14mm 12mm 22mm 14mm;}
 }
 
@@ -606,7 +625,7 @@ input[type="number"]{-moz-appearance:textfield;}
 .fab-calc{
   background:linear-gradient(135deg,#0e7490,#0891b2);
   color:#fff;border:none;border-radius:14px;
-  padding:10px 8px;cursor:pointer;width:66px;min-width:66px;position:relative;   /* v5.0 : 두 버튼 폭 통일 */
+  padding:10px 14px;cursor:pointer;min-width:52px;position:relative;   /* 20 건물우수 규격 */
   box-shadow:0 4px 20px rgba(14,116,144,.45);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
   line-height:1.3;transition:transform .15s,box-shadow .15s;
@@ -654,16 +673,17 @@ input[type="number"]{-moz-appearance:textfield;}
   .guide-grid-2col{grid-template-columns:1fr!important;}
   .seg-ctrl{flex-wrap:wrap;}
   .seg-btn{flex:0 0 auto;font-size:10px;padding:4px 8px;}
-  .brand-sub{display:none;}
   .rtbl,.gtbl{font-size:10px;}
   .rtbl th,.rtbl td,.gtbl th,.gtbl td{padding:5px 4px;height:30px;box-sizing:border-box;}
   .twrap{-webkit-overflow-scrolling:touch;}
 }
 @media(max-width:480px){
   .main-wrap{padding:8px 7px 65px;}
-  .header-inner{height:52px;padding:0 10px;}
-  .brand-icon{width:30px;height:30px;font-size:15px;}
-  .tb{padding:7px 9px;font-size:10px;}
+  /* ⛔ v5.0 — 여기 있던 v2.0 헤더 잔재 3건을 제거했다.
+     .header-inner{height:52px;padding:0 10px}  → 3단 헤더를 52px 로 눌러 글자가 넘쳤다
+     .brand-icon{...}                            → 심벌 로고를 없앴으므로 고아
+     .tb{padding:7px 9px;font-size:10px}         → 탭 폰트가 13px→10px 로 줄어 20번과 달랐다
+     헤더·탭 규격은 §3-1 · §3-2 를 그대로 따른다. */
   .card-body{padding:10px 10px;}
   .card-head{padding:8px 10px;}
   .card-tit{font-size:10px;}
@@ -708,22 +728,18 @@ input[type="number"]{-moz-appearance:textfield;}
   <div class="header-inner">
     <div class="brand-logo">
       <div class="brand-texts">
-        <div class="hdr-eyebrow">CHILLED / HOT WATER PIPE SIZING · William-Hazen / Darcy-Weisbach</div>
+        <div class="hdr-eyebrow">CHILLED / HOT WATER PIPE SIZING · 기계설비 기술기준</div>
         <h1 class="hdr-h1">냉온수 배관 관경 산정 시스템</h1>
         <div class="hdr-sub">
-          유량 · 유속 · 마찰손실 자동 산정
+          William-Hazen / Darcy-Weisbach 기준 · 유량 · 유속 · 마찰손실 자동 산정
           <span class="hdr-manmin">MANMIN · Ver-5.0</span>
         </div>
       </div>
     </div>
     <div class="hdr-right-wrap">
       <div class="hdr-right"><strong>기계설비 기술기준</strong><br/>국토교통부 고시 제2021-851호<br/><em>제2026-360호 일부개정 · 2026. 7. 8. 시행</em></div>
-      <div class="hdr-btns">
-        <button id="pwa-install-btn" onclick="pwaTriggerInstall()" title="앱 설치">
-          📲 <span class="pwa-txt">설치</span>
-        </button>
-        <!-- v5.0 : 초기화는 우측 하단 FAB 스택으로 이설 · 출력은 A4 탭 출력바로 일원화(§3-6) -->
-      </div>
+      <!-- v5.0 : 헤더 버튼 없음. 설치는 PWA 배너가, 초기화는 우측 하단 FAB 이 담당한다.
+           20 건물우수와 동일한 구성이다(§3-1). -->
     </div>
   </div>
 </header>
@@ -2874,6 +2890,7 @@ function renderA4(r){
     </div>`;
 
   document.getElementById('a4Page').innerHTML = html;
+  markLongTables(document.getElementById('a4Page'));
 }
 
 function printA4(){
@@ -3326,22 +3343,73 @@ var MM_PAGE = { W:794, H:1123, MT:14, MR:12, MB:22, ML:14 };   // mm 단위 여�
 /* ⛔ .a4-page 의 padding 은 여백이지 내용이 아니다.
    화면 padding 을 인쇄 여백(상53 하83px)과 맞췄으므로, 자를 때는 그만큼 빼야 한다.
    빼지 않으면 여백까지 내용으로 세어 쪽수가 늘어난다. */
+/* v5.0 — 섹션 상단(.a4-sub)과 표 위치를 모은다.
+   JPG 는 이미지 자르기라 표 중간에서 자르면 다음 장 표에 **헤더가 없다**.
+   인쇄의 thead{display:table-header-group} 같은 장치가 없기 때문이다. */
+/* v5.0 — 한 장에 못 들어가는 표에는 .long 을 붙여 분할을 허용한다. */
+function markLongTables(page){
+  var mmPerPx=210/794, usable=(297-14-22)/mmPerPx;   /* 261mm ≈ 987px */
+  page.querySelectorAll('table.a4-tbl').forEach(function(t){
+    t.classList.toggle('long', t.getBoundingClientRect().height > usable);
+  });
+}
+
+function mmSectionTops(page){
+  var pr=page.getBoundingClientRect(), out=[];
+  page.querySelectorAll('.a4-sub').forEach(function(el){
+    out.push(el.getBoundingClientRect().top-pr.top);
+  });
+  out.sort(function(a,b){return a-b;});
+  return out;
+}
+function mmTableRanges(page){
+  var pr=page.getBoundingClientRect(), out=[];
+  page.querySelectorAll('table.a4-tbl').forEach(function(t){
+    var b=t.getBoundingClientRect();
+    out.push({top:b.top-pr.top, bot:b.bottom-pr.top});
+  });
+  return out;
+}
+/* ⛔ 섹션 경계는 "표를 가를 때만" 쓴다.
+   무조건 섹션 경계를 우선하면 앞 쪽이 덜 차서 쪽수가 늘어난다. */
+function mmPickCutPreferSection(cuts, secTops, tables, y, limit, usable){
+  var any=mmPickCut(cuts, y, limit);
+  if(!any) return 0;
+  var splits=false;
+  for(var t=0;t<tables.length;t++){
+    if(any>tables[t].top+1 && any<tables[t].bot-1){ splits=true; break; }
+  }
+  if(!splits) return any;
+  var sec=0;
+  for(var i=0;i<secTops.length;i++){
+    if(secTops[i]>y+1 && secTops[i]<=limit) sec=secTops[i];
+    else if(secTops[i]>limit) break;
+  }
+  if(sec && (sec-y) >= usable*0.5) return sec;
+  return any;
+}
+
 function mmSegments(page){
   var mmPerPx=210/MM_PAGE.W, pH=297;
   var cs=getComputedStyle(page);
   var padTop=parseFloat(cs.paddingTop)||0, padBot=parseFloat(cs.paddingBottom)||0;
   var usable=(pH-MM_PAGE.MT-MM_PAGE.MB)/mmPerPx;   /* 261mm ≈ 987px — 전 쪽 동일 */
   var cuts=mmSafeCuts(page), docH=mmContentHeight(page);
+  var secTops=mmSectionTops(page), tables=mmTableRanges(page);
   var start=padTop, stop=Math.max(start, docH-padBot);
   var segs=[], y=start, pg=0;
   while(y<stop-0.5 && pg<60){
     var ideal=y+usable, end;
     if(ideal>=stop-0.5){ end=stop; }
-    else { end=mmPickCut(cuts,y,ideal); if(!end) end=ideal; }
+    else { end=mmPickCutPreferSection(cuts,secTops,tables,y,ideal,usable); if(!end) end=ideal; }
     segs.push([y,end]); y=end; pg++;
   }
-  return segs.length?segs:[[start,stop]];
+  return segs.length ? segs : [[start,stop]];
 }
+/* ⛔ v5.0 — 쪽 균형 배분은 쓰지 않는다.
+   MIN 지시: "강제로 2장을 만들지 말고, 표가 용지에 걸릴 때만 다음 장으로 넘겨라."
+   앞 쪽을 유효 높이까지 채우고 남는 것만 넘긴다. */
+
 function mmDownload(url,name){
   var a=document.createElement('a');
   a.download=name; a.href=url;
@@ -3369,7 +3437,7 @@ function mmOpenSheet(shots, base){
     +   '<div class="mm-sheet-title">산정서 저장 · 총 '+shots.length+'매</div>'
     +   '<div class="mm-sheet-note">'+(shots.length>1?'브라우저가 연속 다운로드를 차단하므로 쪽별로 저장합니다.':'미리보기를 확인하고 저장하세요.')+'</div>'
     + '</div><button class="btn-export mm-btn-close" id="mm-sheet-x">✕ 닫기</button></div>'
-    + '<div class="mm-sheet-body">'+body+'</div>'
+    + '<div class="mm-sheet-body'+(shots.length>1?' multi':'')+'">'+body+'</div>'
     + '<div class="mm-sheet-foot">'
     +   '<button class="btn-export mm-btn-jpg" id="mm-save-all">🖼 전체 저장 ('+shots.length+'매)</button>'
     + '</div></div>';
@@ -3436,6 +3504,17 @@ window.exportJpg = function(targetEl){
       ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,tmp.width,tmp.height);
       ctx.drawImage(canvas,0,Math.round(sg[0]*S),canvas.width,h,
                            0,Math.round(topPx*S),canvas.width,h);
+      /* v5.0 — 쪽 번호 각인. 2쪽 이상일 때만 좌하단에 찍는다.
+         인쇄는 브라우저 바닥글이 담당하지만 JPG 에는 그런 장치가 없다. */
+      if(segs.length>1){
+        var fs=Math.round(9*S);
+        ctx.fillStyle='#9CA3AF';
+        ctx.font='700 '+fs+'px Orbitron, "JetBrains Mono", monospace';
+        ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+        ctx.fillText((idx+1)+' / '+segs.length,
+                     Math.round(MM_PAGE.ML/mmPerPx*S),
+                     Math.round((MM_PAGE.H - MM_PAGE.MB/mmPerPx + fs/S*0.4)*S));
+      }
       return tmp.toDataURL('image/jpeg',0.95);
     });
     mmOpenSheet(shots, base);

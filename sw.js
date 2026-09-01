@@ -12,7 +12,7 @@
    ⛔ cache.addAll 은 원자적이다. 목록 중 하나라도 404 면 설치가 통째로 실패해
       SW 가 아예 안 붙는다 → allSettled + 개별 catch 로 감쌌다(§11-3).
 ═══════════════════════════════════════════════════ */
-const CACHE = 'pipe-v5.0.0';
+const CACHE = 'pipe-v5.0.6';
 const ASSETS = [
   './',
   './index.html',
