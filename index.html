@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
-<title>냉온수 배관 관경 산정 시스템 [MANMIN-Ver2.0]</title>
+<title>냉온수 배관 관경 산정 시스템 · MANMIN Ver-5.0</title>
 <meta name="description" content="냉온수·냉각수·강관·동관 배관 관경 자동 산정 — 기계설비 기술기준 (국토교통부 고시 제2021-851호)"/>
 <meta name="theme-color" content="#0369a1"/>
 <!-- PWA -->
@@ -27,11 +27,16 @@
 <meta property="og:title" content="냉온수 배관 관경 산정 시스템"/>
 <meta property="og:description" content="기계설비 기술기준 기반 냉온수 배관 관경 자동 산정"/>
 <meta property="og:image" content="./icons/icon-512x512.png"/>
+<link rel="stylesheet" href="./assets/fonts/manmin-fonts.css"/><!-- v5.0 로컬 폴백 폰트 — CDN 차단·오프라인 대비. CDN link 보다 먼저 로드되어야 한다 -->
 <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"/>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif!important;}
+/* v5.0 — 유니버설 셀렉터에서 font-family 를 뺐다.
+   *{font-family:…!important} 는 .mono·JetBrains Mono 선언을 전부 무효화한다(§3-7). */
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body,button,input,select,textarea,table,th,td,div,span,p,h1,h2,h3,h4,h5,h6,li,label,strong,em,small
+  {font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR Local','Malgun Gothic',sans-serif;}
 html,body{min-height:100vh;background:#f0f9ff;color:#0c1a2e;}
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:#f0f9ff;}
@@ -41,28 +46,55 @@ input[type="number"]{-moz-appearance:textfield;}
 .mono{font-family:'JetBrains Mono','Courier New',monospace!important;}
 
 /* ── HEADER ── */
-.app-header{background:#e0f2fe;position:sticky;top:0;z-index:50;box-shadow:0 2px 16px rgba(3,105,161,.3);}
-.header-inner{max-width:1300px;margin:0 auto;padding:0 14px;height:58px;display:flex;align-items:center;gap:10px;}
-.brand-logo{display:flex;align-items:center;gap:9px;flex:1;min-width:0;}
-.brand-icon{width:36px;height:36px;background:#0369a1;border-radius:9px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(3,105,161,.4);flex-shrink:0;font-size:18px;}
+/* v5.0 — 헤더+탭바를 하나의 그라데이션 면으로 통합한다(§3-2-1).
+   135deg 그라데이션은 하단 가장자리 색이 좌우로 변하므로 탭바를 끝색 단색으로 두면 띠가 갈라진다.
+   sticky 는 금지다(§3-1) — 3단 헤더가 162px 이라 모바일 화면의 20% 를 상시 점유한다. */
+.hdr-shell{background:linear-gradient(135deg,#083344 0%,#0e7490 50%,#0891b2 100%);
+  box-shadow:0 2px 20px rgba(14,116,144,.35);}
+.app-header{background:transparent;color:#fff;}
+.header-inner{max-width:1300px;margin:0 auto;padding:20px 24px 16px;
+  display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+/* v5.0 — 소방 마스터의 3단 헤더 구조(§3-1). 심벌 로고 없이 텍스트 3단만 둔다. */
+.brand-logo{display:flex;align-items:flex-start;min-width:0;}
 .brand-texts{min-width:0;}
-.brand-title{font-size:13px;font-weight:900;color:#0c2340;letter-spacing:-.02em;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.brand-sub{font-size:9px;color:#0284c7;margin-top:1px;font-weight:700;white-space:nowrap;}
+.hdr-eyebrow{font-size:11px;font-weight:600;opacity:.7;color:#fff;letter-spacing:.15em;
+  text-transform:uppercase;margin-bottom:6px;}
+.hdr-h1{font-size:26px;font-weight:900;color:#fff;letter-spacing:.04em;line-height:1.2;}
+.hdr-sub{font-size:11px;margin-top:8px;color:#fff;opacity:.85;letter-spacing:.02em;line-height:1.7;}
+.hdr-manmin{font-family:'Orbitron',sans-serif!important;font-weight:900;font-size:12px;
+  color:#7dd3fc;letter-spacing:.08em;text-shadow:0 0 8px rgba(14,116,144,.6);
+  white-space:nowrap;display:inline-block;}
+.hdr-right-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:6px;
+  padding-bottom:2px;flex-shrink:0;}
+.hdr-right{text-align:right;opacity:.75;color:#fff;font-size:11px;line-height:1.5;padding-bottom:4px;}
+.hdr-right em{opacity:.9;font-style:normal;}
 .hdr-btns{display:flex;gap:5px;flex-shrink:0;}
-.btn-g{background:#fff;color:#374151;border:1.5px solid #cbd5e1;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:inherit;transition:all .15s;white-space:nowrap;}
-.btn-g:hover{border-color:#0369a1;color:#0369a1;background:#f0f9ff;}
+.btn-g{background:rgba(255,255,255,.14);color:#fff;border:1.5px solid rgba(255,255,255,.35);padding:6px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:inherit;transition:all .15s;white-space:nowrap;}
+.btn-g:hover{background:#fff;color:#0e7490;border-color:#fff;}
 .btn-b{background:#0369a1;color:#fff;border:none;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:inherit;transition:all .15s;white-space:nowrap;}
 .btn-b:hover{background:#075985;}
-@media(max-width:600px){.brand-title{font-size:11px;}.btn-g .btn-txt,.btn-b .btn-txt{display:none;}.hdr-btns{gap:3px;}.btn-g,.btn-b{padding:6px 8px;}}
-@media(max-width:380px){.brand-title{font-size:10px;}}
+/* v5.0 헤더 반응형 (§3-1) */
+@media(max-width:768px){ .hdr-right{display:none;} .hdr-right-wrap{gap:0;} }
+@media(max-width:640px){
+  .hdr-h1{font-size:18px;}
+  .hdr-eyebrow{display:none;}
+  .hdr-sub{font-size:10.5px;margin-top:6px;line-height:1.65;}
+  .hdr-manmin{font-size:11px;}
+  .btn-g .btn-txt,.btn-b .btn-txt{display:none;}
+  .hdr-btns{gap:3px;}.btn-g,.btn-b{padding:6px 8px;}
+}
+@media(max-width:420px){ .header-inner{padding:20px 14px 16px;} .tab-bar-inner{padding:4px 14px 0;} }
 
 /* ── TAB BAR ── */
-.tab-bar{background:#bae6fd;border-top:1px solid rgba(3,105,161,.25);overflow-x:auto;scrollbar-width:none;}
+.tab-bar{background:transparent;overflow-x:auto;scrollbar-width:none;}   /* 배경은 .hdr-shell 이 담당 */
 .tab-bar::-webkit-scrollbar{display:none;}
-.tab-bar-inner{max-width:1300px;margin:0 auto;padding:0 5px;display:flex;}
-.tb{background:none;border:none;cursor:pointer;color:#075985;font-family:inherit;padding:8px 12px;font-size:11px;font-weight:700;position:relative;transition:color .15s,background .15s;display:flex;align-items:center;gap:4px;white-space:nowrap;flex-shrink:0;}
-.tb:hover{color:#0c2340;background:rgba(3,105,161,.08);}
-.tb.active{color:#0c2340;}
+.tab-bar-inner{max-width:1300px;margin:0 auto;padding:4px 24px 0;display:flex;}
+.tb{background:none;border:none;cursor:pointer;color:rgba(255,255,255,.75);font-family:inherit;
+  padding:11px 16px;font-size:13px;font-weight:700;letter-spacing:.02em;position:relative;
+  transition:color .15s,background .15s;display:flex;align-items:center;gap:5px;
+  white-space:nowrap;flex-shrink:0;-webkit-tap-highlight-color:transparent;}
+.tb:hover{color:#fff;background:rgba(255,255,255,.09);}
+.tb.active{color:#fff;background:rgba(255,255,255,.12);}
 .tb.active::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:#f97316;border-radius:2px 2px 0 0;}
 
 /* ── LAYOUT ── */
@@ -99,11 +131,11 @@ input[type="number"]{-moz-appearance:textfield;}
 .calc-col-right::-webkit-scrollbar-thumb{background:#bae6fd;border-radius:4px;}
 
 /* 1100px 이하: 좌열 축소 */
-@media(max-width:1100px){
+@media(max-width:1024px){
   .calc-grid{grid-template-columns:260px 1fr 1fr;}
 }
 /* 900px 이하: 2열 (좌+중 | 우) */
-@media(max-width:900px){
+@media(max-width:860px){
   .calc-grid{grid-template-columns:1fr 1fr;}
   .calc-project-row{grid-column:1/-1;}
   .calc-col-left{grid-column:1;}
@@ -118,8 +150,8 @@ input[type="number"]{-moz-appearance:textfield;}
 }
 /* 구형 two-col 호환 (부하탭 등) */
 .two-col{display:grid;grid-template-columns:440px 1fr;gap:13px;align-items:start;}
-@media(max-width:1100px){.two-col{grid-template-columns:1fr 1fr;}}
-@media(max-width:760px){.two-col{grid-template-columns:1fr;}}
+@media(max-width:1024px){.two-col{grid-template-columns:1fr 1fr;}}
+@media(max-width:768px){.two-col{grid-template-columns:1fr;}}
 
 /* ── CARD ── */
 .card{background:#fff;border:1px solid #dbeafe;border-radius:12px;box-shadow:0 1px 4px rgba(3,105,161,.07);overflow:hidden;margin-bottom:12px;}
@@ -141,7 +173,7 @@ input[type="number"]{-moz-appearance:textfield;}
 .fselect{width:100%;padding:7px 24px 7px 9px;background:#f8fafc;border:1.5px solid #bfdbfe;border-radius:7px;color:#0c1a2e;font-size:11.5px;font-weight:700;font-family:inherit;outline:none;cursor:pointer;transition:border-color .15s;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%230369a1' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;height:38px;box-sizing:border-box;}
 .fselect:focus{border-color:#0369a1;box-shadow:0 0 0 3px rgba(3,105,161,.12);}
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;align-items:end;}
-@media(max-width:360px){.frow{grid-template-columns:1fr;}}
+@media(max-width:420px){.frow{grid-template-columns:1fr;}}
 .frow3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;align-items:end;}
 @media(max-width:480px){.frow3{grid-template-columns:1fr 1fr;}}
 .fgrp{display:flex;flex-direction:column;gap:3px;}
@@ -185,7 +217,7 @@ input[type="number"]{-moz-appearance:textfield;}
 
 /* ── PIPE RESULT HERO ── */
 .pipe-result-hero{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
-@media(max-width:360px){.pipe-result-hero{grid-template-columns:1fr;}}
+@media(max-width:420px){.pipe-result-hero{grid-template-columns:1fr;}}
 .prh-box{border-radius:11px;padding:14px;text-align:center;color:#fff;}
 .prh-box.cold{background:linear-gradient(135deg,#0c2340,#0369a1);}
 .prh-box.hot{background:linear-gradient(135deg,#7c2d12,#b45309);}
@@ -198,7 +230,7 @@ input[type="number"]{-moz-appearance:textfield;}
 
 /* ── STAT GRID ── */
 .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
-@media(max-width:380px){.stat-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:420px){.stat-grid{grid-template-columns:repeat(2,1fr);}}
 .sbox{background:#fff;border:1px solid #dbeafe;border-radius:10px;padding:10px;text-align:center;}
 .sico{font-size:16px;margin-bottom:3px;}
 .sval{font-size:18px;font-weight:900;color:#0369a1;font-family:'JetBrains Mono',monospace!important;line-height:1.1;}
@@ -235,7 +267,7 @@ input[type="number"]{-moz-appearance:textfield;}
   .project-date-grp{grid-column:1;}
   .project-author-grp{grid-column:2;}
 }
-@media(max-width:400px){
+@media(max-width:420px){
   .project-info-grid{grid-template-columns:1fr;}
   .project-name-grp,.project-date-grp,.project-author-grp{grid-column:1;}
 }
@@ -286,7 +318,7 @@ input[type="number"]{-moz-appearance:textfield;}
 .modal-cls{width:29px;height:29px;border:none;background:#f0f9ff;border-radius:7px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;}
 .modal-cls:hover{background:#dbeafe;}
 .modal-body{padding:15px 17px;}
-@media(max-width:479px){.modal-ov{padding:6px;}.modal-box{border-radius:12px;max-height:95vh;}.modal-head{padding:12px 14px 10px;}.modal-tit{font-size:13px;}}
+@media(max-width:480px){.modal-ov{padding:6px;}.modal-box{border-radius:12px;max-height:95vh;}.modal-head{padding:12px 14px 10px;}.modal-tit{font-size:13px;}}
 
 /* ── PWA 설치 버튼 ── */
 /* ── PWA 설치 버튼 (항상 표시, 설치 후 숨김) ── */
@@ -313,7 +345,7 @@ input[type="number"]{-moz-appearance:textfield;}
   0%,100%{box-shadow:0 0 0 0 rgba(5,150,105,.6);}
   50%{box-shadow:0 0 0 8px rgba(5,150,105,0);}
 }
-@media(max-width:520px){#pwa-install-btn .pwa-txt{display:none;}}
+@media(max-width:480px){#pwa-install-btn .pwa-txt{display:none;}}
 /* ══ PWA 설치 버튼 강화 (냉온배관 Edition) ══ */
 #pwa-install-btn{
   display:flex !important;align-items:center;gap:5px;
@@ -425,7 +457,7 @@ input[type="number"]{-moz-appearance:textfield;}
 .pwa-ok:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(5,150,105,.5);}
 .pwa-no{background:rgba(255,255,255,.1);color:#bae6fd;border:1px solid rgba(3,105,161,.3);padding:9px 11px;border-radius:7px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;}
 .pwa-no:hover{color:#e0f2fe;}
-@media(max-width:460px){.pwa-desc{display:none;}}
+@media(max-width:420px){.pwa-desc{display:none;}}
 /* ── PWA 설치 배너 ── */
 #pwa-banner{
   display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;
@@ -447,90 +479,144 @@ input[type="number"]{-moz-appearance:textfield;}
 .pwa-ok:hover{background:#075985;}
 .pwa-no{background:rgba(255,255,255,.1);color:#bae6fd;border:1px solid rgba(3,105,161,.3);padding:9px 11px;border-radius:7px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;}
 .pwa-no:hover{color:#e0f2fe;}
-@media(max-width:460px){.pwa-desc{display:none;}}
-
-/* ── 모바일 미리보기 ── */
-.mobile-preview-wrap{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;}
-.mobile-device-frame{flex-shrink:0;}
-.phone-frame{
-  width:390px;height:720px;
-  border:10px solid #1e293b;border-radius:44px;
-  box-shadow:0 0 0 2px #334155,0 30px 80px rgba(0,0,0,.45),inset 0 0 0 1px #475569;
-  position:relative;overflow:hidden;background:#000;
-}
-.phone-notch{
-  position:absolute;top:0;left:50%;transform:translateX(-50%);
-  width:120px;height:30px;background:#1e293b;border-radius:0 0 20px 20px;z-index:10;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-}
-.notch-cam{width:10px;height:10px;background:#0f172a;border-radius:50%;border:1px solid #334155;}
-.phone-screen{
-  width:100%;height:100%;
-  border-radius:34px;overflow:hidden;position:relative;
-}
-.phone-screen iframe{
-  width:390px;height:100%;border:none;
-  transform-origin:top left;pointer-events:auto;
-}
-.phone-home-bar{
-  position:absolute;bottom:8px;left:50%;transform:translateX(-50%);
-  width:100px;height:4px;background:#475569;border-radius:2px;z-index:10;
-}
-.tablet-frame{
-  width:768px;height:580px;
-  border:12px solid #1e293b;border-radius:20px;
-  box-shadow:0 0 0 2px #334155,0 20px 60px rgba(0,0,0,.4),inset 0 0 0 1px #475569;
-  position:relative;overflow:hidden;background:#000;
-  flex-shrink:0;
-}
-.tablet-screen{width:100%;height:100%;border-radius:10px;overflow:hidden;}
-.tablet-screen iframe{width:768px;height:100%;border:none;transform-origin:top left;}
-.preview-controls{background:#fff;border:1px solid #dbeafe;border-radius:10px;padding:12px;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.device-btn{padding:6px 14px;border:1.5px solid #bfdbfe;border-radius:8px;background:#f0f9ff;color:#0369a1;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;display:flex;align-items:center;gap:5px;}
-.device-btn.active{background:#0369a1;color:#fff;border-color:#0369a1;}
-.device-btn:hover:not(.active){border-color:#0369a1;}
-.preview-size-info{font-size:10px;color:#64748b;font-weight:600;margin-left:auto;}
-.preview-outer{background:#e2e8f0;padding:24px;border-radius:12px;display:flex;justify-content:center;align-items:flex-start;min-height:400px;overflow:auto;}
+@media(max-width:420px){.pwa-desc{display:none;}}
 
 /* ── A4 PREVIEW ── */
 .a4-export-bar{background:#fff;border:1px solid #dbeafe;border-radius:10px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .bar-lbl{font-size:11px;font-weight:700;color:#4a6585;}
-.btn-export{padding:6px 12px;border:none;border-radius:7px;cursor:pointer;font-size:11px;font-weight:700;font-family:inherit;transition:all .15s;display:flex;align-items:center;gap:4px;white-space:nowrap;}
+/* v5.0 — 출력 버튼 규격 (§3-6). 진입점은 이 출력바 한 곳뿐이다(헤더 버튼 제거). */
+.btn-export,.mm-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:9px 16px;border-radius:9px;font-size:12px;font-weight:800;cursor:pointer;
+  border:none;font-family:inherit;white-space:nowrap;line-height:1.2;min-height:38px;
+  transition:background .15s,box-shadow .15s,transform .1s;}
+.mm-btn-print{background:#0e7490;color:#fff;}
+.mm-btn-jpg{background:#7e22ce;color:#fff;}
+@media(max-width:480px){ .a4-export-bar{flex-direction:column;align-items:stretch;}
+  .btn-export,.mm-btn{width:100%;} }
 .btn-print{background:#0369a1;color:#fff;}.btn-print:hover{background:#075985;}
 .btn-jpg{background:linear-gradient(135deg,#059669,#10b981);color:#fff;}.btn-jpg:hover{background:linear-gradient(135deg,#047857,#059669);}
 .btn-pdf{background:linear-gradient(135deg,#7c3aed,#8b5cf6);color:#fff;}.btn-pdf:hover{background:linear-gradient(135deg,#6d28d9,#7c3aed);}
 @keyframes share-appear{from{opacity:0;transform:translateX(-8px);}to{opacity:1;transform:translateX(0);}}
 .a4-wrap{background:#64748b;padding:20px 20px 32px;min-height:300px;display:flex;justify-content:center;align-items:flex-start;border-radius:10px;overflow:hidden;}
 .a4-scale-wrap{display:block;transform-origin:top center;flex-shrink:0;}
-.a4-page{background:#fff;width:794px;min-height:1123px;margin:0;padding:56px 70px 64px;box-shadow:0 8px 40px rgba(0,0,0,.35);font-size:10.5px;color:#0c1a2e;position:relative;}
-.a4-page *{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif!important;}
-.a4-tit{font-size:16px;font-weight:900;color:#0c2340;text-align:center;border-bottom:2.5px solid #0369a1;padding-bottom:8px;margin-bottom:10px;}
-.a4-sub{font-size:10.5px;font-weight:800;color:#0369a1;margin-bottom:5px;margin-top:12px;padding-left:7px;border-left:3px solid #0369a1;}
-.a4-tbl{width:100%;border-collapse:collapse;font-size:9.5px;margin-bottom:8px;}
-.a4-tbl th{background:#dbeafe;padding:4px 6px;text-align:center;font-weight:800;color:#0c2340;border:1px solid #93c5fd;}
-.a4-tbl td{padding:4px 7px;border:1px solid #dbeafe;font-weight:600;line-height:1.5;}
-.a4-tbl tr:nth-child(even) td{background:#f0f9ff;}
-.a4-tbl tr.hl td{background:#dbeafe!important;font-weight:900!important;}
-.a4-tbl tr.hl td:first-child{border-left:3px solid #0369a1;}
+/* v5.0 — 21 위생배관(기계 기준본) 출력 규격. 여백은 @page 가 담당하므로 자체 패딩은 얇게 두어
+   화면 미리보기가 실제 인쇄 결과와 같은 폭으로 보이게 한다(§3-4). */
+/* v5.0 — 화면 내용폭을 인쇄 유효폭과 일치시킨다.
+   @page margin 이 좌 14mm · 우 12mm 이므로 인쇄 유효폭은 210-14-12 = 184mm(≈696px).
+   좌우 padding 을 같은 값(53px=14mm · 45px=12mm)으로 두면 화면 미리보기가 인쇄 결과와 같은 폭이 된다.
+   종전 23px 이면 화면 748px(198mm)로 인쇄보다 7% 넓어 표가 줄어들어 보였다. */
+/* v5.0 — 화면 미리보기 여백을 @page 여백과 1:1 로 맞춘다(§3-4).
+   @page{margin:14mm 12mm 22mm 14mm} → 96dpi 환산 상53 우45 하83 좌53 px.
+   내용 영역 : 폭 794-53-45 = 696px(184mm) · 높이 1122-53-83 = 986px(261mm)
+   → 화면에서 보이는 그대로가 인쇄 결과다. */
+.a4-page{background:#fff;width:794px;min-height:1122px;margin:0;padding:53px 45px 83px 53px;box-shadow:0 8px 40px rgba(0,0,0,.28);font-size:11px;color:#111827;display:block;position:relative;}
+/* v5.0 — .a4-page *{…!important} 해제. 이게 있으면 계산서 숫자가 전부 비고정폭이 된다(§3-7).
+   로컬 woff2 를 최우선에 둬 기기와 무관하게 같은 글꼴로 출력한다(§14-4). */
+.a4-page{font-family:'Noto Sans KR Local','Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;}
+.a4-page .mono,.a4-page code,.a4-page kbd{font-family:'JetBrains Mono','Noto Sans KR Local',monospace;}
+.a4-tit{font-size:22px;font-weight:900;color:#164e63;text-align:center;border-bottom:2.5px solid #0e7490;padding-bottom:9px;margin-bottom:12px;letter-spacing:-.02em;}
+.a4-sub{font-size:13px;font-weight:800;color:#0e7490;margin-bottom:4px;margin-top:9px;padding-left:7px;border-left:3px solid #0e7490;text-align:left;}
+.a4-tbl{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:7px;}
+.a4-tbl th{background:#cffafe;padding:5px 6px;text-align:center;font-weight:700;font-size:11px;color:#155e75;border:1px solid #a5f3fc;}
+.a4-tbl td{padding:5px 7px;text-align:left;border:1px solid #e0f2fe;font-weight:600;color:#111827;}
+.a4-tbl tr:nth-child(even) td{background:#f0fdfe;}
+.a4-th{background:#ecfeff!important;font-weight:800!important;}
+.a4-tbl tfoot td{background:#cffafe!important;font-weight:900;}
+.a4-tbl tr.hl td{background:#cffafe!important;font-weight:900!important;}
+.a4-tbl tr.hl td:first-child{border-left:3px solid #0e7490;}
 .a4-info-row{display:flex;justify-content:space-between;font-size:9px;color:#64748b;margin-bottom:14px;border-bottom:1px solid #e2e8f0;padding-bottom:8px;}
-.a4-footer{border-top:1px solid #dbeafe;padding-top:8px;font-size:8px;color:#94a3b8;margin-top:18px;line-height:1.6;display:flex;justify-content:space-between;font-weight:600;}
+/* v5.0 — 푸터 3분할 (§3-4). 인쇄에서는 flex 가 어긋나므로 table-cell 33.33% 로 고정한다. */
+.a4-footer{border-top:1px solid #e0f2fe;padding-top:8px;font-size:9px;color:#9ca3af;
+  margin-top:16px;line-height:1.6;font-weight:600;display:table;width:100%;table-layout:fixed;}
+.a4-footer>span{display:table-cell;width:33.33%;vertical-align:top;}
+.a4-footer>span:nth-child(2){text-align:center;}
+.a4-footer>span:nth-child(3){text-align:right;}
+/* v5.0 — JPG 저장 시트 (§3-5). 2매 이상이면 뜬다. */
+#mm-save-ov{display:none;position:fixed;inset:0;z-index:9999;background:rgba(12,26,46,.82);
+  align-items:center;justify-content:center;padding:18px;}
+#mm-save-ov.show{display:flex;}
+.mm-sheet{background:#fff;border:1px solid #dbeafe;border-radius:14px;width:100%;max-width:720px;
+  max-height:88vh;display:flex;flex-direction:column;box-shadow:0 24px 70px rgba(0,0,0,.45);}
+.mm-sheet-head{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px 18px;border-bottom:1px solid #e2e8f0;}
+.mm-sheet-title{font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;
+  letter-spacing:.12em;color:#0e7490;text-transform:uppercase;}
+.mm-sheet-note{font-size:11px;color:#64748b;margin-top:4px;}
+.mm-sheet-body{padding:16px 18px;overflow-y:auto;display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;}
+.mm-shot{background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;padding:9px;
+  display:flex;flex-direction:column;gap:8px;}
+.mm-shot img{width:100%;height:auto;border-radius:4px;background:#fff;display:block;
+  border:1px solid #e2e8f0;}
+.mm-shot-btn{display:flex;align-items:center;justify-content:center;gap:5px;padding:7px 10px;
+  border-radius:7px;border:1px solid #c4b5fd;background:none;color:#7e22ce;
+  font-family:inherit;font-size:11.5px;font-weight:700;cursor:pointer;transition:background .15s;}
+.mm-shot-btn:hover{background:#f5f3ff;}
+.mm-sheet-foot{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;
+  padding:13px 18px;border-top:1px solid #e2e8f0;}
+.mm-btn-close{background:#e2e8f0;color:#334155;}
+@media(max-width:480px){
+  .mm-sheet-body{grid-template-columns:repeat(2,1fr);padding:12px;}
+  .mm-sheet-foot{justify-content:stretch;} .mm-sheet-foot .btn-export{flex:1;}
+  /* 좁은 폭에서 안내 문구가 눌리지 않도록 닫기 버튼을 줄인다 */
+  .mm-sheet-head{padding:12px 14px;}
+  .mm-sheet-note{font-size:10.5px;line-height:1.5;}
+  .mm-sheet-head .btn-export{padding:6px 10px!important;min-height:30px!important;
+    font-size:11px!important;flex-shrink:0;align-self:flex-start;}
+  .mm-shot{padding:7px;} .mm-shot-btn{padding:6px;font-size:11px;}
+}
+
+/* v5.0 — 버전 각인 (§3-3). position:fixed 라 인쇄 시 매 페이지 우하단에 찍힌다.
+   @page{@bottom-right{…}} 는 Chrome 이 마진박스를 구현하지 않아 아무것도 안 나온다. */
+#dev-stamp{display:none;}
+
 /* ── 인쇄 전용 스타일 ── */
 @media print{
+  #dev-stamp{display:block!important;position:fixed;right:0;bottom:6mm;
+    font-family:'Orbitron',sans-serif;font-size:8pt;font-weight:700;
+    color:#9CA3AF;letter-spacing:.06em;z-index:9999;}
   html,body{background:#fff!important;margin:0;padding:0;}
-  .app-header,.tab-bar,.main-wrap .tab-panel:not(#panel-a4),.a4-export-bar,
-  .modal-ov,.fab-calc,.fab-tooltip,.toast{display:none!important;}
+  .hdr-shell,.app-header,.tab-bar,.main-wrap .tab-panel:not(#panel-a4),.a4-export-bar,
+  .modal-ov,.fab-wrap,.fab-calc,.toast{display:none!important;}
   #panel-a4{display:block!important;}
   .a4-wrap{background:#fff!important;padding:0!important;min-height:unset!important;border-radius:0!important;display:block!important;}
   .a4-scale-wrap{transform:none!important;margin:0!important;}
-  .a4-page{box-shadow:none!important;width:100%!important;min-height:unset!important;padding:14mm 18mm!important;}
-  @page{size:A4;margin:0;}
+  /* v5.0 — 여백은 @page 하나로만 일원화한다(§3-3). .a4-page 자체 패딩은 인쇄 시 해제. */
+  .a4-page{
+    width:100%!important;max-width:100%!important;
+    box-shadow:none!important;min-height:unset!important;
+    padding:0!important;margin:0!important;
+    font-size:9.5px!important;
+  }
+  /* 표 페이지 넘김 — 헤더 반복 · 행 분리 방지 */
+  .a4-tbl{page-break-inside:auto;}
+  .a4-tbl thead{display:table-header-group;}
+  .a4-tbl tfoot{display:table-footer-group;}
+  .a4-tbl tr{page-break-inside:avoid;page-break-after:auto;}
+  .a4-sub{page-break-after:avoid;page-break-before:auto;}
+  @page{size:A4 portrait;margin:14mm 12mm 22mm 14mm;}
 }
 
 /* ── FAB ── */
-.fab-calc{position:fixed;right:14px;bottom:18px;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#0369a1,#0284c7);color:#fff;border:none;cursor:pointer;font-size:20px;box-shadow:0 4px 20px rgba(3,105,161,.45);z-index:100;transition:all .2s;display:flex;align-items:center;justify-content:center;}
-.fab-calc:hover{transform:scale(1.08);}
-.fab-tooltip{position:fixed;bottom:72px;right:14px;background:#0c2340;color:#fff;padding:5px 11px;border-radius:8px;font-size:11px;font-weight:700;opacity:0;pointer-events:none;transition:opacity .15s;z-index:101;white-space:nowrap;}
-.fab-tooltip.show{opacity:1;}
+/* v5.0 — 우측 하단 FAB 스택 (20 건물우수 §7-6 규격).
+   원형 1개 + 헤더 초기화 버튼 → 사각 버튼 2개 세로 스택으로 통일한다.
+   초기화가 위, 설계기준이 아래다. */
+.fab-wrap{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom, 0px));right:16px;z-index:1100;
+  display:flex;flex-direction:column;align-items:flex-end;gap:8px;}
+.fab-calc{
+  background:linear-gradient(135deg,#0e7490,#0891b2);
+  color:#fff;border:none;border-radius:14px;
+  padding:10px 8px;cursor:pointer;width:66px;min-width:66px;position:relative;   /* v5.0 : 두 버튼 폭 통일 */
+  box-shadow:0 4px 20px rgba(14,116,144,.45);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  line-height:1.3;transition:transform .15s,box-shadow .15s;
+  font-family:'Pretendard','Noto Sans KR Local',sans-serif;
+}
+.fab-calc:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(14,116,144,.6);}
+.fab-calc .fi-icon{font-size:20px;line-height:1;}
+.fab-calc .fi-lbl{font-size:10px;font-weight:800;letter-spacing:.04em;}
+.fab-calc .fi-sub{font-size:9px;opacity:.8;}
+@media(max-width:640px){.fab-wrap{bottom:calc(16px + env(safe-area-inset-bottom, 0px));right:14px;gap:7px;}}
 
 /* ── FLOW DIAGRAM ── */
 .flow-diagram{background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:12px;margin-bottom:10px;}
@@ -547,7 +633,7 @@ input[type="number"]{-moz-appearance:textfield;}
 
 /* ── GUIDE GRID ── */
 .guide-grid-2col{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-@media(max-width:767px){.guide-grid-2col{grid-template-columns:1fr;}}
+@media(max-width:768px){.guide-grid-2col{grid-template-columns:1fr;}}
 
 /* ── STD PIPE TAG ── */
 .std-pipe{display:inline-block;padding:2px 7px;border-radius:5px;font-size:10.5px;font-weight:800;font-family:'JetBrains Mono',monospace!important;}
@@ -563,7 +649,7 @@ input[type="number"]{-moz-appearance:textfield;}
 .vel-over{background:linear-gradient(90deg,#dc2626,#f87171);}
 
 /* ── RESPONSIVE ── */
-@media(max-width:767px){
+@media(max-width:768px){
   .main-wrap{padding:10px 9px 70px;}
   .guide-grid-2col{grid-template-columns:1fr!important;}
   .seg-ctrl{flex-wrap:wrap;}
@@ -573,7 +659,7 @@ input[type="number"]{-moz-appearance:textfield;}
   .rtbl th,.rtbl td,.gtbl th,.gtbl td{padding:5px 4px;height:30px;box-sizing:border-box;}
   .twrap{-webkit-overflow-scrolling:touch;}
 }
-@media(max-width:479px){
+@media(max-width:480px){
   .main-wrap{padding:8px 7px 65px;}
   .header-inner{height:52px;padding:0 10px;}
   .brand-icon{width:30px;height:30px;font-size:15px;}
@@ -591,7 +677,7 @@ input[type="number"]{-moz-appearance:textfield;}
   .stat-grid{grid-template-columns:repeat(3,1fr);}
   .sval{font-size:15px;}
 }
-@media(max-width:360px){
+@media(max-width:420px){
   .frow{grid-template-columns:1fr;}
   .ptype-grid{grid-template-columns:repeat(3,1fr);}
   .pipe-result-hero{grid-template-columns:1fr!important;}
@@ -607,7 +693,7 @@ input[type="number"]{-moz-appearance:textfield;}
 @media screen and (max-width:768px){
   input[type="text"],input[type="number"],input[type="date"],select,textarea{font-size:16px!important;}
 }
-@media print{.modal-ov,.fab-calc,.fab-tooltip,.tab-bar,.hdr-btns{display:none!important;}}
+@media print{.modal-ov,.fab-wrap,.fab-calc,.tab-bar,.hdr-btns{display:none!important;}}
 #grp-sch{transition:opacity .2s;}
 #grp-sch select:disabled{cursor:not-allowed;color:#94a3b8;background:#f1f5f9;}
 </style>
@@ -616,22 +702,28 @@ input[type="number"]{-moz-appearance:textfield;}
 <div id="root-app">
 
 <!-- ─── HEADER ─── -->
+<!-- v5.0 : 헤더+탭바 그라데이션 1면 통합 래퍼 (§3-2-1) -->
+<div class="hdr-shell">
 <header class="app-header">
   <div class="header-inner">
     <div class="brand-logo">
-      <div class="brand-icon" style="background:none;padding:0;overflow:hidden;width:38px;height:38px;border-radius:9px;flex-shrink:0;box-shadow:0 2px 10px rgba(3,105,161,.4);"><img src="./icons/brand-icon.jpg" alt="냉온배관 MANMIN" style="width:38px;height:38px;object-fit:cover;border-radius:9px;display:block;"/></div>
       <div class="brand-texts">
-        <div class="brand-title">냉온수 배관 관경 산정 시스템 [MANMIN-Ver2.0]</div>
-        <div class="brand-sub">기계설비 기술기준 국토교통부 고시 제2021-851호 · William-Hazen / Darcy-Weisbach</div>
+        <div class="hdr-eyebrow">CHILLED / HOT WATER PIPE SIZING · William-Hazen / Darcy-Weisbach</div>
+        <h1 class="hdr-h1">냉온수 배관 관경 산정 시스템</h1>
+        <div class="hdr-sub">
+          유량 · 유속 · 마찰손실 자동 산정
+          <span class="hdr-manmin">MANMIN · Ver-5.0</span>
+        </div>
       </div>
     </div>
-    <div class="hdr-btns">
-      <button id="pwa-install-btn" onclick="pwaTriggerInstall()" title="앱 설치">
-        📲 <span class="pwa-txt">앱 설치</span>
-      </button>
-      <button class="btn-g" onclick="resetAll()">🔄 <span class="btn-txt">초기화</span></button>
-      <button class="btn-b" onclick="exportJpg()">🖼️ <span class="btn-txt">JPG</span></button>
-      <button class="btn-b" onclick="printA4()">🖨️ <span class="btn-txt">출력</span></button>
+    <div class="hdr-right-wrap">
+      <div class="hdr-right"><strong>기계설비 기술기준</strong><br/>국토교통부 고시 제2021-851호<br/><em>제2026-360호 일부개정 · 2026. 7. 8. 시행</em></div>
+      <div class="hdr-btns">
+        <button id="pwa-install-btn" onclick="pwaTriggerInstall()" title="앱 설치">
+          📲 <span class="pwa-txt">설치</span>
+        </button>
+        <!-- v5.0 : 초기화는 우측 하단 FAB 스택으로 이설 · 출력은 A4 탭 출력바로 일원화(§3-6) -->
+      </div>
     </div>
   </div>
 </header>
@@ -644,9 +736,9 @@ input[type="number"]{-moz-appearance:textfield;}
     <button class="tb" onclick="switchTab('spec',this)">📐 배관 규격표</button>
     <button class="tb" onclick="switchTab('guide',this)">📖 설계 기준</button>
     <button class="tb" onclick="switchTab('a4',this)">📄 A4 미리보기</button>
-    <button class="tb" onclick="switchTab('mobile',this)">📱 모바일 미리보기</button>
   </div>
 </nav>
+</div><!-- /.hdr-shell -->
 
 <div class="main-wrap">
 
@@ -1308,109 +1400,6 @@ input[type="number"]{-moz-appearance:textfield;}
   </div>
 </div>
 
-<!-- ████ TAB: 모바일 미리보기 ████ -->
-<div class="tab-panel" id="panel-mobile">
-  <div class="nb blue" style="margin-bottom:12px">
-    <div class="nb-tit">📱 Samsung Galaxy S24 Ultra 미리보기</div>
-    <div class="nb-txt">Galaxy S24 Ultra (384×832) 화면 비율로 산정 결과가 표시됩니다. JPG 저장 후 공유하세요.</div>
-  </div>
-
-  <!-- 액션 바 -->
-  <div class="a4-export-bar" style="margin-bottom:20px;align-items:center">
-    <span class="bar-lbl">📱 Galaxy S24 Ultra 출력 :</span>
-    <button class="btn-export btn-jpg" id="btn-mobile-jpg" onclick="exportMobileJpg()">🖼️ JPG 저장</button>
-    <!-- 공유 버튼: JPG 저장 후 나타남 -->
-    <button class="btn-export" id="btn-mobile-share"
-      onclick="shareMobileJpg()"
-      style="display:none;background:linear-gradient(135deg,#7c3aed,#8b5cf6);color:#fff;animation:share-appear .3s ease">
-      📤 공유하기
-    </button>
-    <span id="mobile-action-hint" style="font-size:10px;color:#94a3b8;margin-left:4px">※ 관경 산정 탭에서 결과 입력 후 JPG 저장하세요</span>
-  </div>
-
-  <!-- Galaxy S24 Ultra 프레임 단독 중앙 배치 -->
-  <div style="display:flex;justify-content:center;align-items:flex-start">
-    <div style="flex-shrink:0">
-      <!-- 기기명 레이블 -->
-      <div style="font-size:10px;font-weight:700;color:#475569;text-align:center;margin-bottom:10px;letter-spacing:.04em">
-        Samsung Galaxy S24 Ultra &nbsp;·&nbsp; 384 × 832 px &nbsp;·&nbsp; 6.8"
-      </div>
-
-      <!-- Galaxy S24 Ultra 프레임 -->
-      <div id="frame-phone" style="
-        width:260px;
-        height:564px;
-        background:#0a0a0a;
-        border-radius:36px;
-        border:2px solid #2d2d2d;
-        box-shadow:
-          0 0 0 1px #1a1a1a,
-          inset 0 0 0 1px #3a3a3a,
-          0 30px 80px rgba(0,0,0,.55),
-          4px 0 0 0 #1e1e1e,
-          -4px 0 0 0 #1e1e1e;
-        position:relative;
-        overflow:hidden;">
-
-        <!-- 측면 버튼 (볼륨 - 좌측) -->
-        <div style="position:absolute;left:-4px;top:100px;width:3px;height:28px;background:#2a2a2a;border-radius:2px 0 0 2px"></div>
-        <div style="position:absolute;left:-4px;top:138px;width:3px;height:28px;background:#2a2a2a;border-radius:2px 0 0 2px"></div>
-        <!-- 측면 버튼 (전원 - 우측) -->
-        <div style="position:absolute;right:-4px;top:110px;width:3px;height:50px;background:#2a2a2a;border-radius:0 2px 2px 0"></div>
-        <!-- S펜 슬롯 표시 (하단 좌측) -->
-        <div style="position:absolute;bottom:12px;left:16px;width:3px;height:18px;background:#1e1e1e;border-radius:2px"></div>
-
-        <!-- 화면 영역 (상하 둥근 베젤) -->
-        <div style="
-          position:absolute;inset:4px;
-          background:#f0f9ff;
-          border-radius:33px;
-          overflow:hidden;">
-
-          <!-- 펀치홀 카메라 (상단 중앙) -->
-          <div style="
-            position:absolute;top:8px;left:50%;transform:translateX(-50%);
-            width:10px;height:10px;
-            background:#0a0a0a;
-            border-radius:50%;
-            z-index:10;
-            box-shadow:0 0 0 1px #1a1a1a">
-          </div>
-
-          <!-- 결과 렌더링 영역 -->
-          <div id="phone-result-render" style="
-            width:100%;height:100%;
-            overflow-y:auto;overflow-x:hidden;
-            background:#f0f9ff;
-            padding:22px 8px 12px;
-            box-sizing:border-box;
-            scrollbar-width:none;
-            -webkit-overflow-scrolling:touch">
-            <div style="text-align:center;padding:30px 0;color:#94a3b8">
-              <div style="font-size:28px;margin-bottom:8px">📱</div>
-              <div style="font-size:11px;font-weight:700;line-height:1.6">관경 산정 탭에서<br>조건을 입력하면<br>여기에 표시됩니다</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 하단 홈 인디케이터 바 -->
-        <div style="
-          position:absolute;bottom:6px;left:50%;transform:translateX(-50%);
-          width:80px;height:3px;
-          background:#3a3a3a;border-radius:2px;z-index:10">
-        </div>
-      </div>
-
-      <!-- 기기 하단 정보 -->
-      <div style="margin-top:10px;text-align:center;font-size:9.5px;color:#94a3b8;line-height:1.7">
-        Snapdragon 8 Gen 3 &nbsp;·&nbsp; 12GB RAM<br>
-        Dynamic AMOLED 2X &nbsp;·&nbsp; 120Hz
-      </div>
-    </div>
-  </div>
-
-</div>
-
 <!-- ████ TAB 6: A4 미리보기 ████ -->
 <div class="tab-panel" id="panel-a4">
   <div class="a4-export-bar">
@@ -1438,48 +1427,19 @@ input[type="number"]{-moz-appearance:textfield;}
 <!-- TOAST -->
 <div class="toast" id="toastMsg"></div>
 
-<!-- JPG 공유 모달 (body 레벨 — 항상 최상위) -->
-<div id="share-modal" style="display:none;position:fixed;inset:0;background:rgba(12,26,46,.6);z-index:9000;align-items:center;justify-content:center;padding:16px" onclick="if(event.target===this)closeShareModal()">
-  <div style="background:#fff;border-radius:16px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(3,105,161,.25);overflow:hidden">
-    <div style="padding:14px 18px 12px;border-bottom:1px solid #dbeafe;display:flex;align-items:center;justify-content:space-between">
-      <div style="display:flex;align-items:center;gap:8px">
-        <div style="width:28px;height:28px;background:#0369a1;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px">📤</div>
-        <span style="font-size:14px;font-weight:900;color:#075985">JPG 공유하기</span>
-      </div>
-      <button onclick="closeShareModal()" style="background:#f0f9ff;border:none;border-radius:7px;width:28px;height:28px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center">✕</button>
-    </div>
-    <div style="padding:16px 18px">
-      <!-- 이미지 미리보기 -->
-      <div id="share-preview-wrap" style="text-align:center;margin-bottom:14px;min-height:80px;background:#f8fafc;border-radius:10px;border:1px solid #dbeafe;padding:12px;display:flex;align-items:center;justify-content:center">
-        <img id="share-preview-img" style="max-width:100%;max-height:200px;border-radius:6px;display:none" alt="산정결과"/>
-        <div id="share-loading" style="color:#94a3b8;font-size:12px;font-weight:700">
-          <div style="font-size:24px;margin-bottom:6px">🖼️</div>
-          이미지 생성 중...
-        </div>
-      </div>
-      <!-- 4개 공유 버튼 -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
-        <button onclick="shareDownload()" style="padding:12px 8px;background:#0369a1;color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:5px">
-          💾 저장
-        </button>
-        <button onclick="shareNative()" id="btn-native-share" style="padding:12px 8px;background:linear-gradient(135deg,#7c3aed,#8b5cf6);color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:5px">
-          📤 앱으로 공유
-        </button>
-        <button onclick="shareCopyLink()" style="padding:12px 8px;background:#f0f9ff;color:#0369a1;border:1.5px solid #bae6fd;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:5px">
-          🔗 링크 복사
-        </button>
-        <button onclick="shareKakao()" style="padding:12px 8px;background:#fee500;color:#3c1e1e;border:none;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:5px">
-          💬 카카오 공유
-        </button>
-      </div>
-      <div id="share-hint" style="font-size:10px;color:#94a3b8;text-align:center;line-height:1.6">이미지를 저장한 후 원하는 앱으로 공유하세요<br><span style="color:#bae6fd">ESC 또는 배경 클릭으로 닫기</span></div>
-    </div>
-  </div>
-</div>
-
 <!-- FAB -->
-<button class="fab-calc" id="fabCalc" title="설계기준 안내">📐</button>
-<div class="fab-tooltip" id="fabTooltip">설계기준 종합 안내</div>
+<div class="fab-wrap no-print" id="fabWrap">
+  <button class="fab-calc" id="fabReset" onclick="resetAll()" title="입력 초기화">
+    <span class="fi-icon">🔄</span>
+    <span class="fi-lbl">초기화</span>
+    <span class="fi-sub">전체</span>
+  </button>
+  <button class="fab-calc" id="fabCalc" title="설계기준 안내">
+    <span class="fi-icon">📐</span>
+    <span class="fi-lbl">설계기준</span>
+    <span class="fi-sub">안내</span>
+  </button>
+</div>
 
 <!-- ═════ 설계기준 모달 ═════ -->
 <div class="modal-ov" id="guideModal" style="display:none" onclick="if(event.target===this)closeGuideModal()">
@@ -1911,8 +1871,6 @@ window.addEventListener('DOMContentLoaded',()=>{
   // ESC 키로 공유 모달 닫기
   document.addEventListener('keydown', function(e){
     if(e.key==='Escape'){
-      var m=document.getElementById('share-modal');
-      if(m && m.style.display==='flex') closeShareModal();
       var g=document.getElementById('guideModal');
       if(g && g.style.display==='flex') closeGuideModal();
     }
@@ -1978,10 +1936,6 @@ function switchTab(id,btn){
   if(id === 'a4'){
     if(STATE.result) renderA4(STATE.result);
     setTimeout(()=>{ if(window._scaleA4) window._scaleA4(); }, 60);
-  }
-  // 모바일 미리보기 탭 — 결과 렌더 확인
-  if(id === 'mobile'){
-    if(STATE.result) renderMobileResult(STATE.result);
   }
   // 설계기준 탭 전환 시 판정 패널 렌더
   if(id === 'guide') renderGuide();
@@ -2470,7 +2424,6 @@ function liveCalc(){
   renderA4(STATE.result);
   renderGuide();
   updateStepStatus();
-  renderMobileResult(STATE.result);
 }
 
 /* ── 히어로 렌더 ── */
@@ -2652,206 +2605,6 @@ function renderAltTable({candidates,selected,selIdx}){
     <tbody>${rows}</tbody>`;
 }
 
-/* ── 모바일 탭 결과 요약 렌더 (폰 화면 전용) ── */
-function renderMobileResult(r){
-  const phoneRender = document.getElementById('phone-result-render');
-  if(!phoneRender) return;
-
-  // 새 산정마다 shareCanvas 초기화 → 공유 버튼 숨김
-  _shareCanvas = null;
-  const shareBtn = document.getElementById('btn-mobile-share');
-  if(shareBtn) shareBtn.style.display='none';
-  const hint = document.getElementById('mobile-action-hint');
-  if(hint) hint.textContent = '※ JPG 저장 후 공유하기 버튼이 활성화됩니다';
-
-  const emptyHtml='<div style="text-align:center;padding:30px 0;color:#94a3b8"><div style="font-size:28px;margin-bottom:8px">📱</div><div style="font-size:11px;font-weight:700;line-height:1.6">관경 산정 탭에서<br>조건을 입력하면<br>여기에 표시됩니다</div></div>';
-
-  if(!r || !r.selected){
-    phoneRender.innerHTML=emptyHtml;
-    return;
-  }
-
-  const velColor = r.selected.vel>r.vmax?'#dc2626':r.selected.vel>STATE.vel?'#d97706':'#15803d';
-  const pdColor  = r.selected.actualPdrop>STATE.pdrop?'#d97706':'#15803d';
-  const purposeColors={cold:'linear-gradient(135deg,#0c2340,#0369a1)',hot:'linear-gradient(135deg,#7c2d12,#b45309)',chiller:'linear-gradient(135deg,#1a2e05,#365314)',general:'linear-gradient(135deg,#1e1b4b,#4338ca)'};
-  const heroGrad=purposeColors[r.purposeClass]||purposeColors.cold;
-  const today=new Date().toLocaleDateString('ko-KR');
-  const ok=r.selected.ok, overAbs=r.selected.overAbsMax;
-
-  const summaryHtml=`
-    <div style="background:#0369a1;color:#fff;padding:8px 10px;margin:-10px -8px 10px;font-size:10px;font-weight:800;letter-spacing:.04em">
-      냉온수 배관 관경 산정서 · MANMIN Ver2.0
-    </div>
-    <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:7px;padding:7px 9px;margin-bottom:8px">
-      <div style="font-size:11px;font-weight:800;color:#0369a1">${STATE.projectName||'만민 건축사 신사옥 신축공사'}</div>
-      <div style="display:flex;justify-content:space-between;margin-top:2px">
-        <span style="font-size:9px;color:#475569">작성자: ${STATE.projectAuthor||'김만민'}</span>
-        <span style="font-size:9px;color:#475569">${STATE.projectDate?STATE.projectDate.replace(/-/g,'.'):today}</span>
-      </div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
-      <div style="background:${heroGrad};border-radius:9px;padding:10px;text-align:center;color:#fff">
-        <div style="font-size:8px;font-weight:700;opacity:.7">채택 관경</div>
-        <div style="font-size:28px;font-weight:900;font-family:'JetBrains Mono',monospace;color:#fde047;line-height:1">${r.selected.s.replace('A','')}</div>
-        <div style="font-size:9px;font-weight:700;opacity:.8">A · ⌀${r.selected.id.toFixed(1)}mm</div>
-        <div style="font-size:8px;opacity:.6;margin-top:2px">${r.matLabel||r.mat.nm}</div>
-      </div>
-      <div style="background:linear-gradient(135deg,#1e3a5f,#2563eb);border-radius:9px;padding:10px;text-align:center;color:#fff">
-        <div style="font-size:8px;font-weight:700;opacity:.7">실제 유속</div>
-        <div style="font-size:28px;font-weight:900;font-family:'JetBrains Mono',monospace;color:#fde047;line-height:1">${r.selected.vel.toFixed(2)}</div>
-        <div style="font-size:9px;font-weight:700;opacity:.8">m/s</div>
-        <div style="font-size:8px;opacity:.6;margin-top:2px">권장 ${r.mat.vrec[0]}~${r.mat.vrec[1]} m/s</div>
-      </div>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:8px">
-      ${[['📏','내경','mm',r.selected.id.toFixed(1),'#0369a1'],
-         ['📉','압력강하','mmAq/m',r.selected.actualPdrop.toFixed(1),pdColor],
-         ['💧','유량','KG/H',fmt(r.flowKgh,0),'#0369a1'],
-         ['🏢','정수두','kPa',r.staticKpa.toFixed(0),r.prvAlert?'#d97706':'#0369a1'],
-         ['📐','외경','mm',r.selected.od,'#475569'],
-         ['🔩','두께','mm',r.selected.t,'#475569']
-        ].map(([ico,lbl,unit,val,col])=>`
-        <div style="background:#fff;border:1px solid #dbeafe;border-radius:7px;padding:6px 4px;text-align:center">
-          <div style="font-size:12px">${ico}</div>
-          <div style="font-size:12px;font-weight:900;color:${col};font-family:'JetBrains Mono',monospace;line-height:1.1">${val}</div>
-          <div style="font-size:7.5px;color:#4a6585;font-weight:700;margin-top:1px">${lbl}<br><span style="color:#94a3b8">${unit}</span></div>
-        </div>`).join('')}
-    </div>
-    <div style="background:${ok&&!overAbs?'#f0fdf4':overAbs?'#fef2f2':'#fff7ed'};border:1.5px solid ${ok&&!overAbs?'#bbf7d0':overAbs?'#fecaca':'#fed7aa'};border-radius:7px;padding:8px 10px;margin-bottom:8px">
-      <div style="font-size:10px;font-weight:800;color:${ok&&!overAbs?'#15803d':overAbs?'#dc2626':'#c2410c'}">
-        ${overAbs?'🔴 절대최대 초과':ok?'✅ 기준 만족':'🟠 설계목표 초과'}
-      </div>
-      <div style="font-size:9px;color:#475569;line-height:1.7;margin-top:3px">
-        유속 ${r.selected.vel.toFixed(3)} m/s (목표 ≤${STATE.vel} · 최대 ${r.vmax} m/s)<br>
-        압력강하 ${r.selected.actualPdrop.toFixed(2)} mmAq/m (목표 ≤${STATE.pdrop})<br>
-        최대허용 ${fmt(r.selected.maxQ_kgh,0)} KG/H · 설계 ${fmt(r.flowKgh,0)} KG/H
-      </div>
-    </div>
-    <div style="font-size:9px;font-weight:800;color:#0369a1;margin-bottom:4px">🔄 인접 관경 비교</div>
-    <table style="width:100%;border-collapse:collapse;font-size:9px">
-      <thead><tr style="background:#f0f9ff">
-        <th style="padding:4px;border:1px solid #dbeafe;font-weight:800;color:#075985">관경</th>
-        <th style="padding:4px;border:1px solid #dbeafe;font-weight:800;color:#075985">내경</th>
-        <th style="padding:4px;border:1px solid #dbeafe;font-weight:800;color:#075985">유속</th>
-        <th style="padding:4px;border:1px solid #dbeafe;font-weight:800;color:#075985">판정</th>
-      </tr></thead>
-      <tbody>
-        ${r.candidates.slice(Math.max(0,r.selIdx-1),Math.min(r.candidates.length,r.selIdx+3)).map(c=>{
-          const isSel=c.s===r.selected.s;
-          return `<tr style="background:${isSel?'#dbeafe':''}">
-            <td style="padding:4px;border:1px solid #dbeafe;font-weight:${isSel?'900':'600'};color:${isSel?'#0369a1':'inherit'};font-family:'JetBrains Mono',monospace">${isSel?'★':''} ${c.s}</td>
-            <td style="padding:4px;border:1px solid #dbeafe;font-family:'JetBrains Mono',monospace">${c.id.toFixed(1)}</td>
-            <td style="padding:4px;border:1px solid #dbeafe;color:${c.vel>r.vmax?'#dc2626':c.vel>r.mat.vrec[1]?'#d97706':'#15803d'};font-family:'JetBrains Mono',monospace">${c.vel.toFixed(3)}</td>
-            <td style="padding:4px;border:1px solid #dbeafe;color:${c.ok?'#15803d':'#dc2626'};font-weight:800">${c.ok?'✓':'✗'}</td>
-          </tr>`;}).join('')}
-      </tbody>
-    </table>
-    <div style="margin-top:8px;font-size:8px;color:#94a3b8;text-align:center">
-      기계설비 기술기준 [별표 8] · 국토교통부 고시 제2021-851호<br>
-      William-Hazen: Q = 0.35464 × C × d²·⁶³ × I⁰·⁵⁴
-    </div>
-  `;
-
-  phoneRender.innerHTML = summaryHtml;
-}
-
-/* ── 모바일 JPG 저장 → 완료 후 공유 버튼 표시 ── */
-var _shareCanvas = null;
-window.exportMobileJpg = function(){
-  var el = document.getElementById('phone-result-render');
-  if(!el || !STATE.result){ toast('먼저 관경을 산정하세요'); return; }
-  var hint = document.getElementById('mobile-action-hint');
-  var shareBtn = document.getElementById('btn-mobile-share');
-  toast('📸 Galaxy S24 Ultra JPG 생성 중...');
-  if(hint) hint.textContent = '⏳ 이미지 생성 중...';
-  html2canvas(document.getElementById('frame-phone'), {
-    scale:2, useCORS:true, backgroundColor:'#0a0a0a', logging:false
-  }).then(function(canvas){
-    _shareCanvas = canvas;
-    var link=document.createElement('a');
-    var now=new Date();
-    var ts=now.getFullYear()+''+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0')+'_'+String(now.getHours()).padStart(2,'0')+String(now.getMinutes()).padStart(2,'0');
-    link.download='갤럭시S24Ultra_관경산정_'+ts+'.jpg';
-    link.href=canvas.toDataURL('image/jpeg',0.95);
-    link.click();
-    toast('✅ JPG 저장 완료! 공유 버튼이 활성화됐습니다');
-    // 공유 버튼 표시
-    if(shareBtn){
-      shareBtn.style.display='flex';
-      shareBtn.style.animation='share-appear .35s ease';
-    }
-    if(hint) hint.textContent = '✅ 저장 완료 — 공유하기 버튼으로 전송하세요';
-  }).catch(function(){ toast('❌ JPG 생성 실패'); if(hint) hint.textContent = '❌ 생성 실패, 다시 시도하세요'; });
-};
-
-/* ── 공유 모달 — JPG 저장 후 공유 ── */
-window.shareMobileJpg = function(){
-  if(!STATE.result){ toast('먼저 관경을 산정하세요'); return; }
-  var modal=document.getElementById('share-modal');
-  var img=document.getElementById('share-preview-img');
-  var loading=document.getElementById('share-loading');
-  if(!modal) return;
-  modal.style.display='flex';
-
-  // 이미 _shareCanvas 있으면 바로 표시
-  if(_shareCanvas){
-    img.src=_shareCanvas.toDataURL('image/jpeg',0.95);
-    img.style.display='block';
-    if(loading) loading.style.display='none';
-    return;
-  }
-
-  // 없으면 새로 생성
-  img.style.display='none';
-  if(loading){ loading.style.display='block'; loading.innerHTML='<div style="font-size:20px;margin-bottom:6px">🖼️</div>이미지 생성 중...'; }
-  var el = document.getElementById('frame-phone');
-  if(!el){ if(loading) loading.textContent='오류: 프레임을 찾을 수 없습니다'; return; }
-  html2canvas(el, {scale:2, useCORS:true, backgroundColor:'#0a0a0a', logging:false}).then(function(canvas){
-    _shareCanvas=canvas;
-    img.src=canvas.toDataURL('image/jpeg',0.95);
-    img.style.display='block';
-    if(loading) loading.style.display='none';
-  }).catch(function(){ if(loading) loading.textContent='이미지 생성 실패. 다시 시도하세요.'; });
-};
-window.closeShareModal = function(){
-  var m=document.getElementById('share-modal');
-  if(m){ m.style.display='none'; }
-};
-window.shareDownload = function(){
-  if(!_shareCanvas){ toast('이미지를 먼저 생성하세요'); return; }
-  var link=document.createElement('a');
-  var now=new Date();
-  var ts=now.getFullYear()+''+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0');
-  link.download='냉온수배관_관경산정_'+ts+'.jpg';
-  link.href=_shareCanvas.toDataURL('image/jpeg',0.95);
-  link.click();
-  toast('✅ 저장 완료');
-};
-window.shareNative = function(){
-  if(!_shareCanvas||!navigator.share){ toast('이 기기에서 지원하지 않습니다'); return; }
-  _shareCanvas.toBlob(function(blob){
-    var file=new File([blob],'관경산정결과.jpg',{type:'image/jpeg'});
-    navigator.share({title:'냉온수 배관 관경 산정 결과',text:STATE.projectName||'관경 산정 결과',files:[file]})
-      .then(function(){ toast('✅ 공유 완료'); })
-      .catch(function(){});
-  },'image/jpeg',0.95);
-};
-window.shareCopyLink = function(){
-  var url=window.location.href;
-  if(navigator.clipboard){
-    navigator.clipboard.writeText(url).then(function(){ toast('🔗 링크 복사 완료'); });
-  } else {
-    var t=document.createElement('textarea'); t.value=url; document.body.appendChild(t); t.select(); document.execCommand('copy'); document.body.removeChild(t);
-    toast('🔗 링크 복사 완료');
-  }
-};
-window.shareKakao = function(){
-  var hint=document.getElementById('share-hint');
-  if(hint) hint.textContent='카카오톡 → 이미지를 먼저 저장한 후 채팅방에서 첨부하세요';
-  toast('📥 JPG 저장 후 카카오톡으로 공유하세요');
-  shareDownload();
-};
-
 /* ── 규격표 빌드 ── */
 function buildSpecTables(){
   const hd='<thead><tr><th>호칭경</th><th>외경(mm)</th><th>두께(mm)</th><th>내경(mm)</th><th>단면적(㎟)</th></tr></thead>';
@@ -2988,10 +2741,6 @@ function resetAll(){
   markStep(1, false);
   syncAll();
   updateStepStatus();
-  renderMobileResult(null);
-  // 공유 버튼 초기화
-  var sb=document.getElementById('btn-mobile-share'); if(sb) sb.style.display='none';
-  var ah=document.getElementById('mobile-action-hint'); if(ah) ah.textContent='※ 관경 산정 탭에서 결과 입력 후 JPG 저장하세요';
   toast('🔄 초기화 완료');
 }
 
@@ -3020,7 +2769,7 @@ function renderA4(r){
     .map(c => {
       const isSel = c.s === r.selected.s;
       return `<tr class="${isSel ? 'hl' : ''}">
-        <td style="font-weight:${isSel?'900':'600'};color:${isSel?'#0369a1':'inherit'}">${isSel ? '★ ' : ''}${c.s}</td>
+        <td style="font-weight:${isSel?'900':'600'};color:${isSel?'#0e7490':'inherit'}">${isSel ? '★ ' : ''}${c.s}</td>
         <td>${c.id.toFixed(1)}</td>
         <td style="color:${c.vel > r.vmax ? '#dc2626' : c.vel > r.mat.vrec[1] ? '#d97706' : '#15803d'}">${c.vel.toFixed(3)}</td>
         <td>${c.actualPdrop.toFixed(2)}</td>
@@ -3030,14 +2779,14 @@ function renderA4(r){
     }).join('');
 
   const html = `
-    <div class="a4-tit">냉온수 배관 관경 산정서 [MANMIN-Ver2.0]</div>
-    <div style="font-size:13px;font-weight:800;color:#0c2340;margin-bottom:4px;padding-bottom:6px;border-bottom:2px solid #0369a1;display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px">
-      <span>📋 ${STATE.projectName || '만민 건축사 신사옥 신축공사'}</span>
-      <span style="font-size:10px;font-weight:700;color:#475569">작성자: ${STATE.projectAuthor || '김만민'}</span>
-    </div>
-    <div class="a4-info-row">
-      <span>기계설비 기술기준 [별표 8] 배관설비 설계 및 시공 기준 (국토교통부 고시 제2021-851호)</span>
-      <span>작성일: ${STATE.projectDate ? STATE.projectDate.replace(/-/g,'.') : today}</span>
+    <div class="a4-tit">냉온수 배관 관경 산정서</div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:12px;">
+      <div style="font-size:12px;font-weight:800;color:#111827;flex:1;text-align:left;">${STATE.projectName || '만민 건축사 신사옥 신축공사'}</div>
+      <div style="text-align:right;white-space:nowrap;flex-shrink:0;">
+        <div style="font-size:9px;color:#64748b;margin-bottom:2px;">기계설비 기술기준 국토교통부 고시 제2021-851호(제2026-360호 일부개정) · MANMIN Ver-5.0</div>
+        <div style="font-size:9px;color:#475569;margin-bottom:1px;">작성일: ${STATE.projectDate ? STATE.projectDate.replace(/-/g,'.') : today}</div>
+        <div style="font-size:9px;color:#475569;">작성자: ${STATE.projectAuthor || '김만민'}</div>
+      </div>
     </div>
 
     <div class="a4-sub">1. 설계 입력 조건</div>
@@ -3058,7 +2807,7 @@ function renderA4(r){
       <tbody>
         <tr class="hl">
           <td>★ 채택 관경</td>
-          <td style="font-size:14px;font-weight:900;color:#0369a1">${r.selected.s}</td>
+          <td style="font-size:14px;font-weight:900;color:#0e7490">${r.selected.s}</td>
           <td>William-Hazen + 연속방정식</td>
           <td style="color:#15803d;font-weight:800">✓ 산정 완료</td>
         </tr>
@@ -3119,8 +2868,9 @@ function renderA4(r){
     </table>
 
     <div class="a4-footer">
-      <span>냉온수 배관 관경 산정 시스템 [MANMIN-Ver2.0] · 기계설비 기술기준 국토교통부 고시 제2021-851호</span>
-      <span>작성일: ${today}</span>
+      <span>냉온수 배관 관경 산정 시스템 [MANMIN-Ver5.0]</span>
+      <span>기계설비 기술기준 [별표 8] · William-Hazen / Darcy-Weisbach</span>
+      <span>작성일: ${STATE.projectDate ? STATE.projectDate.replace(/-/g,'.') : today}</span>
     </div>`;
 
   document.getElementById('a4Page').innerHTML = html;
@@ -3178,39 +2928,11 @@ function switchGuideTab(n){
 }
 
 /* ── FAB ── */
+/* v5.0 — 드래그 이동 기능을 제거하고 20·21 과 같은 고정 스택으로 통일했다.
+   툴팁도 없앴다(버튼에 라벨이 직접 붙어 있다). */
 function initFab(){
   const btn=document.getElementById('fabCalc');
-  const tip=document.getElementById('fabTooltip');
-  if(!btn) return;
-  let isDragging=false,hasMoved=false,startX,startY,startR,startB;
-  function getXY(e){const t=e.touches?e.touches[0]:e;return{x:t.clientX,y:t.clientY};}
-  function onDown(e){
-    const p=getXY(e);startX=p.x;startY=p.y;hasMoved=false;isDragging=false;
-    const rect=btn.getBoundingClientRect();
-    startR=window.innerWidth-rect.right;startB=window.innerHeight-rect.bottom;
-    document.addEventListener('mousemove',onMove);document.addEventListener('mouseup',onUp);
-    document.addEventListener('touchmove',onMove,{passive:false});document.addEventListener('touchend',onUp);
-    e.preventDefault();
-  }
-  function onMove(e){
-    const p=getXY(e);const dx=p.x-startX,dy=p.y-startY;
-    if(!hasMoved&&(Math.abs(dx)>5||Math.abs(dy)>5)){hasMoved=true;isDragging=true;tip.classList.remove('show');}
-    if(!isDragging)return;
-    let nr=Math.max(4,Math.min(startR-dx,window.innerWidth-btn.offsetWidth-4));
-    let nb=Math.max(4,Math.min(startB-dy,window.innerHeight-btn.offsetHeight-4));
-    btn.style.right=nr+'px';btn.style.bottom=nb+'px';
-    e.preventDefault();
-  }
-  function onUp(){
-    document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp);
-    document.removeEventListener('touchmove',onMove);document.removeEventListener('touchend',onUp);
-    if(!hasMoved) openGuideModal();
-    isDragging=false;
-  }
-  btn.addEventListener('mousedown',onDown);
-  btn.addEventListener('touchstart',onDown,{passive:false});
-  btn.addEventListener('mouseenter',()=>{if(!isDragging){const r=btn.getBoundingClientRect();tip.style.left=(r.left+r.width/2)+'px';tip.style.top=(r.top-36)+'px';tip.classList.add('show');}});
-  btn.addEventListener('mouseleave',()=>tip.classList.remove('show'));
+  if(btn) btn.addEventListener('click', openGuideModal);
 }
 
 /* ── purpose change ── */
@@ -3555,6 +3277,118 @@ function renderGuide(){
 })();
 
 /* ─── JPG 저장 기능 ─── */
+/* ═══════════════ v5.0 — A4 페이지 단위 JPG + 저장 시트 (§3-5 · §14-2) ═══════════════
+   종전에는 #a4Page 전체를 통짜 1장으로 캡처해 곧바로 내려받았다.
+   내용이 여러 장 분량이면 세로로 극단적으로 긴 JPG 가 나왔고 확인 단계도 없었다.
+   페이지 경계는 인쇄와 같은 수식(297mm · TOP 12 · BOT 8)을 쓴다. */
+
+/* 안전 절단선 — 표 본문 행 하단, 정보줄 하단, 소제목 상단.
+   ⛔ .a4-footer 는 후보에서 뺀다. 푸터 상단에서 잘리면 푸터 한 줄만 다음 장으로
+      밀려나 백지 쪽이 생긴다(11 소방시설에서 실제로 발생). */
+function mmSafeCuts(page){
+  var pr=page.getBoundingClientRect(), out=[];
+  page.querySelectorAll('.a4-info-row,table.a4-tbl tbody tr')
+    .forEach(function(el){ out.push(el.getBoundingClientRect().bottom-pr.top); });
+  page.querySelectorAll('.a4-sub')
+    .forEach(function(el){ out.push(el.getBoundingClientRect().top-pr.top); });
+  out.push(page.scrollHeight);
+  out.sort(function(a,b){return a-b;});
+  return out.filter(function(v,i,a){return i===0 || v-a[i-1]>0.5;});
+}
+function mmPickCut(cuts,y,limit){
+  var best=0;
+  for(var i=0;i<cuts.length;i++){
+    if(cuts[i]>y+1 && cuts[i]<=limit) best=cuts[i];
+    else if(cuts[i]>limit) break;
+  }
+  return best;
+}
+/* ⛔ .a4-page 에 min-height:1123px 이 걸려 있어 scrollHeight 를 그대로 쓰면
+   콘텐츠가 끝난 뒤의 빈 여백까지 문서 높이로 잡힌다. 그 여백 때문에
+   "마지막 장" 판정이 빗나가 백지 쪽이 생긴다(§14-2). */
+function mmContentHeight(page){
+  var pr=page.getBoundingClientRect(), max=0;
+  page.querySelectorAll('*').forEach(function(el){
+    var cs=getComputedStyle(el);
+    if(cs.display==='none' || cs.visibility==='hidden') return;
+    var b=el.getBoundingClientRect().bottom-pr.top;
+    if(b>max) max=b;
+  });
+  var pad=parseFloat(getComputedStyle(page).paddingBottom)||0;
+  var h=Math.ceil(max+pad);
+  return (h>0 && h<page.scrollHeight) ? h : page.scrollHeight;
+}
+/* v5.0 — 쪽 나눔은 @page 여백과 같은 값을 쓴다.
+   @page{margin:14mm 12mm 22mm 14mm} 이므로 세로 유효 높이는 297-14-22 = 261mm 다.
+   종전 TOP 12 · BOT 8 은 근거 없는 값이라 JPG 와 인쇄의 쪽 나눔이 최대 28mm 어긋났다.
+   상·하 여백을 전 쪽에 동일 적용하므로 1쪽도 윗여백을 갖는다. */
+var MM_PAGE = { W:794, H:1123, MT:14, MR:12, MB:22, ML:14 };   // mm 단위 여백
+/* ⛔ .a4-page 의 padding 은 여백이지 내용이 아니다.
+   화면 padding 을 인쇄 여백(상53 하83px)과 맞췄으므로, 자를 때는 그만큼 빼야 한다.
+   빼지 않으면 여백까지 내용으로 세어 쪽수가 늘어난다. */
+function mmSegments(page){
+  var mmPerPx=210/MM_PAGE.W, pH=297;
+  var cs=getComputedStyle(page);
+  var padTop=parseFloat(cs.paddingTop)||0, padBot=parseFloat(cs.paddingBottom)||0;
+  var usable=(pH-MM_PAGE.MT-MM_PAGE.MB)/mmPerPx;   /* 261mm ≈ 987px — 전 쪽 동일 */
+  var cuts=mmSafeCuts(page), docH=mmContentHeight(page);
+  var start=padTop, stop=Math.max(start, docH-padBot);
+  var segs=[], y=start, pg=0;
+  while(y<stop-0.5 && pg<60){
+    var ideal=y+usable, end;
+    if(ideal>=stop-0.5){ end=stop; }
+    else { end=mmPickCut(cuts,y,ideal); if(!end) end=ideal; }
+    segs.push([y,end]); y=end; pg++;
+  }
+  return segs.length?segs:[[start,stop]];
+}
+function mmDownload(url,name){
+  var a=document.createElement('a');
+  a.download=name; a.href=url;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+function mmCloseSheet(){
+  var ov=document.getElementById('mm-save-ov');
+  if(ov) ov.classList.remove('show');
+}
+/* 2매 이상일 때만 뜬다. 브라우저가 연속 자동 다운로드를 차단하므로
+   전체 저장도 400ms 간격으로 하나씩 내려받는다. */
+function mmOpenSheet(shots, base){
+  var prev=document.getElementById('mm-save-ov');
+  if(prev) prev.remove();
+  var ov=document.createElement('div');
+  ov.id='mm-save-ov';
+  var body='';
+  shots.forEach(function(url,i){
+    body+='<div class="mm-shot"><img src="'+url+'" alt="'+(i+1)+'쪽 미리보기"/>'
+        + '<button class="mm-shot-btn" data-i="'+i+'">🖼 '+(i+1)+'쪽 저장</button></div>';
+  });
+  ov.innerHTML =
+    '<div class="mm-sheet" role="dialog" aria-modal="true" aria-label="산정서 저장">'
+    + '<div class="mm-sheet-head"><div>'
+    +   '<div class="mm-sheet-title">산정서 저장 · 총 '+shots.length+'매</div>'
+    +   '<div class="mm-sheet-note">'+(shots.length>1?'브라우저가 연속 다운로드를 차단하므로 쪽별로 저장합니다.':'미리보기를 확인하고 저장하세요.')+'</div>'
+    + '</div><button class="btn-export mm-btn-close" id="mm-sheet-x">✕ 닫기</button></div>'
+    + '<div class="mm-sheet-body">'+body+'</div>'
+    + '<div class="mm-sheet-foot">'
+    +   '<button class="btn-export mm-btn-jpg" id="mm-save-all">🖼 전체 저장 ('+shots.length+'매)</button>'
+    + '</div></div>';
+  document.body.appendChild(ov);
+  ov.classList.add('show');
+  ov.querySelectorAll('.mm-shot-btn').forEach(function(b){
+    b.addEventListener('click',function(){
+      mmDownload(shots[+b.getAttribute('data-i')], base+'_'+(+b.getAttribute('data-i')+1)+'of'+shots.length+'.jpg');
+    });
+  });
+  document.getElementById('mm-sheet-x').addEventListener('click',mmCloseSheet);
+  ov.addEventListener('click',function(e){ if(e.target===ov) mmCloseSheet(); });
+  document.getElementById('mm-save-all').addEventListener('click',function(){
+    shots.forEach(function(url,i){
+      setTimeout(function(){ mmDownload(url, base+'_'+(i+1)+'of'+shots.length+'.jpg'); }, i*400);
+    });
+  });
+}
+
 window.exportJpg = function(targetEl){
   var el = targetEl || document.getElementById('a4Page') || document.getElementById('result-content');
   if(!el){ showToast('먼저 관경을 산정하세요'); return; }
@@ -3563,27 +3397,49 @@ window.exportJpg = function(targetEl){
     showToast('먼저 관경을 산정한 후 JPG를 저장하세요'); return;
   }
   showToast('📸 JPG 생성 중...');
-  var scale = 2; // 2x 고해상도
+  var isA4 = (el.id === 'a4Page');
+  var segs = isA4 ? mmSegments(el) : null;
+  var fullH = isA4 ? Math.max(mmContentHeight(el),1) : el.scrollHeight;
   html2canvas(el, {
-    scale: scale,
-    useCORS: true,
-    allowTaint: true,
-    backgroundColor: '#ffffff',
-    logging: false,
-    width: el.scrollWidth,
-    height: el.scrollHeight
+    scale: 2, useCORS: true, allowTaint: true,
+    backgroundColor: '#ffffff', logging: false,
+    width: el.scrollWidth, height: fullH
   }).then(function(canvas){
-    var link = document.createElement('a');
     var now = new Date();
     var ts = now.getFullYear()+''+
       String(now.getMonth()+1).padStart(2,'0')+
       String(now.getDate()).padStart(2,'0')+'_'+
       String(now.getHours()).padStart(2,'0')+
       String(now.getMinutes()).padStart(2,'0');
-    link.download = '냉온수배관_관경산정_'+ts+'.jpg';
-    link.href = canvas.toDataURL('image/jpeg', 0.95);
-    link.click();
-    showToast('✅ JPG 저장 완료!');
+    var base = '냉온수배관_관경산정_MANMIN-Ver5.0_'+ts;
+    /* v5.0 — 1매여도 항상 미리보기 시트를 띄운다.
+       사용자가 저장 전에 결과를 눈으로 확인하고 고를 수 있어야 한다. */
+    if(!isA4 || !segs || !segs.length){
+      mmDownload(canvas.toDataURL('image/jpeg',0.95), base+'.jpg');
+      showToast('✅ JPG 저장 완료!');
+      return;
+    }
+    /* v5.0 — 각 쪽을 A4 용지 비율(794 × 1123px · 1:1.414) 캔버스에 얹는다.
+       내용이 짧아도 아래를 흰 여백으로 채워, 어느 쪽을 저장하든 같은 A4 비율이 나온다.
+       ⛔ 윗여백은 전 쪽에 @page margin-top(14mm)을 그대로 준다.
+          1쪽만 0 으로 두면 JPG 상단이 종이 끝에 붙어 인쇄물과 달라 보인다. */
+    var S = canvas.width/el.scrollWidth;
+    var PAGE_W=MM_PAGE.W, PAGE_H=MM_PAGE.H, mmPerPx=210/PAGE_W;
+    /* 세그먼트가 padding 을 제외한 순수 내용 구간이므로,
+       캔버스에는 @page margin-top(14mm) 을 그대로 얹으면 인쇄와 같아진다. */
+    var topPx = MM_PAGE.MT/mmPerPx;                  /* 14mm ≈ 52.9px — 전 쪽 동일 */
+    var shots = segs.map(function(sg, idx){
+      var h=Math.max(1,Math.round((sg[1]-sg[0])*S));
+      var tmp=document.createElement('canvas');
+      tmp.width=Math.round(PAGE_W*S); tmp.height=Math.round(PAGE_H*S);
+      var ctx=tmp.getContext('2d');
+      ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,tmp.width,tmp.height);
+      ctx.drawImage(canvas,0,Math.round(sg[0]*S),canvas.width,h,
+                           0,Math.round(topPx*S),canvas.width,h);
+      return tmp.toDataURL('image/jpeg',0.95);
+    });
+    mmOpenSheet(shots, base);
+    showToast(shots.length>1 ? '📄 '+shots.length+'매로 나눴습니다' : '📄 미리보기에서 저장하세요');
   }).catch(function(err){
     showToast('❌ JPG 저장 실패: '+err.message);
   });
@@ -3599,5 +3455,6 @@ window.exportA4Jpg = function(){
 
 </script>
 
+<div id="dev-stamp">MANMIN · Ver-5.0</div>
 </body>
 </html>
