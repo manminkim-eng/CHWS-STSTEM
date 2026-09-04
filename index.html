@@ -3377,7 +3377,7 @@ var MM_PAGE = { W:794, H:1123, MT:14, MR:12, MB:22, ML:14 };   // mm 단위 여�
 function markLongTables(page){
   var mmPerPx=210/794, usable=(297-14-22)/mmPerPx;   /* 261mm ≈ 987px */
   page.querySelectorAll('table.a4-tbl').forEach(function(t){
-    t.classList.toggle('long', t.getBoundingClientRect().height > usable);
+    t.classList.toggle('long', t.getBoundingClientRect().height>usable || t.classList.contains('shadow') || t.classList.contains('splitok'));
   });
 }
 
@@ -3403,8 +3403,8 @@ function mmBlocks(page){
       pend={top:top, bot:bot};
       return;
     }
-    if(pend){ out.push({top:pend.top, bot:bot}); pend=null; return; }
-    out.push({top:top, bot:bot});
+    if(pend){ out.push({top:pend.top, bot:bot, split:el.classList.contains('long')}); pend=null; return;   /* R23: 소제목+표 병합 블록 split 승계(§20-16 ①) */ }
+    out.push({top:top, bot:bot, split:el.classList.contains('long')});
   });
   if(pend) out.push(pend);
   out.sort(function(a,b){ return a.top-b.top; });
@@ -3433,6 +3433,8 @@ function mmSegments(page){
       if(cut>=blocks[i].bot-0.5) i++;
       y=cut; continue;
     }
+        /* R23 (S10 소급 · 지시서 §20-15 ④·§20-16 ①): 다음 블록이 행 나눔 허용 표(.long)이고 남은 공간이 1/4 이상이면 행 경계에서 잘라 미리보기 순서대로 채운다 */
+    if(j<blocks.length && blocks[j].split && (limit-end)>usable*0.25){ var c2=mmPickCut(cuts,end,limit); if(c2>blocks[j].top+20){ segs.push([y,c2]); y=c2; blocks[j].top=c2; i=j; continue; } }
     segs.push([y,end]); y=end; i=j;
   }
   /* 마지막 블록 뒤 꼬리는 5px 이상일 때만 쪽으로 만든다(백지 쪽 방지) */
