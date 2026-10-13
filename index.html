@@ -1410,9 +1410,7 @@ input[type="number"]{-moz-appearance:textfield;}
             <div class="nb-txt">
               • 최고 사용압력 1 MPa 이하 권장, 초과 시 압력에 맞는 재료(KDS 31 25 25:2021 1.6(4))<br>
               • 550 kPa 감압 기준(별표 5 2.1.7)은 위생기구 급수압 기준 — 냉온수 밀폐계에는 적용하지 않음<br>
-              • 고층일수록 관경을 키워 단위 손실을 낮춰야 함<br>
-              • 배수 수직관: 6층↑ +1단계, 16층↑ +2단계 상향<br>
-              • 환탕 배관: 층수×층높이×1.3 &gt; 15m 시 순환펌프 의무
+              • 고층일수록 관경을 키워 단위 손실을 낮춰야 함
             </div>
           </div>
         </div>
@@ -2379,8 +2377,6 @@ function liveCalc(){
   // 감압밸브 예비 판정 (정수두 기준)
   // 정수두 자체가 300 kPa 이상이면 감압 구간 필요 가능성 높음
   const prvAlert = staticKpa >= 300;
-  // 고층 배수 수직관 보정 단계 (위생배관 기준 차용)
-  const vertBoost = STATE.floors > 15 ? 2 : STATE.floors > 5 ? 1 : 0;
 
   const schVal = document.getElementById('sel-sch').value;
   const schLabel = schVal==='sch40' ? 'SCH #40' : schVal==='sch80' ? 'SCH #80' : 'SGP(일반)';
@@ -2490,7 +2486,7 @@ function liveCalc(){
     toast(`⚠ 설계 유속 ${STATE.vel} m/s가 ${mat.nm} 절대 최대(${vmax} m/s)를 초과합니다`);
   }
 
-  STATE.result={mat,vmax,selected,selIdx,candidates,flowKgh,flowM3s,minIdByVel,C,I,purposeClass,schLabel,matLabel,velInputOverMax,totalH,staticKpa,pdropRec,pdropOverRec,prvAlert,vertBoost};
+  STATE.result={mat,vmax,selected,selIdx,candidates,flowKgh,flowM3s,minIdByVel,C,I,purposeClass,schLabel,matLabel,velInputOverMax,totalH,staticKpa,pdropRec,pdropOverRec,prvAlert};
 
   renderHero(STATE.result);
   renderStatGrid(STATE.result);
@@ -3096,9 +3092,6 @@ function renderGuide(){
     ? `⚠ ${STATE.floors}층 → ${r.pdropRec}mmAq/m 이하 권장` : '✅ 층수 기준 적합';
   const pdrecColor = r.pdropOverRec ? '#d97706' : '#15803d';
 
-  const circLen = (STATE.floors * STATE.floorHt * 1.3).toFixed(1);
-  const circJdg = parseFloat(circLen) > 15 ? `⚠ 추정길이 ${circLen}m → 환탕관+순환펌프 검토` : `✅ ${circLen}m ≤ 15m`;
-  const circColor = parseFloat(circLen) > 15 ? '#d97706' : '#15803d';
 
   document.getElementById('guide-judge-table').innerHTML = `
     <thead><tr><th>항목</th><th>산정값</th><th>기준</th><th>판정</th></tr></thead>
@@ -3113,16 +3106,12 @@ function renderGuide(){
             `설계유량 ${fmt(STATE.flowKgh,0)} KG/H`, flowJdg, flowJColor)}
       ${row('정수두', r.staticKpa.toFixed(1)+' kPa',
             '300 kPa 이상 시 감압 검토(MANMIN 참고)', prvJdg, prvColor)}
-      ${row('환탕 배관 판정', circLen+' m (추정)',
-            '15m 초과 시 환탕관 의무', circJdg, circColor)}
       ${row('유량 여유율', ((r.selected.maxQ_kgh/STATE.flowKgh-1)*100).toFixed(1)+'%',
             '20% 이상 권장', (r.selected.maxQ_kgh/STATE.flowKgh-1)*100 >= 20 ? '✅ 충분' : '⚠ 협소',
             (r.selected.maxQ_kgh/STATE.flowKgh-1)*100 >= 20 ? '#15803d' : '#d97706')}
     </tbody>`;
 
   /* ─ 층수 연동 분석 박스 ─ */
-  const vertBoostTxt = r.vertBoost === 0 ? '보정 없음 (1~5층)'
-    : r.vertBoost === 1 ? '+1단계 상향 권장 (6~15층)' : '+2단계 상향 권장 (16층↑)';
 
   document.getElementById('guide-floor-analysis').innerHTML = `
     <div style="background:#fff7ed;border:1.5px solid #fed7aa;border-radius:9px;padding:11px">
@@ -3144,10 +3133,6 @@ function renderGuide(){
           <div style="font-size:9px;color:#92400e;font-weight:700;margin-bottom:3px">감압밸브 예비판정</div>
           <div style="font-size:12px;font-weight:800;color:${r.prvAlert?'#dc2626':'#15803d'}">${r.prvAlert?'⚠ 검토 필요':'✅ 불필요'}</div>
           <div style="font-size:9px;color:#78350f">300kPa · MANMIN 참고</div>
-        </div>
-        <div style="background:#fff;border-radius:7px;padding:8px;border:1px solid #fed7aa">
-          <div style="font-size:9px;color:#92400e;font-weight:700;margin-bottom:3px">배수수직관 보정</div>
-          <div style="font-size:11px;font-weight:800;color:${r.vertBoost>0?'#d97706':'#15803d'}">${vertBoostTxt}</div>
         </div>
       </div>
     </div>`;
