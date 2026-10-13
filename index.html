@@ -762,7 +762,7 @@ input[type="number"]{-moz-appearance:textfield;}
     </div>
     <div class="hdr-right-wrap">
       <!-- v5.0-HDR — 마스터 4줄(13/11/11/10) : 우측 블록이 좌측 78.2 를 넘지 않게(§15-4 169.5 → 162.2) -->
-      <div class="hdr-right"><strong>기계설비 기술기준</strong><br/>국토교통부 고시 제2021-851호<br/>제2026-360호 일부개정<br/><em>[시행 2026. 7. 8.]</em></div>
+      <div class="hdr-right"><strong>기계설비 기술기준</strong><br/>국토교통부 고시 제2021-851호<br/>제2026-360호 타법개정<br/><em>[시행 2026. 7. 8.]</em></div>
       <!-- v5.0 : 헤더 버튼 없음. 설치는 PWA 배너가, 초기화는 우측 하단 FAB 이 담당한다.
            20 건물우수와 동일한 구성이다(§3-1). -->
     </div>
@@ -870,7 +870,7 @@ input[type="number"]{-moz-appearance:textfield;}
             <select class="fselect" id="sel-pdrop" onchange="onPdropChange()">
               <option value="20">20 mmAq/m — 경제적</option>
               <option value="30" selected>30 mmAq/m — 표준</option>
-              <option value="50">50 mmAq/m — 고압</option>
+              <option value="50">50 mmAq/m — KDS 권장 초과</option>
               <option value="custom">직접 입력</option>
             </select>
           </div>
@@ -1152,8 +1152,9 @@ input[type="number"]{-moz-appearance:textfield;}
 
           <div class="ref-box">
             <div class="ref-tit">📌 적용 기준</div>
-            <div class="ref-item">기계설비 기술기준 [별표 8] (국토교통부 고시 제2021-851호)</div>
-            <div class="ref-item">William-Hazen: Q = 0.35464 × C × d²·⁶³ × I⁰·⁵⁴</div>
+            <div class="ref-item">기계설비 기술기준 [별표 8] 2.1.5 (국토교통부 고시 제2021-851호 · 제2026-360호 타법개정)</div>
+            <div class="ref-item">KDS 31 25 25:2021 4.1.5 — 단위 압력손실·유속 기준, 75~400 Pa/m 권장</div>
+            <div class="ref-item">William-Hazen: Q = 0.27853 × C × d²·⁶³ × I⁰·⁵⁴</div>
             <div class="ref-item">연속방정식: d = √(4Q / πV)</div>
           </div>
 
@@ -1183,21 +1184,22 @@ input[type="number"]{-moz-appearance:textfield;}
   </div>
 
   <div class="card">
-    <div class="card-head"><div class="card-ico">🔩</div><span class="card-tit">재질별 Hazen-Williams C 계수 및 권장 유속</span></div>
+    <div class="card-head"><div class="card-ico">🔩</div><span class="card-tit">재질별 Hazen-Williams C 계수 및 권장 유속</span><span class="cbadge">MANMIN 참고값</span></div>
     <div class="card-body">
       <div class="twrap">
         <table class="gtbl">
           <thead><tr><th>배관 재질</th><th>C 계수(신설)</th><th>C 계수(노후)</th><th>권장 유속</th><th>최대 유속</th><th>비고</th></tr></thead>
           <tbody>
-            <tr><td>강관 SGP (일반)</td><td class="mono">120</td><td class="mono">100</td><td>1.0 ~ 2.0 m/s</td><td>2.5 m/s</td><td>20년 후 C=100 설계 권장</td></tr>
+            <tr><td>강관 SGP (일반)</td><td class="mono">120</td><td class="mono">100</td><td>1.0 ~ 2.0 m/s</td><td>2.0 m/s</td><td>20년 후 C=100 설계 권장</td></tr>
             <tr><td>강관 SCH #40</td><td class="mono">120</td><td class="mono">100</td><td>1.0 ~ 2.0 m/s</td><td>2.5 m/s</td><td>고압 배관 적용</td></tr>
-            <tr><td>동관 (Cu)</td><td class="mono">140</td><td class="mono">130</td><td>1.0 ~ 1.5 m/s</td><td>2.0 m/s</td><td>고유속 시 침식 주의</td></tr>
+            <tr><td>동관 (Cu)</td><td class="mono">140</td><td class="mono">130</td><td>1.0 ~ 1.5 m/s</td><td>1.5 m/s</td><td>고유속 시 침식 주의</td></tr>
             <tr><td>스테인리스 (STS)</td><td class="mono">140</td><td class="mono">135</td><td>1.0 ~ 2.0 m/s</td><td>3.0 m/s</td><td>위생설비 적합</td></tr>
             <tr><td>PVC/PE 합성수지</td><td class="mono">150</td><td class="mono">145</td><td>1.0 ~ 2.0 m/s</td><td>3.0 m/s</td><td>마찰저항 최소</td></tr>
             <tr><td>주철관 (CI)</td><td class="mono">100</td><td class="mono">80</td><td>0.6 ~ 1.5 m/s</td><td>2.0 m/s</td><td>배수·주철 한정</td></tr>
           </tbody>
         </table>
       </div>
+      <div class="nb-txt" style="font-size:10px;color:#64748b;margin-top:6px">※ 기계설비 기술기준 별표 8과 KDS 31 25 25:2021에는 C 계수·재질별 유속 수치가 없습니다. KDS 31 25 25 4.1.5가 참조하도록 정한 설비공학편람·ASHRAE 값을 정리한 MANMIN 참고값이며, 최대 유속은 계산에 쓰는 값과 같습니다.</div>
     </div>
   </div>
 </div>
@@ -1239,20 +1241,37 @@ input[type="number"]{-moz-appearance:textfield;}
 
   <div class="guide-grid-2col" style="margin-top:0">
     <div class="card">
-      <div class="card-head"><div class="card-ico">⚪</div><span class="card-tit">배관 지지 간격 기준 (별표 8)</span><span class="cbadge">표 1</span></div>
+      <div class="card-head"><div class="card-ico">⚪</div><span class="card-tit">배관 지지 간격 기준 (별표 8 3.1.4)</span><span class="cbadge">표 1</span></div>
       <div class="card-body">
         <div class="twrap">
           <table class="gtbl">
-            <thead><tr><th>호칭지름</th><th>강관(수평)</th><th>동관(수평)</th><th>STS/PVC</th><th>강관(수직)</th></tr></thead>
+            <thead><tr><th>배관</th><th>호칭지름</th><th>지지 간격</th></tr></thead>
             <tbody>
-              <tr><td>20A 이하</td><td>1.8 m</td><td>1.0 m</td><td>1.0 m</td><td>3.0 m</td></tr>
-              <tr><td>25A ~ 40A</td><td>2.0 m</td><td>1.5 m</td><td>1.5 m</td><td>3.0 m</td></tr>
-              <tr><td>50A</td><td>3.0 m</td><td>2.0 m</td><td>2.0 m</td><td>4.0 m</td></tr>
-              <tr><td>65A ~ 100A</td><td>4.0 m</td><td>2.5 m</td><td>2.5 m</td><td>4.0 m</td></tr>
-              <tr><td>125A 이상</td><td>5.0 m</td><td>3.0 m</td><td>3.0 m</td><td>5.0 m</td></tr>
+              <tr><td rowspan="5" style="font-weight:700">강관 (수평)</td><td>20A 이하</td><td>1.8 m 이내</td></tr>
+              <tr><td>25A ~ 40A</td><td>2.0 m 이내</td></tr>
+              <tr><td>50A ~ 80A</td><td>3.0 m 이내</td></tr>
+              <tr><td>100A ~ 150A</td><td>4.0 m 이내</td></tr>
+              <tr><td>200A 이상</td><td>5.0 m 이내</td></tr>
+              <tr><td rowspan="5" style="font-weight:700">동관 (수평)</td><td>20A 이하</td><td>1.0 m 이내</td></tr>
+              <tr><td>25A ~ 40A</td><td>1.5 m 이내</td></tr>
+              <tr><td>50A</td><td>2.0 m 이내</td></tr>
+              <tr><td>65A ~ 100A</td><td>2.5 m 이내</td></tr>
+              <tr><td>125A 이상</td><td>3.0 m 이내</td></tr>
+              <tr><td rowspan="5" style="font-weight:700">스테인리스관 (수평)</td><td>20A 이하</td><td>1.0 m 이내</td></tr>
+              <tr><td>25A ~ 40A</td><td>1.5 m 이내</td></tr>
+              <tr><td>50A</td><td>2.0 m 이내</td></tr>
+              <tr><td>65A ~ 100A</td><td>2.5 m 이내</td></tr>
+              <tr><td>125A 이상</td><td>3.0 m 이내</td></tr>
+              <tr><td rowspan="5" style="font-weight:700">경질 염화 비닐관 (수평)</td><td>16A 이하</td><td>0.75 m 이내</td></tr>
+              <tr><td>20A ~ 40A</td><td>1.0 m 이내</td></tr>
+              <tr><td>50A</td><td>1.2 m 이내</td></tr>
+              <tr><td>65A ~ 125A</td><td>1.5 m 이내</td></tr>
+              <tr><td>150A 이상</td><td>2.0 m 이내</td></tr>
+              <tr><td rowspan="1" style="font-weight:700">수직관 (전 재질)</td><td>전 호칭지름</td><td>각 층에 1개소 이상</td></tr>
             </tbody>
           </table>
         </div>
+        <div class="nb-txt" style="font-size:10px;color:#64748b;margin-top:6px">※ 기계설비 기술기준 [별표 8] 3.1.4 표 1(KCS 31 20 15 표 3.4-1 · 3.12-1 준용)에서 냉온수 배관 재질만 옮김. 실내 수직관은 각 층마다 흔들림 방지철물 1개소, 동관·스테인리스강관은 지지 시 절연조치(3.1.4(2)·(3)).</div>
       </div>
     </div>
   </div>
@@ -1318,7 +1337,7 @@ input[type="number"]{-moz-appearance:textfield;}
               → 이 값 이하가 되는 최소 관경을 선정<br>
               → 사용자가 경제성·소음을 고려해 직접 설정<br><br>
               <b>절대 최대 유속 (vmax)</b><br>
-              → 기술기준상 초과 불가 상한선<br>
+              → MANMIN 참고 상한(설비공학편람·ASHRAE 참고, 기술기준에 수치 없음)<br>
               → 시스템이 자동으로 경고·재검토 요구
             </div>
           </div>
@@ -1332,15 +1351,16 @@ input[type="number"]{-moz-appearance:textfield;}
           <div class="nb grn">
             <div class="nb-tit">🟢 압력강하 설계 기준</div>
             <div class="nb-txt">
+              • <b>KDS 31 25 25:2021 4.1.5</b> — 75~400 Pa/m 권장 (≈ 7.6~40.8 mmAq/m)<br>
               • <b>20 mmAq/m</b> — 고층·장거리 배관 권장<br>
               • <b>30 mmAq/m</b> — 표준 설계 기준<br>
-              • <b>50 mmAq/m</b> — 단거리·소규모 허용 상한<br>
+              • <b>50 mmAq/m</b> — 약 490 Pa/m, KDS 권장 범위(400 Pa/m) 초과<br>
               • 10층 이상: <b>20 mmAq/m 이하</b> 강력 권장<br>
               • 15층 이상: <b>15 mmAq/m 이하</b> 권장
             </div>
           </div>
           <div class="nb blue" style="margin-top:7px">
-            <div class="nb-tit">🔵 층수에 따른 압력강하 기준 자동 권고 로직</div>
+            <div class="nb-tit">🔵 층수에 따른 압력강하 기준 자동 권고 로직 (MANMIN 참고값)</div>
             <div class="nb-txt">
               층수가 높을수록 입상관 전체 마찰손실이 누적됩니다.<br>
               • 1~9층 : 30 mmAq/m 기준 적용<br>
@@ -1366,12 +1386,12 @@ input[type="number"]{-moz-appearance:textfield;}
               &nbsp;&nbsp;정수두 = H × 9.81 kPa/m<br>
               &nbsp;&nbsp;→ 순환 펌프 양정 산출의 핵심 기초값<br><br>
               <b>② 고층 압력강하 자동 권고</b><br>
-              &nbsp;&nbsp;입상관 길이 = 총 높이 × 1.3 (굴곡 보정)<br>
+              &nbsp;&nbsp;입상관 길이 = 총 높이 × 1.3 (굴곡 보정 · MANMIN 참고값)<br>
               &nbsp;&nbsp;전체 마찰손실 = 입상관 길이 × 단위 손실<br>
               &nbsp;&nbsp;→ 10층↑ : 20 mmAq/m 이하 권장<br>
               &nbsp;&nbsp;→ 15층↑ : 15 mmAq/m 이하 권장<br><br>
               <b>③ 감압밸브(PRV) 예비 판정</b><br>
-              &nbsp;&nbsp;정수두 ≥ 300 kPa (약 30m 이상) 시 경고<br>
+              &nbsp;&nbsp;정수두 ≥ 300 kPa (약 30m 이상) 시 경고 (MANMIN 참고값)<br>
               &nbsp;&nbsp;= 대략 10층 × 3m = 30m 이상 건물<br>
               &nbsp;&nbsp;→ 구간별 감압밸브 설치 검토 필요
             </div>
@@ -1382,13 +1402,14 @@ input[type="number"]{-moz-appearance:textfield;}
               15층 건물, 층높이 3.5m<br>
               총 높이 H = 15 × 3.5 = 52.5 m<br>
               정수두   = 52.5 × 9.81 = 515 kPa<br>
-              → 550 kPa 접근 → 감압밸브 검토 ⚠
+              → 300 kPa 초과(MANMIN 참고 경고) · 최고 사용압력 1 MPa 이하 확인(KDS 31 25 25 1.6(4)) ⚠
             </div>
           </div>
           <div class="nb red" style="margin-top:7px">
             <div class="nb-tit">🔴 고층 건물 설계 주의사항</div>
             <div class="nb-txt">
-              • 정수두 &gt; 550 kPa → 감압밸브 의무 설치<br>
+              • 최고 사용압력 1 MPa 이하 권장, 초과 시 압력에 맞는 재료(KDS 31 25 25:2021 1.6(4))<br>
+              • 550 kPa 감압 기준(별표 5 2.1.7)은 위생기구 급수압 기준 — 냉온수 밀폐계에는 적용하지 않음<br>
               • 고층일수록 관경을 키워 단위 손실을 낮춰야 함<br>
               • 배수 수직관: 6층↑ +1단계, 16층↑ +2단계 상향<br>
               • 환탕 배관: 층수×층높이×1.3 &gt; 15m 시 순환펌프 의무
@@ -1413,7 +1434,8 @@ input[type="number"]{-moz-appearance:textfield;}
         <div class="nb blue">
           <div class="nb-tit">📐 William-Hazen 공식</div>
           <div class="nb-txt mono" style="background:#f8fafc;border:1px solid #bfdbfe;border-radius:6px;padding:8px;margin-top:4px">
-            Q = 0.35464 × C × d²·⁶³ × I⁰·⁵⁴<br><br>
+            Q = 0.27853 × C × d²·⁶³ × I⁰·⁵⁴<br>
+            (유속식 V = 0.35464 × C × d⁰·⁶³ × I⁰·⁵⁴ 에 단면적 πd²/4 를 곱한 식 · 0.35464 × π/4 = 0.27853)<br><br>
             Q : 유량 (m³/s)<br>
             C : Hazen-Williams 계수<br>
             d : 관 내경 (m)<br>
@@ -1642,7 +1664,7 @@ input[type="number"]{-moz-appearance:textfield;}
               </div>
               <div style="background:#fff7ed;border-radius:6px;padding:5px 8px;font-size:9.5px;margin-top:5px">
                 <b style="color:#c2410c">연동 자동판정 :</b>
-                <span style="color:#78350f"> 정수두(kPa) · 감압밸브 필요여부(300kPa 기준) · 층수별 압력강하 권고치</span>
+                <span style="color:#78350f"> 정수두(kPa) · 감압 검토(300 kPa · MANMIN 참고) · 층수별 압력강하 권고치</span>
               </div>
             </div>
           </div>
@@ -1715,8 +1737,11 @@ input[type="number"]{-moz-appearance:textfield;}
           <div style="font-size:10px;font-weight:800;color:#475569;margin-bottom:5px">📌 적용 기술기준</div>
           <div style="font-size:9.5px;color:#64748b;line-height:1.8">
             • 기계설비 기술기준 [별표 8] 배관설비의 설계 및 시공 기준<br>
-            &nbsp;&nbsp;(국토교통부 고시 제2021-851호, 2021.06.07 시행)<br>
-            • William-Hazen 공식 : Q = 0.35464 × C × d²·⁶³ × I⁰·⁵⁴<br>
+            &nbsp;&nbsp;(국토교통부 고시 제2021-851호, 2021.6.7. 제정 시행 · 제2026-360호 타법개정, 2026.7.8. 시행)<br>
+            &nbsp;&nbsp;— 2.1.5 「단위마찰손실과 유속을 기준으로 배관 호칭지름을 결정한다」<br>
+            • KDS 31 25 25:2021 배관설비 4.1.5 — 단위 압력손실과 유속 기준, 75~400 Pa/m 권장<br>
+            &nbsp;&nbsp;(C 계수·재질별 유속은 KDS 31 25 25가 참조하는 설비공학편람·ASHRAE 값 = MANMIN 참고값)<br>
+            • William-Hazen 공식 : Q = 0.27853 × C × d²·⁶³ × I⁰·⁵⁴<br>
             • 연속방정식 : d = √(4Q / π·V)<br>
             • Darcy-Weisbach : hf = λ × (L/D) × (V²/2g)
           </div>
@@ -1728,18 +1753,19 @@ input[type="number"]{-moz-appearance:textfield;}
         <div class="twrap"><table class="gtbl">
           <thead><tr><th>재질</th><th>권장 유속</th><th>최대 유속</th><th>C계수(신설)</th><th>C계수(노후)</th><th>비고</th></tr></thead>
           <tbody>
-            <tr><td>강관 SGP</td><td style="color:#15803d;font-weight:800">1.0~2.0 m/s</td><td>2.5 m/s</td><td class="mono">120</td><td class="mono">100</td><td>냉온수 표준</td></tr>
+            <tr><td>강관 SGP</td><td style="color:#15803d;font-weight:800">1.0~2.0 m/s</td><td>2.0 m/s</td><td class="mono">120</td><td class="mono">100</td><td>냉온수 표준</td></tr>
             <tr><td>강관 SCH40</td><td style="color:#15803d;font-weight:800">1.0~2.0 m/s</td><td>2.5 m/s</td><td class="mono">120</td><td class="mono">100</td><td>고압 배관</td></tr>
-            <tr><td>동관</td><td style="color:#15803d;font-weight:800">1.0~1.5 m/s</td><td>2.0 m/s</td><td class="mono">140</td><td class="mono">130</td><td>침식 주의</td></tr>
+            <tr><td>동관</td><td style="color:#15803d;font-weight:800">1.0~1.5 m/s</td><td>1.5 m/s</td><td class="mono">140</td><td class="mono">130</td><td>침식 주의</td></tr>
             <tr><td>STS관</td><td style="color:#15803d;font-weight:800">1.0~2.0 m/s</td><td>3.0 m/s</td><td class="mono">140</td><td class="mono">135</td><td>위생설비</td></tr>
             <tr><td>PVC/PE</td><td style="color:#15803d;font-weight:800">1.0~2.0 m/s</td><td>3.0 m/s</td><td class="mono">150</td><td class="mono">145</td><td>마찰 최소</td></tr>
           </tbody>
         </table></div>
+        <div class="nb-txt" style="font-size:10px;color:#64748b;margin-top:6px">※ MANMIN 참고값 — 별표 8·KDS 31 25 25에 수치 없음(설비공학편람·ASHRAE 참고)</div>
         <div class="nb org" style="margin-top:10px"><div class="nb-tit">⚠️ 유속 초과 시 발생 현상</div><div class="nb-txt">• 유속 &gt; 1.5 m/s → 소음 증가, 수격(워터해머) 위험<br>• 유속 &gt; 2.0 m/s → 배관 진동, 이음부 마모 가속<br>• 유속 &gt; 3.0 m/s → 캐비테이션(Critical Failure) 위험</div></div>
       </div>
 
       <div class="gm-panel" id="gmp-2" style="display:none">
-        <div class="nb blue"><div class="nb-tit">📐 William-Hazen 공식</div><div class="nb-txt mono">Q = 0.35464 × C × d²·⁶³ × I⁰·⁵⁴<br>I (동수구배) = ΔP[mmAq/m] ÷ 1000</div></div>
+        <div class="nb blue"><div class="nb-tit">📐 William-Hazen 공식</div><div class="nb-txt mono">Q = 0.27853 × C × d²·⁶³ × I⁰·⁵⁴<br>I (동수구배) = ΔP[mmAq/m] ÷ 1000</div></div>
         <div class="nb grn" style="margin-top:8px"><div class="nb-tit">📐 연속방정식 (최소 내경 역산)</div><div class="nb-txt mono">d = √(4Q / π·V)<br>Q(m³/s), V(m/s), d(m)</div></div>
         <div class="nb blue" style="margin-top:8px"><div class="nb-tit">📐 Darcy-Weisbach 공식 (정밀 산정)</div><div class="nb-txt mono">hf = λ × (L/D) × (V²/2g)<br>λ: 마찰계수, L: 배관길이, D: 내경</div></div>
       </div>
@@ -1774,45 +1800,45 @@ const PIPE_TYPES = [
 ];
 
 /* ── 배관 규격 데이터 ── */
-const STEEL_PIPES = [
-  {s:'15A',  od:21.7,  t:2.8,  id:13.84},
-  {s:'20A',  od:27.2,  t:2.9,  id:19.94},
-  {s:'25A',  od:34.0,  t:3.2,  id:26.04},
-  {s:'32A',  od:42.7,  t:3.5,  id:32.12},
-  {s:'40A',  od:48.6,  t:3.7,  id:38.24},
-  {s:'50A',  od:60.5,  t:3.8,  id:50.42},
-  {s:'65A',  od:76.3,  t:5.2,  id:62.62},
-  {s:'80A',  od:89.1,  t:5.5,  id:74.80},
-  {s:'100A', od:114.3, t:6.0,  id:99.20},
-  {s:'125A', od:139.8, t:6.5,  id:123.82},
-  {s:'150A', od:165.2, t:7.1,  id:148.46},
-  {s:'200A', od:216.3, t:8.2,  id:196.22},
-  {s:'250A', od:267.4, t:9.3,  id:244.48},
-  {s:'300A', od:318.5, t:10.3, id:295.64},
-  {s:'350A', od:355.6, t:11.1, id:330.18},
-  {s:'400A', od:406.4, t:12.7, id:376.68},
-  {s:'450A', od:457.2, t:14.3, id:422.72},
-  {s:'500A', od:508.0, t:15.1, id:471.52},
+const STEEL_PIPES = [  /* v5.0.10 — KS D 3507 배관용 탄소강관(SGP) 외경·두께, 내경 = 외경 − 2×두께. 350A 이상 두께는 JIS G 3452 동일값(KS 원문 대조 필요) */
+  {s:'15A',   od:21.7,  t:2.8,  id:16.10},
+  {s:'20A',   od:27.2,  t:2.8,  id:21.60},
+  {s:'25A',   od:34.0,  t:3.2,  id:27.60},
+  {s:'32A',   od:42.7,  t:3.5,  id:35.70},
+  {s:'40A',   od:48.6,  t:3.5,  id:41.60},
+  {s:'50A',   od:60.5,  t:3.8,  id:52.90},
+  {s:'65A',   od:76.3,  t:4.2,  id:67.90},
+  {s:'80A',   od:89.1,  t:4.2,  id:80.70},
+  {s:'100A',  od:114.3, t:4.5,  id:105.30},
+  {s:'125A',  od:139.8, t:4.5,  id:130.80},
+  {s:'150A',  od:165.2, t:5.0,  id:155.20},
+  {s:'200A',  od:216.3, t:5.8,  id:204.70},
+  {s:'250A',  od:267.4, t:6.6,  id:254.20},
+  {s:'300A',  od:318.5, t:6.9,  id:304.70},
+  {s:'350A',  od:355.6, t:7.9,  id:339.80},
+  {s:'400A',  od:406.4, t:7.9,  id:390.60},
+  {s:'450A',  od:457.2, t:7.9,  id:441.40},
+  {s:'500A',  od:508.0, t:7.9,  id:492.20},
 ];
-const SCH40_PIPES = [
-  {s:'15A',  od:21.34, t:2.77, id:15.80},
-  {s:'20A',  od:26.67, t:2.87, id:20.93},
-  {s:'25A',  od:33.40, t:3.38, id:26.64},
-  {s:'32A',  od:42.16, t:3.56, id:35.04},
-  {s:'40A',  od:48.26, t:3.68, id:40.90},
-  {s:'50A',  od:60.33, t:3.91, id:52.51},
-  {s:'65A',  od:73.03, t:5.16, id:62.71},
-  {s:'80A',  od:88.90, t:5.49, id:77.92},
-  {s:'100A', od:114.30,t:6.02, id:102.26},
-  {s:'125A', od:141.30,t:6.55, id:128.20},
-  {s:'150A', od:168.28,t:7.11, id:154.06},
-  {s:'200A', od:219.08,t:8.18, id:202.72},
-  {s:'250A', od:273.05,t:9.27, id:254.51},
-  {s:'300A', od:323.85,t:9.53, id:304.79},
-  {s:'350A', od:355.60,t:9.53, id:336.54},
-  {s:'400A', od:406.40,t:9.53, id:387.34},
-  {s:'450A', od:457.20,t:9.53, id:438.14},
-  {s:'500A', od:508.00,t:9.53, id:488.94},
+const SCH40_PIPES = [  /* v5.0.10 — KS D 3562 압력배관용 탄소강관 Sch 40 (JIS G 3454 동일), 내경 = 외경 − 2×두께 */
+  {s:'15A',   od:21.7,  t:2.8,  id:16.10},
+  {s:'20A',   od:27.2,  t:2.9,  id:21.40},
+  {s:'25A',   od:34.0,  t:3.4,  id:27.20},
+  {s:'32A',   od:42.7,  t:3.6,  id:35.50},
+  {s:'40A',   od:48.6,  t:3.7,  id:41.20},
+  {s:'50A',   od:60.5,  t:3.9,  id:52.70},
+  {s:'65A',   od:76.3,  t:5.2,  id:65.90},
+  {s:'80A',   od:89.1,  t:5.5,  id:78.10},
+  {s:'100A',  od:114.3, t:6.0,  id:102.30},
+  {s:'125A',  od:139.8, t:6.6,  id:126.60},
+  {s:'150A',  od:165.2, t:7.1,  id:151.00},
+  {s:'200A',  od:216.3, t:8.2,  id:199.90},
+  {s:'250A',  od:267.4, t:9.3,  id:248.80},
+  {s:'300A',  od:318.5, t:10.3, id:297.90},
+  {s:'350A',  od:355.6, t:11.1, id:333.40},
+  {s:'400A',  od:406.4, t:12.7, id:381.00},
+  {s:'450A',  od:457.2, t:14.3, id:428.60},
+  {s:'500A',  od:508.0, t:15.1, id:477.80},
 ];
 const COPPER_PIPES = [
   {s:'6A',  od:6.35,  t:0.71, id:4.93},
@@ -1830,21 +1856,21 @@ const COPPER_PIPES = [
   {s:'125A',od:130.18,t:3.18, id:123.82},
   {s:'150A',od:155.58,t:3.56, id:148.46},
 ];
-const SCH80_PIPES = [
-  {s:'15A',  od:21.34, t:3.73,  id:13.88},
-  {s:'20A',  od:26.67, t:3.91,  id:18.85},
-  {s:'25A',  od:33.40, t:4.55,  id:24.30},
-  {s:'32A',  od:42.16, t:4.85,  id:32.46},
-  {s:'40A',  od:48.26, t:5.08,  id:38.10},
-  {s:'50A',  od:60.33, t:5.54,  id:49.25},
-  {s:'65A',  od:73.03, t:7.01,  id:59.01},
-  {s:'80A',  od:88.90, t:7.62,  id:73.66},
-  {s:'100A', od:114.30,t:8.56,  id:97.18},
-  {s:'125A', od:141.30,t:9.53,  id:122.24},
-  {s:'150A', od:168.28,t:10.97, id:146.34},
-  {s:'200A', od:219.08,t:12.70, id:193.68},
-  {s:'250A', od:273.05,t:15.09, id:242.87},
-  {s:'300A', od:323.85,t:17.48, id:288.89},
+const SCH80_PIPES = [  /* v5.0.10 — KS D 3562 압력배관용 탄소강관 Sch 80 (JIS G 3454 동일), 내경 = 외경 − 2×두께 */
+  {s:'15A',   od:21.7,  t:3.7,  id:14.30},
+  {s:'20A',   od:27.2,  t:3.9,  id:19.40},
+  {s:'25A',   od:34.0,  t:4.5,  id:25.00},
+  {s:'32A',   od:42.7,  t:4.9,  id:32.90},
+  {s:'40A',   od:48.6,  t:5.1,  id:38.40},
+  {s:'50A',   od:60.5,  t:5.5,  id:49.50},
+  {s:'65A',   od:76.3,  t:7.0,  id:62.30},
+  {s:'80A',   od:89.1,  t:7.6,  id:73.90},
+  {s:'100A',  od:114.3, t:8.6,  id:97.10},
+  {s:'125A',  od:139.8, t:9.5,  id:120.80},
+  {s:'150A',  od:165.2, t:11.0, id:143.20},
+  {s:'200A',  od:216.3, t:12.7, id:190.90},
+  {s:'250A',  od:267.4, t:15.1, id:237.20},
+  {s:'300A',  od:318.5, t:17.4, id:283.70},
 ];
 
 function getPipeList(){
@@ -2339,7 +2365,7 @@ function liveCalc(){
    *    → 사용자 설정값이 권고치보다 높으면 경고 표시
    *
    * ③ 감압밸브(PRV) 필요 여부 판정
-   *    - 최하층 압력 = 급수압 + 정수두 > 550 kPa → 감압밸브 의무
+   *    - 550 kPa(별표 5 2.1.7)는 위생기구 급수압 기준 — 냉온수는 KDS 31 25 25 1.6(4) 최고 사용압력 1 MPa 이하
    *    - 이 시스템에서는 정수두만으로 PRV 필요성 예비 판정
    *      (실제 설계는 급수압 별도 적용)
    */
@@ -2362,9 +2388,10 @@ function liveCalc(){
     ? `${mat.nm} (${schLabel})` : `${mat.nm} ${mat.cat}`;
 
   setEl('p-c-value',`${mat.C} (신설) / ${mat.Ca} (노후 설계 권장)`);
-  setEl('p-pdrop',`${STATE.pdrop} mmAq/m ${pdropOverRec ? '⚠ '+STATE.floors+'층 → '+pdropRec+'mmAq/m 이하 권장' : ''}`);
+  const pdPa = STATE.pdrop*9.80665; const pdKds = (pdPa<75||pdPa>400) ? ` ⚠ ${pdPa.toFixed(0)} Pa/m — KDS 31 25 25 권장 75~400 Pa/m 밖` : ` (${pdPa.toFixed(0)} Pa/m)`;
+  setEl('p-pdrop',`${STATE.pdrop} mmAq/m${pdKds} ${pdropOverRec ? '⚠ '+STATE.floors+'층 → '+pdropRec+'mmAq/m 이하 권장(MANMIN 참고값)' : ''}`);
   setEl('p-vel',`${STATE.vel} m/s → 이 유속 이하가 되는 최소 관경 선정`);
-  setEl('p-vmax',`${vmax} m/s (${mat.nm} 기술기준 절대 상한)`);
+  setEl('p-vmax',`${vmax} m/s (${mat.nm} MANMIN 참고 상한)`);
   setEl('p-vrec',`${mat.vrec[0]} ~ ${mat.vrec[1]} m/s (경제적·소음 최적 구간)`);
   setEl('p-mat', matLabel);
   setEl('p-height',`${totalH.toFixed(1)} m (${STATE.floors}층 × ${STATE.floorHt}m) → 정수두 ${staticKpa.toFixed(0)} kPa`);
@@ -2416,12 +2443,12 @@ function liveCalc(){
     const d=p.id/1000;
     const A=Math.PI*d*d/4;
     // W-H: 해당 관경에서 설정 압력강하 내 최대 허용 유량
-    const maxQ_m3s=0.35464*C*Math.pow(d,2.63)*Math.pow(I,0.54);
+    const maxQ_m3s=0.27853*C*Math.pow(d,2.63)*Math.pow(I,0.54);
     const maxQ_kgh=maxQ_m3s*1000*3600;
     // 실제 유속 (연속방정식: v = Q/A)
     const vel=flowM3s/A;
     // 실제 압력강하 역산
-    const actualI=Math.pow(flowM3s/(0.35464*C*Math.pow(d,2.63)),1/0.54);
+    const actualI=Math.pow(flowM3s/(0.27853*C*Math.pow(d,2.63)),1/0.54);
     const actualPdrop=actualI*1000;
     // ★ ok 판정: W-H 유량 조건 AND 설계 목표 유속 이하
     const ok = flowKgh <= maxQ_kgh && vel <= STATE.vel;
@@ -2633,7 +2660,7 @@ function renderSummary({selected, mat, vmax, flowKgh, minIdByVel, C, matLabel, v
   setEl('res-id',    `${selected.id.toFixed(2)} mm &nbsp;·&nbsp; 유속역산 최소내경: ${minIdByVel.toFixed(2)} mm`);
   setEl('res-vel',   `${selected.vel.toFixed(3)} m/s &nbsp;(설계목표: ${STATE.vel} m/s &nbsp;/&nbsp; 절대최대: ${vmax} m/s)`);
   setEl('res-pdrop', `${selected.actualPdrop.toFixed(2)} mmAq/m &nbsp;(목표: ≤ ${STATE.pdrop} mmAq/m)`);
-  setEl('res-formula',`W-H: Q=0.35464×C×d²·⁶³×I⁰·⁵⁴ &nbsp;/&nbsp; C=${C} (${matLabel||mat.nm+' '+mat.cat})`);
+  setEl('res-formula',`W-H: Q=0.27853×C×d²·⁶³×I⁰·⁵⁴ &nbsp;/&nbsp; C=${C} (${matLabel||mat.nm+' '+mat.cat})`);
   setEl('res-status', statusTxt + velInputWarn);
 }
 
@@ -2687,7 +2714,7 @@ function buildStdTable(mode){
     const A=Math.PI*d*d/4;
     let kgh,lpm;
     if(velMode){kgh=A*vel*1000*3600;lpm=kgh/60;}
-    else{const q=0.35464*C*Math.pow(d,2.63)*Math.pow(I,0.54);kgh=q*1000*3600;lpm=q*1000*60;}
+    else{const q=0.27853*C*Math.pow(d,2.63)*Math.pow(I,0.54);kgh=q*1000*3600;lpm=q*1000*60;}
     const area=Math.PI*p.id*p.id/4;
     return `<tr><td class="mono" style="font-weight:800;color:#0369a1">${p.s}</td><td class="mono">${p.id.toFixed(2)}</td><td class="mono">${fmt(kgh,0)}</td><td class="mono">${fmt(lpm,1)}</td><td class="mono">${area.toFixed(0)}</td></tr>`;
   }).join('');
@@ -2834,7 +2861,7 @@ function renderA4(r){
     <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:12px;">
       <div style="font-size:12px;font-weight:800;color:#111827;flex:1;text-align:left;">${STATE.projectName || '만민 건축사 신사옥 신축공사'}</div>
       <div style="text-align:right;white-space:nowrap;flex-shrink:0;">
-        <div style="font-size:9px;color:#64748b;margin-bottom:2px;">기계설비 기술기준 국토교통부 고시 제2021-851호(제2026-360호 일부개정) · MANMIN Ver-5.0</div>
+        <div style="font-size:9px;color:#64748b;margin-bottom:2px;">기계설비 기술기준 국토교통부 고시 제2021-851호(제2026-360호 타법개정) · MANMIN Ver-5.0</div>
         <div style="font-size:9px;color:#475569;margin-bottom:1px;">작성일: ${STATE.projectDate ? STATE.projectDate.replace(/-/g,'.') : today}</div>
         <div style="font-size:9px;color:#475569;">작성자: ${STATE.projectAuthor || '김만민'}</div>
       </div>
@@ -2910,7 +2937,7 @@ function renderA4(r){
     <table class="a4-tbl">
       <colgroup><col style="width:28%"><col></colgroup>
       <tbody>
-        <tr><th style="text-align:left;padding-left:7px">William-Hazen 공식</th><td>Q = 0.35464 × C × d²·⁶³ × I⁰·⁵⁴ &nbsp;&nbsp;(Q: m³/s, d: m, I: m/m)</td></tr>
+        <tr><th style="text-align:left;padding-left:7px">William-Hazen 공식</th><td>Q = 0.27853 × C × d²·⁶³ × I⁰·⁵⁴ &nbsp;&nbsp;(Q: m³/s, d: m, I: m/m)</td></tr>
         <tr><th style="text-align:left;padding-left:7px">연속방정식 (역산)</th><td>d = √(4Q / π·V) &nbsp;&nbsp;(Q: m³/s, V: m/s, d: m)</td></tr>
         <tr><th style="text-align:left;padding-left:7px">적용 C 계수</th><td>${matFullName} — C=${r.C} (신설) / C=${r.mat.Ca} (노후 설계 권장)</td></tr>
         <tr><th style="text-align:left;padding-left:7px">관경 채택 원칙</th><td>W-H 기준 관경 vs 유속역산 기준 관경 → 큰 값(안전측) 채택</td></tr>
@@ -3085,7 +3112,7 @@ function renderGuide(){
       ${row('최대 허용 유량', fmt(r.selected.maxQ_kgh,0)+' KG/H',
             `설계유량 ${fmt(STATE.flowKgh,0)} KG/H`, flowJdg, flowJColor)}
       ${row('정수두', r.staticKpa.toFixed(1)+' kPa',
-            '300 kPa 이상 시 감압밸브 검토', prvJdg, prvColor)}
+            '300 kPa 이상 시 감압 검토(MANMIN 참고)', prvJdg, prvColor)}
       ${row('환탕 배관 판정', circLen+' m (추정)',
             '15m 초과 시 환탕관 의무', circJdg, circColor)}
       ${row('유량 여유율', ((r.selected.maxQ_kgh/STATE.flowKgh-1)*100).toFixed(1)+'%',
@@ -3116,7 +3143,7 @@ function renderGuide(){
         <div style="background:#fff;border-radius:7px;padding:8px;border:1px solid ${r.prvAlert?'#fca5a5':'#fed7aa'}">
           <div style="font-size:9px;color:#92400e;font-weight:700;margin-bottom:3px">감압밸브 예비판정</div>
           <div style="font-size:12px;font-weight:800;color:${r.prvAlert?'#dc2626':'#15803d'}">${r.prvAlert?'⚠ 검토 필요':'✅ 불필요'}</div>
-          <div style="font-size:9px;color:#78350f">300kPa 기준</div>
+          <div style="font-size:9px;color:#78350f">300kPa · MANMIN 참고</div>
         </div>
         <div style="background:#fff;border-radius:7px;padding:8px;border:1px solid #fed7aa">
           <div style="font-size:9px;color:#92400e;font-weight:700;margin-bottom:3px">배수수직관 보정</div>
