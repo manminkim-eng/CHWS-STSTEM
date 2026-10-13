@@ -34,7 +34,7 @@ const mmMatch = (req, opt) => caches.keys()
   .then((ks) => ks.reduce((p, k) => p.then((r) => r || caches.open(k).then((c) => c.match(req, opt))), Promise.resolve(undefined)))
   .then((r) => (r && r.type === 'opaque' && req && req.mode === 'cors') ? undefined : r);
 
-const CACHE = 'pipe-v5.1.8';   /* 2026-10-13 v5.0.10 근거·계산 정정 (Hazen-Williams 유량식 상수 · 강관 규격표 · 근거 표기) */
+const CACHE = 'pipe-v5.1.9';   /* 2026-10-13 v5.0.11 매뉴얼 버튼 · 유속 기준 카드·A4 근거 표기 정정 */
 const ASSETS = [
   './',
   './index.html',

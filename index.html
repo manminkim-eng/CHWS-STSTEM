@@ -100,6 +100,7 @@ input[type="number"]{-moz-appearance:textfield;}
 .tb:hover{color:#fff;background:rgba(255,255,255,.09);}
 /* v5.0-HDR (2026-09-02 확정) — 활성 탭 단색 배경 + 강조색 바 */
 .tb.active{color:#fff;background:#0e7490;border-bottom-color:#7dd3fc;}
+.tb.tb-manual{margin-left:auto;text-decoration:none;white-space:nowrap;}   /* v5.0.11 — 사용자 매뉴얼(탭 막대 오른쪽 끝) */
 /* v5.0-HDR — 요약 스트립 (마스터 3층) */
 .sum-bar-wrap{background:#0f172a;padding:10px 0;}
 .sum-bar{max-width:1300px;margin:0 auto;padding:0 24px;display:flex;flex-wrap:wrap;gap:14px;}
@@ -777,6 +778,7 @@ input[type="number"]{-moz-appearance:textfield;}
     <button class="tb" onclick="switchTab('spec',this)">📐 배관 규격표</button>
     <button class="tb" onclick="switchTab('guide',this)">📖 설계 기준</button>
     <button class="tb" onclick="switchTab('a4',this)">📄 A4 미리보기</button>
+    <a class="tb tb-manual" href="https://manminkim-eng.github.io/CHWS-STSTEM/manual/" target="_blank" rel="noopener" title="사용자 매뉴얼 (새 창)" onclick="if(navigator.onLine===false){event.preventDefault();showToast('매뉴얼은 인터넷 연결 시 열립니다');}">📘 매뉴얼</a>
   </div>
 </nav>
 </div><!-- /.hdr-shell -->
@@ -1174,8 +1176,8 @@ input[type="number"]{-moz-appearance:textfield;}
     <div class="card-head"><div class="card-ico">💧</div><span class="card-tit">압력강하별 관경 선정표 (강관 일반, C=120)</span><span class="cbadge">별표 8</span></div>
     <div class="card-body">
       <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
-        <button class="seg-btn active" id="seg-20" onclick="showStdTable(20,this)">20 mmAq/m</button>
-        <button class="seg-btn" id="seg-30" onclick="showStdTable(30,this)">30 mmAq/m</button>
+        <button class="seg-btn" id="seg-20" onclick="showStdTable(20,this)">20 mmAq/m</button>
+        <button class="seg-btn active" id="seg-30" onclick="showStdTable(30,this)">30 mmAq/m</button>
         <button class="seg-btn" id="seg-vel2" onclick="showStdTable('vel2',this)">유속 2 m/s 기준</button>
         <button class="seg-btn" id="seg-vel3" onclick="showStdTable('vel3',this)">유속 3 m/s 기준</button>
       </div>
@@ -1309,15 +1311,15 @@ input[type="number"]{-moz-appearance:textfield;}
     <div>
       <!-- 유속 기준 -->
       <div class="card">
-        <div class="card-head"><div class="card-ico">💧</div><span class="card-tit">유속 기준 (별표 8)</span><span class="cbadge">기술기준</span></div>
+        <div class="card-head"><div class="card-ico">💧</div><span class="card-tit">유속 기준</span><span class="cbadge">MANMIN 참고값</span></div>
         <div class="card-body">
           <div class="nb blue">
             <div class="nb-tit">🔵 재질별 설계 유속 기준</div>
             <div class="nb-txt">
-              • 강관 SGP/SCH : 권장 <b>1.0~2.0 m/s</b> · 최대 2.5 m/s<br>
-              • 동관 (Cu) : 권장 <b>1.0~1.5 m/s</b> · 최대 2.0 m/s<br>
+              • 강관 SGP : 권장 <b>1.0~2.0 m/s</b> · 최대 2.0 m/s (SCH 40·80 2.5 m/s)<br>
+              • 동관 (Cu) : 권장 <b>1.0~1.5 m/s</b> · 최대 1.5 m/s<br>
               • STS·PVC : 권장 <b>1.0~2.0 m/s</b> · 최대 3.0 m/s<br>
-              • 대구경(150A↑) : 2.5 m/s 허용 (기술기준 특례)
+              • 별표 8 2.1.5 · KDS 31 25 25:2021 4.1.5는 「단위 압력손실과 유속을 기준으로」 관경을 정하도록 할 뿐 유속 수치를 두지 않음 — 위 값은 설비공학편람·ASHRAE 참고값
             </div>
           </div>
           <div class="nb org" style="margin-top:7px">
@@ -1614,7 +1616,7 @@ input[type="number"]{-moz-appearance:textfield;}
                 </div>
               </div>
               <div style="background:#f0f9ff;border-radius:6px;padding:5px 8px;font-size:9.5px">
-                <b style="color:#0369a1">허용 압력강하 :</b> <span style="color:#475569">20 mmAq/m (경제적) · 30 mmAq/m (표준 ★) · 50 mmAq/m (고압) · 직접입력</span>
+                <b style="color:#0369a1">허용 압력강하 :</b> <span style="color:#475569">20 mmAq/m (경제적) · 30 mmAq/m (표준 ★) · 50 mmAq/m (KDS 권장 초과) · 직접입력</span>
               </div>
             </div>
           </div>
@@ -2163,6 +2165,7 @@ function onLoadUnitChange(){
   const u = document.getElementById('sel-load-unit').value;
   const labels = {kcalh:'kcal/h', kw:'kW', rt:'냉동톤'};
   setEl('load-unit-lbl', labels[u]);
+  setEl('load-sfx', labels[u]);   /* v5.0.11 — 입력칸 단위 표시도 함께 바꿈 */
   // 부하값이 있으면 단위 변환해서 inp-load 업데이트
   if(STATE.loadKcalh > 0){
     const el = document.getElementById('inp-load');
@@ -2335,7 +2338,7 @@ function liveCalc(){
   // 유량 — inp-flow 직접 편집 시 항상 STATE.flowKgh 갱신
   const flowUnit = document.getElementById('sel-flow-unit').value;
   const flowRaw  = parseFloat(document.getElementById('inp-flow').value);
-  if(!isNaN(flowRaw) && flowRaw >= 0){
+  if(INPUT_MODE !== 'load' && !isNaN(flowRaw) && flowRaw >= 0){   /* v5.0.11 — 부하 입력 모드에서는 반올림된 표시값으로 유량을 다시 잡지 않음 */
     let kgh = flowRaw;
     if(flowUnit === 'lpm') kgh = flowRaw * 60;
     else if(flowUnit === 'm3h') kgh = flowRaw * 1000;
@@ -2937,7 +2940,8 @@ function renderA4(r){
         <tr><th style="text-align:left;padding-left:7px">연속방정식 (역산)</th><td>d = √(4Q / π·V) &nbsp;&nbsp;(Q: m³/s, V: m/s, d: m)</td></tr>
         <tr><th style="text-align:left;padding-left:7px">적용 C 계수</th><td>${matFullName} — C=${r.C} (신설) / C=${r.mat.Ca} (노후 설계 권장)</td></tr>
         <tr><th style="text-align:left;padding-left:7px">관경 채택 원칙</th><td>W-H 기준 관경 vs 유속역산 기준 관경 → 큰 값(안전측) 채택</td></tr>
-        <tr><th style="text-align:left;padding-left:7px">적용 기술기준</th><td>기계설비 기술기준 [별표 8] 배관설비 설계 및 시공 기준</td></tr>
+        <tr><th style="text-align:left;padding-left:7px">적용 기술기준</th><td>기계설비 기술기준(국토교통부 고시 제2021-851호, 제2026-360호 타법개정 2026.7.8. 시행) [별표 8] 2.1.5 — 단위마찰손실과 유속 기준</td></tr>
+        <tr><th style="text-align:left;padding-left:7px">설계기준</th><td>KDS 31 25 25:2021 배관설비 4.1.5 — 단위 압력손실 75~400 Pa/m 권장 (C 계수·유속은 설비공학편람·ASHRAE 참고값)</td></tr>
       </tbody>
     </table>
 
