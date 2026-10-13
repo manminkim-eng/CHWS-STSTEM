@@ -34,7 +34,7 @@ const mmMatch = (req, opt) => caches.keys()
   .then((ks) => ks.reduce((p, k) => p.then((r) => r || caches.open(k).then((c) => c.match(req, opt))), Promise.resolve(undefined)))
   .then((r) => (r && r.type === 'opaque' && req && req.mode === 'cors') ? undefined : r);
 
-const CACHE = 'pipe-v5.1.10';   /* 2026-10-13 v5.0.12 비교표 머리글 두 줄 · 640px 이하 탭 막대 두 줄 */
+const CACHE = 'pipe-v5.1.11';   /* 2026-10-13 v5.0.13 좁은 화면 탭 막대 한 줄(좌우 밀기) */
 const ASSETS = [
   './',
   './index.html',

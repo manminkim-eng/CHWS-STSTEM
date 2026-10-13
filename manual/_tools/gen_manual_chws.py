@@ -14,7 +14,7 @@ EX = json.load(open(os.path.join(HERE, '_example.json'), encoding='utf-8'))
 A, Bx, TB = EX['A'], EX['B'], EX['tables']
 
 VER = 'Ver-5.0'
-REL = 'v5.0.12'
+REL = 'v5.0.13'
 DATE = '2026-10-13'
 PDF = 'CHWS_사용자매뉴얼_Ver-5.0.pdf'
 APP_URL = 'https://manminkim-eng.github.io/CHWS-STSTEM/'
@@ -223,7 +223,7 @@ S.append(f"""<section class="ch" id="ch3"><h2><span class="n">03</span>화면별
 ], ['항목', '내용']))}
 <h3 id="s3-14">3-14. 휴대전화 화면</h3>
 <div class="tri"><div>{fig('s26_mobile_main', '입력', narrow=True)}</div><div>{fig('s27_mobile_result', '결과', narrow=True)}</div><div>{fig('s28_mobile_a4', 'A4 미리보기', narrow=True)}</div></div>
-<p>좁은 화면에서는 입력 → 결과가 한 줄로 쌓입니다. 700px 이하 화면에서는 탭 막대가 두 줄로 접혀 「매뉴얼」까지 모두 보입니다. 400px 이하에서는 관경별 비교표를 좌우로 밀어서 봅니다.</p>
+<p>좁은 화면에서는 입력 → 결과가 한 줄로 쌓입니다. 탭 막대는 한 줄로 두고 좌우로 밀어 「A4 미리보기」 · 「매뉴얼」까지 엽니다. 400px 이하에서는 관경별 비교표를 좌우로 밀어서 봅니다.</p>
 </section>""")
 
 # ───────────── 4
@@ -363,6 +363,7 @@ S.append(f"""<section class="ch" id="ch7"><h2><span class="n">부록</span></h2>
 {BR(T([[r[0], r[1], r[2], r[3]] for r in std], ['관경', '내경 mm', '최대유량 kg/h', '최대유량 L/min'], (1, 2, 3)))}
 <h3 id="a3">A3. 버전 변경 내역</h3>
 {K(T([
+ ['Ver-5.0 · v5.0.13 (2026-10-13)', '좁은 화면 탭 막대를 다른 도구와 같이 한 줄(좌우 밀기)로 — v5.0.12의 두 줄 접기 폐지'],
  ['Ver-5.0 · v5.0.12 (2026-10-13)', '관경별 비교표 머리글 두 줄 · 유속 초과 표시 줄바꿈 · 열 너비 조정(값 잘림 정정) · 700px 이하 탭 막대 두 줄'],
  ['Ver-5.0 · v5.0.11 (2026-10-13)', '사용자 매뉴얼 연결(탭 막대 「📘 매뉴얼」) · 유속 기준 카드 · A4 적용 기술기준 표기 정정 · 부하 단위 표시 · 표준표 첫 버튼 · 부하 입력 모드 유량 반올림 재계산 정정'],
  ['Ver-5.0 · v5.0.10 (2026-10-13)', 'Hazen-Williams 유량식 상수 0.27853 · 강관 규격 KS D 3507 · 3562 · 「타법개정」 · KDS 31 25 25 4.1.5 표기 · 지지 간격 원문 · 위생배관 차용 문구 삭제(<a href="#s4-11">4-11</a>)'],
