@@ -45,7 +45,7 @@ const SHOTS=[
  {id:'s10_history',pre:"__flat(false);saveHistory&&saveHistory();",wait:500,clip:'card:산정 이력',m:[['#historyList','저장된 산정 결과'],['up:#historyList|.card','현재 결과 저장']]},
  {id:'s11_flow_b',pre:"__B()",wait:700,clip:'card:STEP 2',m:[['#mode-flow','유량 직접 입력'],['#sel-flow-unit','유량 단위'],['#inp-flow','유량'],['#sync-indicator','KG/H · LPM · ㎥/H · ㎥/s 연동']]},
  {id:'s12_result_b',pre:"__flat(true);scrollTo(0,0)",clip:'#pipeHero',union:'up:#tbl-pipes|.pipe-result-section',post:"__flat(false);__A()",m:[['#pipeHero','동관 40A'],['#tbl-pipes','32A — 압력강하 초과']]},
- {id:'s13_std',pre:"__tab('stdtable');showStdTable(30,document.getElementById('seg-30'));scrollTo(0,0)",wait:700,clip:'card:압력강하별',m:[['#seg-30','기준 선택 — 20 · 30 mmAq/m · 유속 2 · 3 m/s'],['#stdTblMain tr:nth-child(10)','100A'],['#stdTblMain tr:nth-child(11)','125A']]},
+ {id:'s13_std',pre:"__tab('stdtable');showStdTable(30,document.getElementById('seg-30'));scrollTo(0,0)",wait:700,clip:'card:압력강하별',m:[['#seg-30','기준 선택 — 20 · 30 mmAq/m · 유속 2 · 3 m/s'],['#stdTblMain tbody tr:nth-child(9)','100A'],['#stdTblMain tbody tr:nth-child(10)','125A']]},
  {id:'s14_ctable',clip:'card:재질별 Hazen',m:[['in:재질별 Hazen>>.gtbl thead','C 계수 · 권장 · 최대 유속'],['in:재질별 Hazen>>.nb-txt','MANMIN 참고값 근거']]},
  {id:'s15_spec_sgp',pre:"__tab('spec');scrollTo(0,0)",wait:700,clip:'card:강관 일반',m:[]},
  {id:'s16_spec_cu',clip:'card:동관',m:[]},
