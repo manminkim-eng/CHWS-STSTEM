@@ -1,4 +1,5 @@
 /* ═══════════════════════════════════════════════════
+   v5.0.16 2026-10-31 — 캐시명을 도구 판에 맞춤(종전 pipe-v5.1.13 ↔ 도구 판 불일치, §25-7) · 캐시명 pipe-v5.0.16
    S6 회차 2026-09-05 — R24①② 표 선 separate·mono 한글 폴백 소급 동반 캐시명 v5.1.7
    S5 회차 2026-09-04 — R23② JPG 엔진 행 나눔 소급 동반 캐시명 v5.1.6
    S3-0 회차 2026-09-04 — R27 html2canvas 클론 정화 동반 캐시명 v5.1.5
@@ -34,7 +35,7 @@ const mmMatch = (req, opt) => caches.keys()
   .then((ks) => ks.reduce((p, k) => p.then((r) => r || caches.open(k).then((c) => c.match(req, opt))), Promise.resolve(undefined)))
   .then((r) => (r && r.type === 'opaque' && req && req.mode === 'cors') ? undefined : r);
 
-const CACHE = 'pipe-v5.1.13';   /* 2026-10-13 v5.0.13 좁은 화면 탭 막대 한 줄(좌우 밀기) */
+const CACHE = 'pipe-v5.0.16';   /* 2026-10-13 v5.0.13 좁은 화면 탭 막대 한 줄(좌우 밀기) */
 const ASSETS = [
   './',
   './index.html',
