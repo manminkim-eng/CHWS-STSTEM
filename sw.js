@@ -1,4 +1,5 @@
 /* ═══════════════════════════════════════════════════
+   v6.1.1 (2026-11-12) — 건물개요 공통 원본 MM-PROJECT v1.1 → v1.2(불러오기 창 칸 줄바꿈 · 저장값 같음, 정밀검토 B5 · 작업지시서 §25-6-76) · 캐시명 v6.1.1 (종전 pipe-v6.1.0)
    v6.1.0 2026-11-12 — 기준 표기 제2026-360호 타법개정 병기 5곳(정밀검토 B13) · 판 6.1 · 캐시명 pipe-v6.1.0
    v5.0.16 2026-10-31 — 캐시명을 도구 판에 맞춤(종전 pipe-v5.1.13 ↔ 도구 판 불일치, §25-7) · 캐시명 pipe-v5.0.16
    S6 회차 2026-09-05 — R24①② 표 선 separate·mono 한글 폴백 소급 동반 캐시명 v5.1.7
@@ -36,7 +37,7 @@ const mmMatch = (req, opt) => caches.keys()
   .then((ks) => ks.reduce((p, k) => p.then((r) => r || caches.open(k).then((c) => c.match(req, opt))), Promise.resolve(undefined)))
   .then((r) => (r && r.type === 'opaque' && req && req.mode === 'cors') ? undefined : r);
 
-const CACHE = 'pipe-v6.1.0';   /* 2026-11-12 v6.1.0 B13 표기 (종전 pipe-v5.0.21) */   /* 2026-10-13 v5.0.13 좁은 화면 탭 막대 한 줄(좌우 밀기) */
+const CACHE = 'pipe-v6.1.1';   /* 2026-11-12 v6.1.0 B13 표기 (종전 pipe-v5.0.21) */   /* 2026-10-13 v5.0.13 좁은 화면 탭 막대 한 줄(좌우 밀기) */
 const ASSETS = [
   './',
   './index.html',
