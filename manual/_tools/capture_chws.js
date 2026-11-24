@@ -2,7 +2,7 @@
 // 규격: 1440×900 · DSF 1.25 · _marks.json(번호 배지 % 좌표) · _example.json(예제 검증값 — 앱에서 읽음)
 const {chromium}=require(process.env.MM_PW||'playwright');const fs=require('fs');const path=require('path');const {setup,server}=require('./serve');
 const repo=path.resolve(process.argv[2]),out=path.resolve(process.argv[3]);fs.mkdirSync(out,{recursive:true});
-const VW=1440,VH=900,DSF=1.25,PORT=8899;
+const VW=1440,VH=900,DSF=1.25,PORT=+(process.env.MM_PORT||8899);
 /* 예제 A = 냉수 주관 · 강관 SGP · 부하 350 kW · 냉방 냉수 7/12℃ · 허용 압력강하 30 mmAq/m · 설계 유속 2.0 m/s · 10층 × 3.6 m
    예제 B = 온수 분기관 · 동관 · 유량 50 LPM · 허용 압력강하 20 mmAq/m · 설계 유속 1.5 m/s · 5층 × 3.3 m */
 const FREEZE=`(()=>{const T=new Date(2026,9,13,10,0,0).getTime();const D=Date;class F extends D{constructor(...a){if(a.length)super(...a);else super(T);}static now(){return T;}}window.Date=F;window.alert=()=>{};window.confirm=()=>true;try{localStorage.clear();localStorage.setItem('pwa-banner-dismissed','1')}catch(e){}})()`;
@@ -54,12 +54,17 @@ const SHOTS=[
  {id:'s19_guide_vel',clip:'card:유속 기준',union:'card:단위 마찰손실',m:[]},
  {id:'s20_guide_floor',clip:'card:총 층수',m:[]},
  {id:'s21_guide_formula',clip:'card:관경 산정 공식',m:[]},
+ {id:'s31_checklist',clip:'card:설계 체크리스트',m:[['in:설계 체크리스트>>#checklistDiv label','[설계 검토] — 계산 · 장비 검토'],['in:설계 체크리스트>>#chk8','[법정 확인] — 별표 8 원문 항목']]},
  {id:'s22_modal',pre:"__tab('calc');openGuideModal();switchGuideTab(0)",wait:800,fixed:true,clip:'#guideModal .modal-box',m:[]},
  {id:'s23_modal_vel',pre:"switchGuideTab(1)",wait:500,fixed:true,post:"closeGuideModal()",clip:'#guideModal .modal-box',m:[]},
  {id:'s24_a4',pre:"__A();__tab('a4');scrollTo(0,0)",wait:1500,clip:'viewport',m:[['.a4-export-bar .btn-export','인쇄 / PDF'],['.btn-jpg','JPG 저장'],['#a4Page','A4 관경 산정서']]},
  {id:'s25_a4page',clip:'#a4Page',m:[['a4sub:0','1. 설계 입력 조건'],['a4sub:1','2. 관경 산정 결과'],['a4sub:2','3. 인접 관경 비교표'],['a4sub:3','4. 적용 기준 및 계산 공식']]},
  {id:"s29_proj_menu",pre:"__tab('calc');localStorage.setItem('MANMIN_PROJECT_V1',JSON.stringify({\"사업명\": \"만민 건축사 신사옥 신축공사 설계용역\", \"작성자\": \"김만민 건축사\", \"연면적\": \"12500\", \"지상층\": \"15\", \"지하층\": \"2\", \"updated\": \"2026-11-08 10:00\", \"from\": \"부하계산(RTS)\"}));window.scrollTo(0,0);document.querySelector('.mm-proj-btn').click()",wait:700,clip:'viewport',post:"document.querySelectorAll('.mm-proj-menu').forEach(e=>e.remove())",m:[[".mm-proj-btn", "「🏢 건물개요」 단추(오른쪽 아래)"], [".mm-proj-menu button[data-a=\"save\"]", "저장 — 지금 값 담기"], [".mm-proj-menu button[data-a=\"load\"]", "불러오기"], [".mm-proj-menu button[data-a=\"exp\"]", "파일로 내보내기(.json)"], [".mm-proj-menu button[data-a=\"imp\"]", "파일 가져오기"]]},
  {id:"s30_proj_load",pre:"(()=>{window.__mmK=['사업명','작성자','높이'];window.__mmB=__mmK.map(k=>MMProject.fields(k).map(e=>e.value));const __sv=(e,v)=>{const d=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value');d.set.call(e,v);e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));};const e=MMProject.fields('사업명')[0];if(e)__sv(e,'');localStorage.setItem('MANMIN_PROJECT_V1',JSON.stringify({\"사업명\": \"만민 건축사 신사옥 신축공사 설계용역\", \"작성자\": \"김만민 건축사\", \"연면적\": \"12500\", \"지상층\": \"15\", \"지하층\": \"2\", \"updated\": \"2026-11-08 10:00\", \"from\": \"부하계산(RTS)\"}));MMProject.load();})()",wait:900,fixed:true,clip:'.mm-proj-dlg',post:"(()=>{document.querySelectorAll('.mm-proj-back').forEach(e=>e.remove());const __sv=(e,v)=>{const d=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value');d.set.call(e,v);e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));};__mmK.forEach((k,i)=>MMProject.fields(k).forEach((e,j)=>{if(e.value!==__mmB[i][j])__sv(e,__mmB[i][j]);}));localStorage.removeItem('MANMIN_PROJECT_V1');})()",m:[[".mm-proj-dlg input[type=checkbox]", "체크한 항목만 채움(빈 칸은 체크된 채로)"], [".mm-proj-dlg .mm-proj-warn", "이미 입력된 칸 — 직접 체크해야 덮어씀"], [".mm-proj-dlg .mm-proj-ok", "채우기"]]},
+ /* v6.1.6 — 음수 입력(층 높이 −3.6) → 산정 안 함 · 「입력 확인」 배지 · A4 「산정 대기」 */
+ {id:'s32_invalid',pre:"__A();(()=>{const e=document.getElementById('inp-floorht');e.value='-3.6';e.dispatchEvent(new Event('input',{bubbles:true}));liveCalc();})();scrollTo(0,0)",wait:700,clip:'card:STEP 3',m:[['#inp-floorht','층 높이 음수 — 빨간 테두리 · 「음수 — 산정 안 함」'],['up:#p-pdrop|.crow','파라미터 — 「입력 확인 … 산정 안 함」']]},
+ {id:'s34_wait_badge',clip:'card:STEP 4',m:[['#result-badge','결과 배지 「입력 확인」'],['#result-placeholder','결과 지움(옛 결과 남기지 않음)']]},
+ {id:'s33_a4_wait',pre:"__tab('a4');scrollTo(0,0)",wait:1200,clip:'#a4Page',post:"__A()",m:[['#a4Page','A4 「산정 대기」'],['#a4Page .mm-warn-note','⚠ 입력 확인 줄']]},
 ];
 (async()=>{
  const s=await server(repo,PORT);const b=await chromium.launch();
@@ -77,6 +82,8 @@ const SHOTS=[
   if(S.id==='s11_flow_b')ex.B=await pg.evaluate('__ex()');
   if(S.id==='s13_std')ex.std30=await pg.evaluate(()=>[...document.querySelectorAll('#stdTblMain tbody tr')].map(tr=>[...tr.cells].map(c=>c.textContent.trim())));
   if(S.id==='s25_a4page')ex.A_a4=await pg.evaluate(()=>document.getElementById('a4Page').innerText.replace(/\s+/g,' '));
+  if(S.id==='s31_checklist')ex.check=await pg.evaluate(()=>[...document.querySelectorAll('#checklistDiv label')].map(e=>e.textContent.replace(/\s+/g,' ').trim()));
+  if(S.id==='s33_a4_wait')ex.inv={badge:await pg.evaluate(()=>document.getElementById('result-badge').textContent.trim()),hasResult:await pg.evaluate(()=>STATE.result!==null),param:await pg.evaluate(()=>document.getElementById('p-static').textContent.trim()),a4:await pg.evaluate(()=>document.getElementById('a4Page').innerText.replace(/\s+/g,' ').trim()),guide:await pg.evaluate(()=>document.getElementById('guide-result-badge').textContent.trim())};
   const info=await pg.evaluate(({S,VW,VH})=>{
    const abs=e=>{const r=e.getBoundingClientRect();return {x:r.left+scrollX,y:r.top+scrollY,w:r.width,h:r.height};};
    const F=sel=>{if(sel.startsWith('in:')){const [t,q]=sel.slice(3).split('>>');const c=__card(t);return c?c.querySelector(q):null;}return __find(sel);};
