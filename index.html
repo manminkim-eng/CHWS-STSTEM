@@ -1819,6 +1819,7 @@ footer.mm-foot{position:relative;z-index:1;border-top:1px solid #e4e9f0;backgrou
    MANMIN 냉온수 배관 관경 산정 시스템 Ver-6.1
    기계설비 기술기준 국토교통부 고시 제2021-851호(제2026-360호 타법개정)
    [별표 8] Hazen-Williams 식 (v6.1.6 — D-W 계산 없음, 문구 삭제)
+   v6.1.7 (2026-11-24) — 판단 항목 J1 STS · PVC SGP 내경 근사 표기 · J2 온도 0 ℃ 그대로 + 경고 · J3 적합 관경 없음 표시
    ★ 완전 연동: 재질·유량·유속·압력강하·층수 자동반영
 ════════════════════════════════════════════════ */
 
@@ -1917,6 +1918,9 @@ function getPipeList(){
   if(s === 'pvc')        return STEEL_PIPES;  // PVC: SGP 호칭경 기준
   return STEEL_PIPES;
 }
+
+/* v6.1.7 — STS · PVC는 SGP 호칭경 · 내경으로 계산 → 「SGP 내경 근사」 표기(판단 항목 J1 · KS 실규격표는 원문 확보 후) */
+function sgpApproxTxt(id){ const m=id||STATE.matId; return (m==='stainless'||m==='pvc') ? ' (SGP 내경 근사)' : ''; }
 
 /* ── 스케쥴 연동 실효 vmax 반환 ── */
 function getVmax(){
@@ -2229,6 +2233,8 @@ function onLoadInput(){
 }
 
 /* ── STEP2 온도 입력 ── */
+/* v6.1.7 — 공급 · 환수 온도는 빈 값만 기본값, 0 ℃는 그대로 사용(판단 항목 J2 · 27 v6.1.5 _dv() 원칙 · §25-6-79) */
+function _tempVal(id, def){ const el=document.getElementById(id); const v=String(el&&el.value!=null?el.value:'').trim(); const n=parseFloat(v); return (v===''||!isFinite(n)) ? def : n; }
 function onTempInput(){
   if(INPUT_MODE === 'load') _calcLoadToKgh();
   else _calcFlowToLoad();
@@ -2240,8 +2246,8 @@ function onTempInput(){
 function _calcLoadToKgh(){
   const lu  = document.getElementById('sel-load-unit').value;
   const raw = parseFloat(document.getElementById('inp-load').value) || 0;
-  const ts  = parseFloat(document.getElementById('inp-ts').value) || 7;
-  const tr  = parseFloat(document.getElementById('inp-tr').value) || 12;
+  const ts  = _tempVal('inp-ts', 7);
+  const tr  = _tempVal('inp-tr', 12);
   const dt  = Math.abs(tr - ts) || 1;
   STATE.dt  = dt;
   let kcalh = raw;
@@ -2262,8 +2268,8 @@ function _calcLoadToKgh(){
 
 /* ── 내부: 유량 → 부하 역산 ── */
 function _calcFlowToLoad(){
-  const ts = parseFloat(document.getElementById('inp-ts').value) || 7;
-  const tr = parseFloat(document.getElementById('inp-tr').value) || 12;
+  const ts = _tempVal('inp-ts', 7);
+  const tr = _tempVal('inp-tr', 12);
   const dt = Math.abs(tr - ts) || 1;
   STATE.dt = dt;
   STATE.loadKcalh = STATE.flowKgh * dt;
@@ -2445,7 +2451,7 @@ function liveCalc(){
   const schVal = document.getElementById('sel-sch').value;
   const schLabel = schVal==='sch40' ? 'SCH #40' : schVal==='sch80' ? 'SCH #80' : 'SGP(일반)';
   const matLabel = (STATE.matId==='steel_sgp')
-    ? `${mat.nm} (${schLabel})` : `${mat.nm} ${mat.cat}`;
+    ? `${mat.nm} (${schLabel})` : `${mat.nm} ${mat.cat}${sgpApproxTxt()}`;   /* v6.1.7 J1 */
 
   setEl('p-c-value',`${mat.C} (신설) / ${mat.Ca} (노후 설계 권장)`);
   const pdPa = STATE.pdrop*9.80665; const pdKds = (pdPa<75||pdPa>400) ? ` ⚠ ${pdPa.toFixed(0)} Pa/m — KDS 31 25 25 권장 75~400 Pa/m 밖` : ` (${pdPa.toFixed(0)} Pa/m)`;
@@ -2534,10 +2540,11 @@ function liveCalc(){
   // badge — 절대최대 초과 시 빨강, 설계유속 초과 시 노랑, 정상 초록
   const purposeClass={cold:'cold',hot:'hot',chiller:'chiller',general:'general'}[document.getElementById('sel-purpose').value]||'cold';
   const badgeEl = document.getElementById('result-badge');
-  if(selected.overAbsMax){
+  /* v6.1.7 J3 — ok 관경이 없으면 「적합 관경 없음」 · 대체 관경은 참고 */
+  if(!selected.ok){
+    badgeEl.textContent='⚠ 적합 관경 없음'; badgeEl.className='cbadge '+(selected.overAbsMax?'red':'org');
+  } else if(selected.overAbsMax){
     badgeEl.textContent='⚠ '+selected.s; badgeEl.className='cbadge red';
-  } else if(!selected.ok){
-    badgeEl.textContent='⚠ '+selected.s; badgeEl.className='cbadge org';
   } else {
     badgeEl.textContent='✓ '+selected.s; badgeEl.className='cbadge grn';
   }
@@ -2565,9 +2572,9 @@ function liveCalc(){
 function renderHero({mat,vmax,selected,flowKgh,purposeClass,schLabel,matLabel}){
   document.getElementById('pipeHero').innerHTML=`
     <div class="prh-box ${purposeClass}">
-      <div class="prh-lbl">채택 관경</div>
-      <div class="prh-val">${selected.s.replace('A','')}</div>
-      <div class="prh-unit">A · 내경 ${selected.id.toFixed(1)} mm</div>
+      <div class="prh-lbl">${selected.ok ? '채택 관경' : '적합 관경 없음'}</div>
+      <div class="prh-val">${selected.ok ? selected.s.replace('A','') : '없음'}</div>
+      <div class="prh-unit">${selected.ok ? 'A · 내경 '+selected.id.toFixed(1)+' mm' : '참고 '+selected.s+' · 내경 '+selected.id.toFixed(1)+' mm'}</div>
       <div class="prh-sub">외경 ${selected.od}mm · 두께 ${selected.t}mm<br>${matLabel||mat.nm+' '+mat.cat}</div>
     </div>
     <div class="prh-box" style="background:linear-gradient(135deg,#1e3a5f,#4375b7)">
@@ -2649,15 +2656,15 @@ function renderFlowDiagram({selected,mat,purposeClass}){
     <div class="flow-line">
       <span class="flow-node fn-${purposeClass}">${lbl} 공급원</span>
       <span class="flow-arrow">→</span>
-      <span class="flow-pipe">${selected.s}</span>
+      <span class="flow-pipe">${selected.ok ? '' : '참고 '}${selected.s}</span>
       <span class="flow-arrow">→</span>
       <span class="flow-node fn-branch">주배관</span>
       <span class="flow-arrow">→</span>
-      <span class="flow-pipe">${selected.s}</span>
+      <span class="flow-pipe">${selected.ok ? '' : '참고 '}${selected.s}</span>
       <span class="flow-arrow">→</span>
       <span class="flow-node fn-fixture">부하 기기</span>
     </div>
-    <div style="font-size:11px;color:#475569;margin-top:4px">재질: ${mat.nm} ${mat.cat} · 유속: ${selected.vel.toFixed(2)} m/s · 압력강하: ${selected.actualPdrop.toFixed(1)} mmAq/m</div>`;
+    <div style="font-size:11px;color:#475569;margin-top:4px">재질: ${mat.nm} ${mat.cat}${sgpApproxTxt()} · 유속: ${selected.vel.toFixed(2)} m/s · 압력강하: ${selected.actualPdrop.toFixed(1)} mmAq/m</div>`;
 }
 
 /* ── 관경별 비교표 ── */
@@ -2699,7 +2706,7 @@ function renderSummary({selected, mat, vmax, flowKgh, minIdByVel, C, matLabel, v
   // ★ 유속 3단계 판정
   let statusTxt;
   if(selected.vel > vmax)
-    statusTxt = `🔴 절대 최대(${vmax} m/s) 초과 — 한 단계 큰 관경으로 즉시 교체 필요`;
+    statusTxt = (selected.ok ? '🔴 ' : '🔴 적합 관경 없음 — ') + `절대 최대(${vmax} m/s) 초과 — 한 단계 큰 관경으로 즉시 교체 필요`;   /* v6.1.7 J3 */
   else if(!selected.ok)   /* v6.1.6 — W-H · 설계 유속을 모두 만족하는 관경이 없으면(대체 선정) 최우선 표시(교차검증 P6) */
     statusTxt = selected.vel > STATE.vel
       ? `⚠ 적합 관경 없음 — 설계 목표 유속(${STATE.vel} m/s) 초과 · 압력강하 · 관경 범위 재검토`
@@ -2716,7 +2723,8 @@ function renderSummary({selected, mat, vmax, flowKgh, minIdByVel, C, matLabel, v
     : '';
 
   setEl('res-flow',  `${fmt(flowKgh,0)} KG/H &nbsp;·&nbsp; ${fmt(flowKgh/60,1)} LPM &nbsp;·&nbsp; ${fmt(flowKgh/1000,3)} ㎥/H`);
-  setEl('res-pipe',  `${selected.s} (내경 ${selected.id.toFixed(1)} mm)`);
+  setEl('res-pipe',  selected.ok ? `${selected.s} (내경 ${selected.id.toFixed(1)} mm)`
+                                 : `적합 관경 없음 — 참고 ${selected.s} (내경 ${selected.id.toFixed(1)} mm, 대체 관경)`);   /* v6.1.7 J3 */
   setEl('res-id',    `${selected.id.toFixed(2)} mm &nbsp;·&nbsp; 유속역산 최소내경: ${minIdByVel.toFixed(2)} mm`);
   setEl('res-vel',   `${selected.vel.toFixed(3)} m/s &nbsp;(설계목표: ${STATE.vel} m/s &nbsp;/&nbsp; 절대최대: ${vmax} m/s)`);
   setEl('res-pdrop', `${selected.actualPdrop.toFixed(2)} mmAq/m &nbsp;(목표: ≤ ${STATE.pdrop} mmAq/m)`);
@@ -2730,7 +2738,7 @@ function renderAltTable({candidates,selected,selIdx}){
   const rows=range.map(c=>{
     const isSel=c.s===selected.s;
     return `<tr class="${isSel?'highlight':''}">
-      <td class="mono" style="font-weight:${isSel?'900':'600'}">${isSel?'◀ 채택':''} ${c.s}</td>
+      <td class="mono" style="font-weight:${isSel?'900':'600'}">${isSel?(c.ok?'◀ 채택':'◀ 참고'):''} ${c.s}</td>
       <td class="mono">${c.id.toFixed(1)}</td>
       <td class="mono">${c.vel.toFixed(3)}</td>
       <td class="mono">${c.actualPdrop.toFixed(1)}</td>
@@ -2820,7 +2828,7 @@ function saveHistory(){
   const item={
     time:new Date().toLocaleTimeString('ko-KR'),
     mat:r.mat.nm+' '+r.mat.cat,
-    pipe:r.selected.s,
+    pipe:r.selected.ok ? r.selected.s : '적합 관경 없음(참고 '+r.selected.s+')',
     flow:STATE.flowKgh,
     vel:r.selected.vel.toFixed(3),
     pdrop:r.selected.actualPdrop.toFixed(1),
@@ -2895,7 +2903,7 @@ function renderA4(r){
   const isSteelFamily = (STATE.matId==='steel_sgp');
   const matFullName = isSteelFamily
     ? `${r.mat.nm} (${schTxt})`
-    : `${r.mat.nm} ${r.mat.cat}`;
+    : `${r.mat.nm} ${r.mat.cat}${sgpApproxTxt()}`;   /* v6.1.7 J1 */
   const velOk = r.selected.vel <= r.mat.vrec[1] && r.selected.vel >= r.mat.vrec[0];
   const velJdg = r.selected.vel > r.vmax ? '✗ 초과' : r.selected.vel > r.mat.vrec[1] ? '⚠ 검토' : '✓ 적합';
   const pdropJdg = r.selected.actualPdrop <= STATE.pdrop ? '✓ 적합' : '⚠ 초과';
@@ -2920,7 +2928,7 @@ function renderA4(r){
     .map(c => {
       const isSel = c.s === r.selected.s;
       return `<tr class="${isSel ? 'hl' : ''}">
-        <td style="font-weight:${isSel?'900':'600'};color:${isSel?'#2d5186':'inherit'}">${isSel ? '★ ' : ''}${c.s}</td>
+        <td style="font-weight:${isSel?'900':'600'};color:${isSel?'#2d5186':'inherit'}">${isSel ? (c.ok ? '★ ' : '참고 ') : ''}${c.s}</td>
         <td>${c.id.toFixed(1)}</td>
         <td style="color:${c.vel > r.vmax ? '#dc2626' : c.vel > r.mat.vrec[1] ? '#d97706' : '#15803d'}">${c.vel.toFixed(3)}</td>
         <td>${c.actualPdrop.toFixed(2)}</td>
@@ -2957,8 +2965,8 @@ function renderA4(r){
       <thead><tr><th>항목</th><th>산정값</th><th>비교 기준</th><th>판정</th></tr></thead>
       <tbody>
         <tr class="hl">
-          <td>★ 채택 관경</td>
-          <td style="font-size:14px;font-weight:900;color:#2d5186">${r.selected.s}</td>
+          <td>${r.selected.ok ? '★ 채택 관경' : '★ 적합 관경 없음'}</td>
+          <td style="font-size:14px;font-weight:900;color:${r.selected.ok ? '#2d5186' : '#dc2626'}">${r.selected.ok ? r.selected.s : '없음 <span style="font-size:10px;font-weight:700;color:#475569">(참고 '+r.selected.s+' · 대체 관경)</span>'}</td>
           <td>Hazen-Williams + 연속방정식</td>
           <td style="color:${selJColor};font-weight:800">${selJdg}</td>
         </tr>
@@ -3116,7 +3124,7 @@ function renderGuide(){
   const overAbs  = r.selected.overAbsMax;
   const overDes  = !r.selected.ok && !overAbs;
   if(badge){
-    badge.textContent = overAbs ? '🔴 절대최대 초과' : overDes ? '🟠 적합 관경 없음 — 재검토' : '✅ 기준 만족';   /* v6.1.6 P6 — ok=false는 W-H 또는 목표 유속 불만족 */
+    badge.textContent = (!r.selected.ok && overAbs) ? '🔴 적합 관경 없음 — 절대최대 초과' : overAbs ? '🔴 절대최대 초과' : overDes ? '🟠 적합 관경 없음 — 재검토' : '✅ 기준 만족';   /* v6.1.7 J3 */   /* v6.1.6 P6 — ok=false는 W-H 또는 목표 유속 불만족 */
     badge.className   = overAbs ? 'cbadge red' : overDes ? 'cbadge org' : 'cbadge grn';
   }
 
@@ -3134,7 +3142,8 @@ function renderGuide(){
   const flrColor = r.prvAlert ? '#d97706' : '#0369a1';
 
   document.getElementById('guide-judge-grid').innerHTML =
-    judgeCard('📏', '채택 관경', r.selected.s, '#0369a1') +
+    (r.selected.ok ? judgeCard('📏', '채택 관경', r.selected.s, '#0369a1')
+                   : judgeCard('📏', '적합 관경 없음', '참고 '+r.selected.s, '#dc2626')) +   /* v6.1.7 J3 */
     judgeCard('💨', '실제 유속', r.selected.vel.toFixed(2)+' m/s', velColor) +
     judgeCard('📉', '압력강하', r.selected.actualPdrop.toFixed(1)+' mmAq/m', pdColor) +
     judgeCard('🏢', '정수두', r.staticKpa.toFixed(0)+' kPa', flrColor) +
@@ -3694,7 +3703,7 @@ window.exportA4Jpg = function(){
     var R=(typeof STATE!=='undefined'&&STATE.result)||null;
     var f=function(id,v){var e=document.getElementById(id);if(e)e.textContent=v;};
     if(!R||!R.selected){['sb-flow','sb-dn','sb-vel','sb-pd','sb-mat'].forEach(function(id){f(id,'—');});return;}
-    f('sb-flow',Math.round(R.flowKgh).toLocaleString()+' kg/h'); f('sb-dn',String(R.selected.s).replace('A','')+'A');
+    f('sb-flow',Math.round(R.flowKgh).toLocaleString()+' kg/h'); f('sb-dn',R.selected.ok?String(R.selected.s).replace('A','')+'A':'없음(참고 '+R.selected.s+')');
     f('sb-vel',R.selected.vel.toFixed(2)+' m/s'); f('sb-pd',R.selected.actualPdrop.toFixed(1)+' mmAq/m'); f('sb-mat',R.mat&&R.mat.nm?R.mat.nm:'—');
   }
   var _lc=window.liveCalc,_ra=window.resetAll;
@@ -3773,8 +3782,8 @@ input[data-mm-warn]{outline:2px solid #d32f2f!important;outline-offset:1px;backg
 <script id="mm-warn-cfg">
 /* v6.1.6 (2026-11-24, 교차검증 P3 · P4) — all:true(A4 탭 · 숨은 칸도 판정 → 인쇄 · JPG에 「⚠ 입력 확인」 줄) · cond 로 쓰지 않는 칸 제외 · 음수 · 비유한 → 산정 안 함 */
 window.MM_WARN_CFG={report:'#a4Page',all:true,rules:[
- {sel:'#inp-ts',empty:'7℃',zero:'7℃'},
- {sel:'#inp-tr',empty:'12℃',zero:'12℃',extra:function(el,n){var t=parseFloat(document.getElementById('inp-ts').value);return t===n?'공급 = 환수 온도 → ΔT 1℃ 적용':null;}},
+ {sel:'#inp-ts',empty:'7℃',extra:function(el,n){return n===0?'0 ℃ 그대로 계산(빈 값만 기본값 7℃) — 입력 확인':null;}},
+ {sel:'#inp-tr',empty:'12℃',extra:function(el,n){var t=(typeof _tempVal==='function')?_tempVal('inp-ts',7):parseFloat(document.getElementById('inp-ts').value);var m=[];if(n===0)m.push('0 ℃ 그대로 계산(빈 값만 기본값 12℃) — 입력 확인');if(t===n)m.push('공급 = 환수 온도 → ΔT 1℃ 적용');return m.length?m.join(' · '):null;}},
  {sel:'#inp-load',neg:'음수 — 산정 안 함',cond:function(){return typeof INPUT_MODE==='undefined'||INPUT_MODE==='load';}},
  {sel:'#inp-flow',neg:'음수 — 산정 안 함',cond:function(){return typeof INPUT_MODE==='undefined'||INPUT_MODE!=='load';}},
  {sel:'#inp-pdrop-custom',empty:'30 mmAq/m',zero:'30 mmAq/m',neg:'음수 — 산정 안 함',extra:function(el,n){return isFinite(n)?null:'비유한 값 — 산정 안 함';},cond:function(){var s=document.getElementById('sel-pdrop');return !s||s.value==='custom';}},
