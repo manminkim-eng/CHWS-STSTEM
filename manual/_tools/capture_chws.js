@@ -31,6 +31,14 @@ window.__ex=()=>{const R=STATE.result;return {mat:R.mat.id,matNm:R.mat.nm,cat:R.
   sel:{s:R.selected.s,od:R.selected.od,t:R.selected.t,id:R.selected.id,vel:R.selected.vel,pd:R.selected.actualPdrop,maxq:R.selected.maxQ_kgh,ok:R.selected.ok},minIdByVel:R.minIdByVel,
   cands:R.candidates.map(c=>({s:c.s,id:c.id,vel:c.vel,pd:c.actualPdrop,maxq:c.maxQ_kgh,ok:c.ok,over:c.overAbsMax})),
   sum:[...document.querySelectorAll('.sum-bar .sum-item,.sum-bar span')].map(e=>e.textContent.trim()).filter(Boolean).slice(0,12)};};
+/* v6.1.7 — 적합 관경 없음(J3) 예 = 강관 SGP · 온수 · 허용 20 mmAq/m · 유량 1,080 ㎥/h(450A 유속 ≤ 재질 상한 2.0 · 500A도 목표 1.5 초과 → 대체 선정 450A) · 목표 1.5 m/s · 5층 × 3.3 m, 재질 표기(J1) 예 = 예제 A를 스테인리스 · 목표 3.0 m/s 로 */
+window.__N=()=>{resetAll();__tab('calc');selectMat('steel_sgp');__set('sel-sch','normal');__set('sel-purpose','hot');__set('sel-pdrop','20');onPdropChange();
+  setInputMode('flow',document.getElementById('mode-flow'));__set('sel-flow-unit','m3h');onFlowUnitChange();__set('inp-flow','1080');onFlowInput();
+  __set('sel-vel','1.5');onVelChange();__set('inp-floors','5');__set('inp-floorht','3.3');liveCalc();window.scrollTo(0,0);};
+window.__S=()=>{__A();selectMat('stainless');__set('sel-vel','3.0');onVelChange();liveCalc();window.scrollTo(0,0);};
+window.__rng=(a,b)=>{const r=document.getElementById('__rng');if(r)r.remove();if(a==null)return;const s=document.querySelectorAll('#a4Page .a4-sub');const p=document.getElementById('a4Page').getBoundingClientRect();
+  const t=s[a].getBoundingClientRect().top+scrollY,bt=s[b].getBoundingClientRect().top+scrollY-14;const d=document.createElement('div');d.id='__rng';
+  d.style.cssText='position:absolute;pointer-events:none;left:'+(p.left+scrollX+18)+'px;top:'+(t-4)+'px;width:'+(p.width-36)+'px;height:'+(bt-t+4)+'px';document.body.appendChild(d);};
 window.__tables=()=>({types:PIPE_TYPES,steel:STEEL_PIPES,sch40:SCH40_PIPES,sch80:SCH80_PIPES,cu:COPPER_PIPES});`;
 const SHOTS=[
  {id:'s01_overview',pre:"__A()",clip:'viewport',m:[['.tab-bar-inner','작업 탭'],['.sum-bar','요약 스트립'],['#panel-calc .step-bar','진행 단계'],['card:STEP 1','STEP 1 배관 재질'],['card:STEP 2','STEP 2 유량 / 부하'],['card:STEP 4','STEP 4 산정 결과'],['.fab-wrap','초기화 · 설계기준 안내']]},
@@ -65,6 +73,13 @@ const SHOTS=[
  {id:'s32_invalid',pre:"__A();(()=>{const e=document.getElementById('inp-floorht');e.value='-3.6';e.dispatchEvent(new Event('input',{bubbles:true}));liveCalc();})();scrollTo(0,0)",wait:700,clip:'card:STEP 3',m:[['#inp-floorht','층 높이 음수 — 빨간 테두리 · 「음수 — 산정 안 함」'],['up:#p-pdrop|.crow','파라미터 — 「입력 확인 … 산정 안 함」']]},
  {id:'s34_wait_badge',clip:'card:STEP 4',m:[['#result-badge','결과 배지 「입력 확인」'],['#result-placeholder','결과 지움(옛 결과 남기지 않음)']]},
  {id:'s33_a4_wait',pre:"__tab('a4');scrollTo(0,0)",wait:1200,clip:'#a4Page',post:"__A()",m:[['#a4Page','A4 「산정 대기」'],['#a4Page .mm-warn-note','⚠ 입력 확인 줄']]},
+ /* v6.1.7 J3 — 적합 관경 없음 화면 · J1 — STS 「(SGP 내경 근사)」 · J2 — 공급 온도 0 ℃ 경고 */
+ {id:'s35_nofit_result',pre:"__N();__flat(true);scrollTo(0,0)",wait:700,clip:'#pipeHero',union:'#flowDiagram',m:[['#pipeHero .prh-box','「적합 관경 없음」 · 「없음」 · 참고 관경'],['#flowDiagram .flow-pipe','흐름도 「참고 ○A」']]},
+ {id:'s36_nofit_summary',clip:'up:#res-flow|.cbox',union:'#tbl-alt',m:[['up:#res-pipe|.crow','「적합 관경 없음 — 참고 ○A(대체 관경)」'],['#tbl-alt tr.highlight','대안 표 「◀ 참고」']]},
+ {id:'s37_nofit_guide',pre:"__flat(false);__tab('guide');scrollTo(0,0)",wait:800,clip:'card:현재 산정 결과',m:[['#guide-result-badge','배지 「적합 관경 없음 — 재검토」'],['#guide-judge-grid > *:first-child','판정 카드 「적합 관경 없음 · 참고 ○A」']]},
+ {id:'s38_nofit_a4',pre:"__tab('a4');scrollTo(0,0);setTimeout(()=>__rng(1,3),900)",wait:1500,clip:'#__rng',post:"__rng(null);__A()",m:[['#a4Page tr.hl','「★ 적합 관경 없음」 · 「없음(참고 ○A · 대체 관경)」']]},
+ {id:'s39_sts_label',pre:"__S();__flat(true);scrollTo(0,0)",wait:700,clip:'#pipeHero',post:"__flat(false)",m:[['#pipeHero .prh-sub','「스테인리스 STS (SGP 내경 근사)」']]},
+ {id:'s40_temp0',pre:"__A();(()=>{const e=document.getElementById('inp-ts');e.value='0';e.dispatchEvent(new Event('input',{bubbles:true}));onTempInput();liveCalc();})();scrollTo(0,0)",wait:700,clip:'card:STEP 2',post:"__A()",m:[['#inp-ts','공급 온도 0 ℃ — 빨간 테두리 · 「0 ℃ 그대로 계산」']]},
 ];
 (async()=>{
  const s=await server(repo,PORT);const b=await chromium.launch();
@@ -84,6 +99,11 @@ const SHOTS=[
   if(S.id==='s25_a4page')ex.A_a4=await pg.evaluate(()=>document.getElementById('a4Page').innerText.replace(/\s+/g,' '));
   if(S.id==='s31_checklist')ex.check=await pg.evaluate(()=>[...document.querySelectorAll('#checklistDiv label')].map(e=>e.textContent.replace(/\s+/g,' ').trim()));
   if(S.id==='s33_a4_wait')ex.inv={badge:await pg.evaluate(()=>document.getElementById('result-badge').textContent.trim()),hasResult:await pg.evaluate(()=>STATE.result!==null),param:await pg.evaluate(()=>document.getElementById('p-static').textContent.trim()),a4:await pg.evaluate(()=>document.getElementById('a4Page').innerText.replace(/\s+/g,' ').trim()),guide:await pg.evaluate(()=>document.getElementById('guide-result-badge').textContent.trim())};
+  if(S.id==='s35_nofit_result')ex.N=Object.assign(await pg.evaluate('__ex()'),await pg.evaluate(()=>({hero:document.getElementById('pipeHero').innerText.replace(/\s+/g,' ').trim(),badge:document.getElementById('result-badge').textContent.trim(),res:document.getElementById('res-pipe').textContent.trim(),status:(document.getElementById('res-status')||{}).textContent||''})));
+  if(S.id==='s37_nofit_guide')ex.N.guide=await pg.evaluate(()=>document.getElementById('guide-result-badge').textContent.trim());
+  if(S.id==='s38_nofit_a4')ex.N.a4=await pg.evaluate(()=>document.getElementById('a4Page').innerText.replace(/\s+/g,' ').trim());
+  if(S.id==='s39_sts_label')ex.S=Object.assign(await pg.evaluate('__ex()'),{a4:await pg.evaluate(()=>{renderA4(STATE.result);return document.getElementById('a4Page').innerText.replace(/\s+/g,' ').trim();})});
+  if(S.id==='s40_temp0')ex.T0=Object.assign(await pg.evaluate('__ex()'),{msg:await pg.evaluate(()=>[...document.querySelectorAll('.mm-warn-msg')].map(e=>e.textContent.trim())),note:await pg.evaluate(()=>{const n=document.querySelector('#a4Page .mm-warn-note');return n?n.textContent.trim():'';})});
   const info=await pg.evaluate(({S,VW,VH})=>{
    const abs=e=>{const r=e.getBoundingClientRect();return {x:r.left+scrollX,y:r.top+scrollY,w:r.width,h:r.height};};
    const F=sel=>{if(sel.startsWith('in:')){const [t,q]=sel.slice(3).split('>>');const c=__card(t);return c?c.querySelector(q):null;}return __find(sel);};
