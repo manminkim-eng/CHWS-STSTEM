@@ -1,4 +1,5 @@
 /* ═══════════════════════════════════════════════════
+   v6.1.6 (2026-11-24) — 기계 2차 교차검증 P1~P15: 유량 0 이하 · 음수 입력 시 결과 · A4 지움, A4 판정 연동, mm-warn all:true, KDS 31 25 25:2026 표기, D-W 문구 삭제, 감압 · 기울기 · 체크리스트 문구 — 예제 계산값 불변 · 캐시명 v6.1.6 (종전 v6.1.5)
    v6.1.5 (2026-11-12) — html2canvas 1.4.1 머리 태그 SRI(integrity sha384 · crossorigin) · 공통 인쇄 원본 MM-PRINT v1.0 → v1.1(지연 로더도 SRI)(정밀검토 B8 · html2canvas SRI) — 화면 · 계산 · 인쇄 불변 · 작업지시서 §25-6-87 · 캐시명 v6.1.5 (종전 v6.1.4)
    v6.1.4 (2026-11-12) — Pretendard CSS SRI(integrity · crossorigin)(정밀검토 C2) — 화면 · 계산 · 인쇄 불변 · 작업지시서 §25-6-82 · 캐시명 v6.1.4 (종전 v6.1.3)
    v6.1.3 (2026-11-12) — 건물개요 공통 원본 MM-PROJECT v1.2 → v1.3(불러오기 창 표 칸 모양 고정 — 도구 CSS 가 새지 않음 · 저장값 같음, 정밀검토 C10) · 작업지시서 §25-6-80 · 판 6.1 · 캐시명 v6.1.3 (종전 v6.1.2)
@@ -41,7 +42,7 @@ const mmMatch = (req, opt) => caches.keys()
   .then((ks) => ks.reduce((p, k) => p.then((r) => r || caches.open(k).then((c) => c.match(req, opt))), Promise.resolve(undefined)))
   .then((r) => (r && r.type === 'opaque' && req && req.mode === 'cors') ? undefined : r);
 
-const CACHE = 'pipe-v6.1.5';   /* 2026-11-12 v6.1.0 B13 표기 (종전 pipe-v5.0.21) */   /* 2026-10-13 v5.0.13 좁은 화면 탭 막대 한 줄(좌우 밀기) */
+const CACHE = 'pipe-v6.1.6';   /* 2026-11-12 v6.1.0 B13 표기 (종전 pipe-v5.0.21) */   /* 2026-10-13 v5.0.13 좁은 화면 탭 막대 한 줄(좌우 밀기) */
 const ASSETS = [
   './',
   './index.html',

@@ -784,7 +784,7 @@ footer.mm-foot{position:relative;z-index:1;border-top:1px solid #e4e9f0;backgrou
         <div class="hdr-eyebrow">Chilled · Hot Water Pipe Sizing · 기계설비 기술기준</div>
         <h1 class="hdr-h1">냉온수 배관 관경 산정 시스템</h1>
         <div class="hdr-sub">
-          William-Hazen / Darcy-Weisbach 기준 · 유량 · 유속 · 마찰손실 자동 산정
+          Hazen-Williams 식 기준 · 유량 · 유속 · 마찰손실 자동 산정
           <span class="hdr-manmin">MANMIN · Ver-6.1</span>
         </div>
       </div>
@@ -1183,7 +1183,7 @@ footer.mm-foot{position:relative;z-index:1;border-top:1px solid #e4e9f0;backgrou
           <div class="ref-box">
             <div class="ref-tit">📌 적용 기준</div>
             <div class="ref-item">기계설비 기술기준 [별표 8] 2.1.5 (국토교통부 고시 제2021-851호 · 제2026-360호 타법개정)</div>
-            <div class="ref-item">KDS 31 25 25:2021 4.1.5 — 단위 압력손실·유속 기준, 75~400 Pa/m 권장</div>
+            <div class="ref-item">KDS 31 25 25:2026 4.1.5 — 단위 압력손실·유속 기준, 75~400 Pa/m 권장</div>
             <div class="ref-item">William-Hazen: Q = 0.27853 × C × d²·⁶³ × I⁰·⁵⁴</div>
             <div class="ref-item">연속방정식: d = √(4Q / πV)</div>
           </div>
@@ -1229,7 +1229,7 @@ footer.mm-foot{position:relative;z-index:1;border-top:1px solid #e4e9f0;backgrou
           </tbody>
         </table>
       </div>
-      <div class="nb-txt" style="font-size:11px;color:#64748b;margin-top:6px">※ 기계설비 기술기준 별표 8과 KDS 31 25 25:2021에는 C 계수·재질별 유속 수치가 없습니다. KDS 31 25 25 4.1.5가 참조하도록 정한 설비공학편람·ASHRAE 값을 정리한 MANMIN 참고값이며, 최대 유속은 계산에 쓰는 값과 같습니다.</div>
+      <div class="nb-txt" style="font-size:11px;color:#64748b;margin-top:6px">※ 기계설비 기술기준 별표 8과 KDS 31 25 25:2026에는 C 계수·재질별 유속 수치가 없습니다. KDS 31 25 25 4.1.5가 참조하도록 정한 설비공학편람·ASHRAE 값을 정리한 MANMIN 참고값이며, 최대 유속은 계산에 쓰는 값과 같습니다.</div>
     </div>
   </div>
 </div>
@@ -1297,11 +1297,11 @@ footer.mm-foot{position:relative;z-index:1;border-top:1px solid #e4e9f0;backgrou
               <tr><td>50A</td><td>1.2 m 이내</td></tr>
               <tr><td>65A ~ 125A</td><td>1.5 m 이내</td></tr>
               <tr><td>150A 이상</td><td>2.0 m 이내</td></tr>
-              <tr><td rowspan="1" style="font-weight:700">수직관 (전 재질)</td><td>전 호칭지름</td><td>각 층에 1개소 이상</td></tr>
+              <tr><td rowspan="1" style="font-weight:700">수직관 (강관 · 동관 · STS · PVC)</td><td>전 호칭지름</td><td>각 층에 1개소 이상</td></tr>
             </tbody>
           </table>
         </div>
-        <div class="nb-txt" style="font-size:11px;color:#64748b;margin-top:6px">※ 기계설비 기술기준 [별표 8] 3.1.4 표 1(KCS 31 20 15 표 3.4-1 · 3.12-1 준용)에서 냉온수 배관 재질만 옮김. 실내 수직관은 각 층마다 흔들림 방지철물 1개소, 동관·스테인리스강관은 지지 시 절연조치(3.1.4(2)·(3)).</div>
+        <div class="nb-txt" style="font-size:11px;color:#64748b;margin-top:6px">※ 기계설비 기술기준 [별표 8] 3.1.4 표 1(KCS 31 20 15 표 3.4-1 · 3.12-1 준용)에서 냉온수 배관 재질만 옮김(주철관 수직관은 표 1 별도). 실내 수직관: 각 층마다 신축을 방해하지 않는 흔들림 방지철물 1개소 이상(3.1.4(2)) · 동관·스테인리스강관은 지지 시 절연조치(3.1.4(3)).</div>
       </div>
     </div>
   </div>
@@ -1347,7 +1347,7 @@ footer.mm-foot{position:relative;z-index:1;border-top:1px solid #e4e9f0;backgrou
               • 강관 SGP : 권장 <b>1.0~2.0 m/s</b> · 최대 2.0 m/s (SCH 40·80 2.5 m/s)<br>
               • 동관 (Cu) : 권장 <b>1.0~1.5 m/s</b> · 최대 1.5 m/s<br>
               • STS·PVC : 권장 <b>1.0~2.0 m/s</b> · 최대 3.0 m/s<br>
-              • 별표 8 2.1.5 · KDS 31 25 25:2021 4.1.5는 「단위 압력손실과 유속을 기준으로」 관경을 정하도록 할 뿐 유속 수치를 두지 않음 — 위 값은 설비공학편람·ASHRAE 참고값
+              • 별표 8 2.1.5 · KDS 31 25 25:2026 4.1.5는 「단위 압력손실과 유속을 기준으로」 관경을 정하도록 할 뿐 유속 수치를 두지 않음 — 위 값은 설비공학편람·ASHRAE 참고값
             </div>
           </div>
           <div class="nb org" style="margin-top:7px">
@@ -1355,7 +1355,7 @@ footer.mm-foot{position:relative;z-index:1;border-top:1px solid #e4e9f0;backgrou
             <div class="nb-txt">
               • &gt; 1.5 m/s → 소음 증가, 수격(워터해머) 발생 주의<br>
               • &gt; 2.0 m/s → 배관 진동, 이음부 마모 가속<br>
-              • &gt; 3.0 m/s → <b>캐비테이션 (Critical Failure)</b><br>
+              • &gt; 3.0 m/s → 소음 · 침식 우려(참고)<br>
               • &lt; 1.0 m/s → 슬라임·스케일 퇴적 위험
             </div>
           </div>
@@ -1381,7 +1381,7 @@ footer.mm-foot{position:relative;z-index:1;border-top:1px solid #e4e9f0;backgrou
           <div class="nb grn">
             <div class="nb-tit">🟢 압력강하 설계 기준</div>
             <div class="nb-txt">
-              • <b>KDS 31 25 25:2021 4.1.5</b> — 75~400 Pa/m 권장 (≈ 7.6~40.8 mmAq/m)<br>
+              • <b>KDS 31 25 25:2026 4.1.5</b> — 75~400 Pa/m 권장 (≈ 7.6~40.8 mmAq/m)<br>
               • <b>20 mmAq/m</b> — 고층·장거리 배관 권장<br>
               • <b>30 mmAq/m</b> — 표준 설계 기준<br>
               • <b>50 mmAq/m</b> — 약 490 Pa/m, KDS 권장 범위(400 Pa/m) 초과<br>
@@ -1416,14 +1416,13 @@ footer.mm-foot{position:relative;z-index:1;border-top:1px solid #e4e9f0;backgrou
               &nbsp;&nbsp;정수두 = H × 9.81 kPa/m<br>
               &nbsp;&nbsp;→ 순환 펌프 양정 산출의 핵심 기초값<br><br>
               <b>② 고층 압력강하 자동 권고</b><br>
-              &nbsp;&nbsp;입상관 길이 = 총 높이 × 1.3 (굴곡 보정 · MANMIN 참고값)<br>
-              &nbsp;&nbsp;전체 마찰손실 = 입상관 길이 × 단위 손실<br>
+              &nbsp;&nbsp;입상관이 길수록 마찰손실이 누적됨(MANMIN 참고 · 계산 미반영)<br>
               &nbsp;&nbsp;→ 10층↑ : 20 mmAq/m 이하 권장<br>
               &nbsp;&nbsp;→ 15층↑ : 15 mmAq/m 이하 권장<br><br>
-              <b>③ 감압밸브(PRV) 예비 판정</b><br>
-              &nbsp;&nbsp;정수두 ≥ 300 kPa (약 30m 이상) 시 경고 (MANMIN 참고값)<br>
+              <b>③ 정수두 참고 경고 (MANMIN)</b><br>
+              &nbsp;&nbsp;정수두 ≥ 300 kPa (약 30m 이상) 시 참고 경고 (MANMIN 참고값 · 법정 기준 아님)<br>
               &nbsp;&nbsp;= 대략 10층 × 3m = 30m 이상 건물<br>
-              &nbsp;&nbsp;→ 구간별 감압밸브 설치 검토 필요
+              &nbsp;&nbsp;→ 장비 · 배관 최고사용압력 · 밀폐형 팽창탱크 · 보급수 압력 검토 — 보급수 압력이 정수두보다 50 kPa 이상 높으면 역류방지 감압밸브 · 압력계 · 릴리프밸브(별표 1 2.7(3))
             </div>
           </div>
           <div class="nb blue" style="margin-top:7px">
@@ -1438,17 +1437,21 @@ footer.mm-foot{position:relative;z-index:1;border-top:1px solid #e4e9f0;backgrou
           <div class="nb red" style="margin-top:7px">
             <div class="nb-tit">🔴 고층 건물 설계 주의사항</div>
             <div class="nb-txt">
-              • 최고 사용압력 1 MPa 이하 권장, 초과 시 압력에 맞는 재료(KDS 31 25 25:2021 1.6(4))<br>
+              • 최고 사용압력 1 MPa 이하 권장, 초과 시 압력에 맞는 재료(KDS 31 25 25:2026 1.6(4))<br>
               • 550 kPa 감압 기준(별표 5 2.1.7)은 위생기구 급수압 기준 — 냉온수 밀폐계에는 적용하지 않음<br>
               • 고층일수록 관경을 키워 단위 손실을 낮춰야 함
             </div>
+          </div>
+          <div class="nb blue" style="margin-top:7px">
+            <div class="nb-tit">📏 배관 기울기 (별표 8 3.1.3)</div>
+            <div class="nb-txt">• 냉 · 온수와 냉각수 배관: 공급관 역기울기 · 환수관 순기울기, 기울기 1/250 이상<br>• 관경 산정 계산에는 반영하지 않음 — 시공 · 도면 확인 항목</div>
           </div>
         </div>
       </div>
 
       <!-- 설계 체크리스트 -->
       <div class="card">
-        <div class="card-head"><div class="card-ico">📋</div><span class="card-tit">설계 체크리스트</span><span class="cbadge grn">필수 확인</span></div>
+        <div class="card-head"><div class="card-ico">📋</div><span class="card-tit">설계 체크리스트</span><span class="cbadge grn">법정 확인 · 설계 검토</span></div>
         <div class="card-body" id="checklistDiv"></div>
       </div>
     </div>
@@ -1493,7 +1496,7 @@ footer.mm-foot{position:relative;z-index:1;border-top:1px solid #e4e9f0;backgrou
     <div class="card">
       <div class="card-head"><div class="card-ico">⚠️</div><span class="card-tit">설계 리스크 분석 (LCC 관점)</span><span class="cbadge org">경제적 관경</span></div>
       <div class="card-body">
-        <div class="nb red"><div class="nb-tit">🔴 과소 설계 리스크</div><div class="nb-txt">• 유속 과다 → 압력손실 V²에 비례 폭증<br>• 펌프 동력비 기하급수 상승 (20년 누적)<br>• 캐비테이션(Critical Failure) 위험<br>• 소음·진동·수격현상 불가피</div></div>
+        <div class="nb red"><div class="nb-tit">🔴 과소 설계 리스크</div><div class="nb-txt">• 유속 과다 → 압력손실 V²에 비례 폭증<br>• 펌프 동력비 기하급수 상승 (20년 누적)<br>• 소음 · 침식 우려(참고)<br>• 소음·진동·수격현상 불가피</div></div>
         <div class="nb blue" style="margin-top:7px"><div class="nb-tit">🔵 과다 설계 리스크</div><div class="nb-txt">• 초기 자재비 상승<br>• 유속 저하 → 슬라임·스케일 침적<br>• 열손실 증가 (방열 면적 증가)<br>• 공간 점유 과다</div></div>
         <div class="nb grn" style="margin-top:7px"><div class="nb-tit">🟢 경제적 관경 도출 원칙</div><div class="nb-txt">• 허용 압력강하 : <b>20 ~ 30 mmAq/m</b><br>• 유속 범위 : <b>1.0 ~ 2.0 m/s</b><br>• 두 조건 모두 만족하는 관경 선택<br>• 강관 노후화 C=100 적용 → 안전측 설계</div></div>
       </div>
@@ -1687,7 +1690,7 @@ footer.mm-foot{position:relative;z-index:1;border-top:1px solid #e4e9f0;backgrou
                 </div>
                 <div style="background:#f8fafc;border-radius:6px;padding:5px 8px">
                   <b style="color:#0c1a2e">층수 · 층높이</b><br>
-                  <span style="color:#475569">정수두 · 감압밸브 판정<br>고층 압력강하 권고 자동</span>
+                  <span style="color:#475569">정수두 참고 경고<br>고층 압력강하 권고 자동</span>
                 </div>
               </div>
               <div style="background:#fff7ed;border-radius:6px;padding:5px 8px;font-size:11px;margin-top:5px">
@@ -1754,7 +1757,7 @@ footer.mm-foot{position:relative;z-index:1;border-top:1px solid #e4e9f0;backgrou
             <div>🔄 <b>이력 저장:</b> 중열 하단 「💾 현재 결과 저장」 → 여러 배관 구간 비교 후 최적안 선택</div>
             <div>⚡ <b>실시간 자동산정:</b> 입력과 동시에 우열 결과 즉시 반영 — 별도 실행 버튼 불필요</div>
             <div>🌡️ <b>부하 입력:</b> 냉동기 용량(RT) 또는 보일러 용량(kcal/h)으로 바로 유량 역산 가능</div>
-            <div>🏢 <b>고층 건물:</b> 층수 입력 시 감압밸브 필요여부·압력강하 권고치 자동 경고 표시</div>
+            <div>🏢 <b>고층 건물:</b> 층수 입력 시 정수두 참고 경고(300 kPa · MANMIN)·압력강하 권고치 자동 표시</div>
             <div>📱 <b>모바일 공유:</b> JPG 저장 완료 후 공유 버튼 → 카카오톡·문자·이메일 즉시 전송</div>
             <div>📐 <b>FAB 버튼(우하단 📐):</b> 언제든 이 안내창 호출 가능</div>
           </div>
@@ -1767,11 +1770,11 @@ footer.mm-foot{position:relative;z-index:1;border-top:1px solid #e4e9f0;backgrou
             • 기계설비 기술기준 [별표 8] 배관설비의 설계 및 시공 기준<br>
             &nbsp;&nbsp;(국토교통부 고시 제2021-851호, 2021.6.7. 제정 시행 · 제2026-360호 타법개정, 2026.7.8. 시행)<br>
             &nbsp;&nbsp;— 2.1.5 「단위마찰손실과 유속을 기준으로 배관 호칭지름을 결정한다」<br>
-            • KDS 31 25 25:2021 배관설비 4.1.5 — 단위 압력손실과 유속 기준, 75~400 Pa/m 권장<br>
+            • KDS 31 25 25:2026 배관설비 4.1.5 — 단위 압력손실과 유속 기준, 75~400 Pa/m 권장<br>
             &nbsp;&nbsp;(C 계수·재질별 유속은 KDS 31 25 25가 참조하는 설비공학편람·ASHRAE 값 = MANMIN 참고값)<br>
             • William-Hazen 공식 : Q = 0.27853 × C × d²·⁶³ × I⁰·⁵⁴<br>
             • 연속방정식 : d = √(4Q / π·V)<br>
-            • Darcy-Weisbach : hf = λ × (L/D) × (V²/2g)
+            • (참고) Darcy-Weisbach : hf = λ × (L/D) × (V²/2g) — 앱은 Hazen-Williams로 계산
           </div>
         </div>
 
@@ -1789,13 +1792,13 @@ footer.mm-foot{position:relative;z-index:1;border-top:1px solid #e4e9f0;backgrou
           </tbody>
         </table></div>
         <div class="nb-txt" style="font-size:11px;color:#64748b;margin-top:6px">※ MANMIN 참고값 — 별표 8·KDS 31 25 25에 수치 없음(설비공학편람·ASHRAE 참고)</div>
-        <div class="nb org" style="margin-top:10px"><div class="nb-tit">⚠️ 유속 초과 시 발생 현상</div><div class="nb-txt">• 유속 &gt; 1.5 m/s → 소음 증가, 수격(워터해머) 위험<br>• 유속 &gt; 2.0 m/s → 배관 진동, 이음부 마모 가속<br>• 유속 &gt; 3.0 m/s → 캐비테이션(Critical Failure) 위험</div></div>
+        <div class="nb org" style="margin-top:10px"><div class="nb-tit">⚠️ 유속 초과 시 발생 현상</div><div class="nb-txt">• 유속 &gt; 1.5 m/s → 소음 증가, 수격(워터해머) 위험<br>• 유속 &gt; 2.0 m/s → 배관 진동, 이음부 마모 가속<br>• 유속 &gt; 3.0 m/s → 소음 · 침식 우려(참고)</div></div>
       </div>
 
       <div class="gm-panel" id="gmp-2" style="display:none">
         <div class="nb blue"><div class="nb-tit">📐 William-Hazen 공식</div><div class="nb-txt mono">Q = 0.27853 × C × d²·⁶³ × I⁰·⁵⁴<br>I (동수구배) = ΔP[mmAq/m] ÷ 1000</div></div>
         <div class="nb grn" style="margin-top:8px"><div class="nb-tit">📐 연속방정식 (최소 내경 역산)</div><div class="nb-txt mono">d = √(4Q / π·V)<br>Q(m³/s), V(m/s), d(m)</div></div>
-        <div class="nb blue" style="margin-top:8px"><div class="nb-tit">📐 Darcy-Weisbach 공식 (정밀 산정)</div><div class="nb-txt mono">hf = λ × (L/D) × (V²/2g)<br>λ: 마찰계수, L: 배관길이, D: 내경</div></div>
+        <div class="nb blue" style="margin-top:8px"><div class="nb-tit">📐 Darcy-Weisbach 공식 (참고 — 앱은 Hazen-Williams로 계산)</div><div class="nb-txt mono">hf = λ × (L/D) × (V²/2g)<br>λ: 마찰계수, L: 배관길이, D: 내경</div></div>
       </div>
 
       <div class="gm-panel" id="gmp-3" style="display:none">
@@ -1815,7 +1818,7 @@ footer.mm-foot{position:relative;z-index:1;border-top:1px solid #e4e9f0;backgrou
 /* ════════════════════════════════════════════════
    MANMIN 냉온수 배관 관경 산정 시스템 Ver-6.1
    기계설비 기술기준 국토교통부 고시 제2021-851호(제2026-360호 타법개정)
-   [별표 8] William-Hazen / Darcy-Weisbach
+   [별표 8] Hazen-Williams 식 (v6.1.6 — D-W 계산 없음, 문구 삭제)
    ★ 완전 연동: 재질·유량·유속·압력강하·층수 자동반영
 ════════════════════════════════════════════════ */
 
@@ -2090,7 +2093,7 @@ function selectMat(id){
 
     // 재질에 맞게 기본 유속 자동 설정: 권장 상한(vrec[1]) 적용
     const velSel = document.getElementById('sel-vel');
-    const defaultVel = m.vrec[1].toString();
+    const defaultVel = m.vrec[1].toFixed(1);   /* v6.1.6 — 2 → "2.0" 선택지와 일치(교차검증 P13) */
     const hasOption = Array.from(velSel.options).some(o => o.value === defaultVel);
     if(hasOption){
       velSel.value = defaultVel;
@@ -2341,6 +2344,24 @@ function updateConvDisplay(kgh){
   setEl('conv-m3s',kgh>0?(kgh/1000/3600).toExponential(3)+' ㎥/s':'—');
 }
 
+/* v6.1.6 — 결과 지우기: STATE.result · A4 · 설계 기준 탭을 「산정 대기」로(교차검증 P1 · P4) */
+const A4_WAIT_HTML = `
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;color:#94a3b8;gap:12px">
+          <div style="font-size:48px">📄</div>
+          <div style="font-size:14px;font-weight:700">산정 대기 — 유량 · 부하를 입력하세요</div>
+          <div style="font-size:11px;text-align:center;line-height:1.7">관경 산정 탭에서 배관 재질·유량(양수)·설계 파라미터를 입력하면<br>A4 산정서가 자동으로 생성됩니다</div>
+        </div>`;
+function clearResult(badgeTxt){
+  STATE.result = null;
+  document.getElementById('result-placeholder').style.display='';
+  document.getElementById('result-content').style.display='none';
+  setEl('result-badge', badgeTxt||'대기');
+  document.getElementById('result-badge').className='cbadge';
+  const a4 = document.getElementById('a4Page');
+  if(a4){ a4.innerHTML = A4_WAIT_HTML; if(window.MMWarn) window.MMWarn.run(); }
+  renderGuide();
+}
+
 /* ══════════════════════════════════════════
    ★ 메인 계산 (William-Hazen + 연속방정식)
 ══════════════════════════════════════════ */
@@ -2362,6 +2383,18 @@ function liveCalc(){
 
   STATE.floors=parseInt(document.getElementById('inp-floors').value)||1;
   STATE.floorHt=parseFloat(document.getElementById('inp-floorht').value)||3.0;
+
+  /* v6.1.6 — 음수 · 비유한 값이면 계산 중단(교차검증 P4). 빈 값 · 0 → 기본값(v6.1.2)은 그대로 */
+  const badIn=[];
+  if(!(isFinite(STATE.pdrop)&&STATE.pdrop>0)) badIn.push('압력강하');
+  if(!(isFinite(STATE.vel)&&STATE.vel>0)) badIn.push('설계 유속');
+  if(!(isFinite(STATE.floors)&&STATE.floors>0)) badIn.push('층수');
+  if(!(isFinite(STATE.floorHt)&&STATE.floorHt>0)) badIn.push('층 높이');
+  if(badIn.length){
+    ['p-pdrop','p-vel','p-height','p-static'].forEach(id=>setEl(id,'— (입력 확인: '+badIn.join(' · ')+' 음수 · 비유한 값 — 산정 안 함)'));
+    clearResult('입력 확인');
+    return;
+  }
 
   // 유량 — inp-flow 직접 편집 시 항상 STATE.flowKgh 갱신
   const flowUnit = document.getElementById('sel-flow-unit').value;
@@ -2422,14 +2455,11 @@ function liveCalc(){
   setEl('p-vrec',`${mat.vrec[0]} ~ ${mat.vrec[1]} m/s (경제적·소음 최적 구간)`);
   setEl('p-mat', matLabel);
   setEl('p-height',`${totalH.toFixed(1)} m (${STATE.floors}층 × ${STATE.floorHt}m) → 정수두 ${staticKpa.toFixed(0)} kPa`);
-  setEl('p-static',`${staticKpa.toFixed(1)} kPa${prvAlert ? ' ⚠ 300kPa 초과 — 구간별 감압밸브 검토' : ' ✅ 감압밸브 불필요 구간'}`);
+  setEl('p-static',`${staticKpa.toFixed(1)} kPa${prvAlert ? ' ⚠ 참고 경고(MANMIN): 정수두 300 kPa 이상 — 장비 · 배관 최고사용압력 · 팽창탱크 · 보급수 압력(별표 1 2.7(3)) 검토' : ' · 참고 경고 없음(300 kPa 미만)'}`);
 
   // 유량 미입력 시 중단
   if(flowKgh<=0){
-    document.getElementById('result-placeholder').style.display='';
-    document.getElementById('result-content').style.display='none';
-    setEl('result-badge','대기');
-    document.getElementById('result-badge').className='cbadge';
+    clearResult('대기');   /* v6.1.6 — STATE.result 지움 · A4 · 설계 기준 탭 「산정 대기」(교차검증 P1) */
     markStep(2,false);
     return;
   }
@@ -2670,8 +2700,10 @@ function renderSummary({selected, mat, vmax, flowKgh, minIdByVel, C, matLabel, v
   let statusTxt;
   if(selected.vel > vmax)
     statusTxt = `🔴 절대 최대(${vmax} m/s) 초과 — 한 단계 큰 관경으로 즉시 교체 필요`;
-  else if(selected.vel > STATE.vel)
-    statusTxt = `🟠 설계 목표 유속(${STATE.vel} m/s) 초과 — 압력강하 조건 재검토 권장`;
+  else if(!selected.ok)   /* v6.1.6 — W-H · 설계 유속을 모두 만족하는 관경이 없으면(대체 선정) 최우선 표시(교차검증 P6) */
+    statusTxt = selected.vel > STATE.vel
+      ? `⚠ 적합 관경 없음 — 설계 목표 유속(${STATE.vel} m/s) 초과 · 압력강하 · 관경 범위 재검토`
+      : `⚠ 적합 관경 없음 — W-H 최대유량(${fmt(selected.maxQ_kgh,0)}) < 설계유량 · 압력강하 · 관경 범위 재검토`;
   else if(selected.vel > mat.vrec[1])
     statusTxt = `🟡 권장 범위 상한(${mat.vrec[1]} m/s) 초과 — 수격방지기 설치 검토`;
   else if(selected.vel < mat.vrec[0])
@@ -2750,22 +2782,24 @@ function buildStdTable(mode){
 }
 
 /* ── 체크리스트 빌드 ── */
+/* v6.1.6 — 「[필수]」 → 별표 8 원문 항목은 [법정 확인], 계산 · 장비 검토는 [설계 검토](교차검증 P11) · 기울기 3.1.3 추가(P10) */
 const CHECK_ITEMS=[
-  {t:'연속방정식(Q=AV) 기반 유속 검토 수행 (권장 1.0~2.0 m/s)',c:true},
-  {t:'William-Hazen 공식 기반 압력강하 산정 완료',c:true},
+  {t:'연속방정식(Q=AV) 기반 유속 검토 수행 (권장 1.0~2.0 m/s, MANMIN 참고)',c:'design'},
+  {t:'Hazen-Williams 공식 기반 압력강하 산정 완료',c:'design'},
   {t:'강관 20년 후 C=100 적용한 미래보장 설계 검토'},
   {t:'부속품 국부저항 상당길이 변환 및 전체 손실수두 합산 완료'},
-  {t:'냉동기·보일러 허용유량 및 내부 손실수두 확인',c:true},
+  {t:'냉동기·보일러 허용유량 및 내부 손실수두 확인',c:'design'},
   {t:'순환펌프 양정 산출 시 장비·부속품 손실수두 반영'},
   {t:'유속 1.5 m/s 초과 시 수격방지기 설치 검토'},
-  {t:'기계설비 기술기준 [별표 8] 준수 확인',c:true},
+  {t:'공급관 역기울기 · 환수관 순기울기 1/250 이상 (별표 8 3.1.3)',c:'law'},
+  {t:'기계설비 기술기준 [별표 8] 준수 확인 (2.1.5 호칭지름 · 3.1.4 지지간격 등)',c:'law'},
 ];
 function buildChecklist(){
   const html=CHECK_ITEMS.map((item,i)=>`
     <div style="display:flex;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:1px solid #dbeafe">
       <input type="checkbox" id="chk${i}" style="margin-top:2px;accent-color:#2d5186;width:14px;height:14px;flex-shrink:0">
       <label for="chk${i}" style="font-size:11px;color:${item.c?'#0c1a2e':'#475569'};cursor:pointer;line-height:1.5">
-        ${item.c?'<span style="color:#2d5186;font-size:11px;font-weight:800;margin-right:5px">[필수]</span>':''}${item.t}
+        ${item.c?`<span style="color:${item.c==='law'?'#b91c1c':'#2d5186'};font-size:11px;font-weight:800;margin-right:5px">${item.c==='law'?'[법정 확인]':'[설계 검토]'}</span>`:''}${item.t}
       </label>
     </div>`).join('');
   document.getElementById('checklistDiv').innerHTML=html;
@@ -2866,6 +2900,17 @@ function renderA4(r){
   const velJdg = r.selected.vel > r.vmax ? '✗ 초과' : r.selected.vel > r.mat.vrec[1] ? '⚠ 검토' : '✓ 적합';
   const pdropJdg = r.selected.actualPdrop <= STATE.pdrop ? '✓ 적합' : '⚠ 초과';
   const flowJdg  = STATE.flowKgh <= r.selected.maxQ_kgh ? '✓ 적합' : '✗ 초과';
+  /* v6.1.6 — 채택 · 내경 판정을 selected.ok · overAbsMax · 표 범위 초과에 연동(교차검증 P2) */
+  const lastIdx  = (Array.isArray(r.candidates) ? r.candidates.length : 0) - 1;
+  const rangeOver = !r.selected.ok && r.selIdx === lastIdx;
+  const selJdg = r.selected.ok ? '✓ 산정 완료'
+    : rangeOver ? '⚠ 재검토 — 표 범위 초과(규격표 최대 관경)'
+    : '⚠ 재검토 — 적합 관경 없음(대체 선정)';
+  const selJColor = r.selected.ok ? '#15803d' : (r.selected.overAbsMax || rangeOver) ? '#dc2626' : '#d97706';
+  const idOk = r.selected.id >= r.minIdByVel;
+  const qRatio = r.selected.maxQ_kgh / STATE.flowKgh;
+  const marginJdg = qRatio >= 1.2 ? '✓ 충분' : qRatio >= 1 ? '⚠ 협소' : '✗ 부족';
+  const marginColor = qRatio >= 1.2 ? '#15803d' : qRatio >= 1 ? '#d97706' : '#dc2626';
 
   // 인접 관경 슬라이스 (안전하게)
   const cands = Array.isArray(r.candidates) ? r.candidates : [];
@@ -2901,7 +2946,7 @@ function renderA4(r){
       <tbody>
         <tr><th>배관 재질</th><td>${matFullName}</td><th>배관 용도</th><td>${purposeTxt}</td></tr>
         <tr><th>설계 유량</th><td>${fmt(STATE.flowKgh,0)} KG/H &nbsp;|&nbsp; ${fmt(STATE.flowKgh/60,1)} LPM</td><th>허용 압력강하</th><td>${STATE.pdrop} mmAq/m</td></tr>
-        <tr><th>최대 허용 유속</th><td>${STATE.vel} m/s</td><th>H-W C 계수</th><td>${r.C} (신설 기준)</td></tr>
+        <tr><th>설계 목표 유속</th><td>${STATE.vel} m/s (재질 상한 ${r.vmax} m/s)</td><th>H-W C 계수</th><td>${r.C} (신설 기준)</td></tr>
         <tr><th>총 층수</th><td>${STATE.floors} 층</td><th>층 높이</th><td>${STATE.floorHt} m</td></tr>
         <tr><th>정수두</th><td>${(STATE.floors * STATE.floorHt * 9.81).toFixed(1)} kPa</td><th>총 높이</th><td>${(STATE.floors * STATE.floorHt).toFixed(1)} m</td></tr>
       </tbody>
@@ -2914,14 +2959,14 @@ function renderA4(r){
         <tr class="hl">
           <td>★ 채택 관경</td>
           <td style="font-size:14px;font-weight:900;color:#2d5186">${r.selected.s}</td>
-          <td>William-Hazen + 연속방정식</td>
-          <td style="color:#15803d;font-weight:800">✓ 산정 완료</td>
+          <td>Hazen-Williams + 연속방정식</td>
+          <td style="color:${selJColor};font-weight:800">${selJdg}</td>
         </tr>
         <tr>
           <td>관 내경 (ID)</td>
           <td>${r.selected.id.toFixed(2)} mm</td>
           <td>유속기준 최소 내경: ${r.minIdByVel.toFixed(2)} mm</td>
-          <td style="color:#15803d">✓ 적합</td>
+          <td style="color:${idOk?'#15803d':'#dc2626'};font-weight:${idOk?'400':'700'}">${idOk?'✓ 적합':'✗ 최소 내경 미달'}</td>
         </tr>
         <tr>
           <td>실제 유속</td>
@@ -2945,7 +2990,7 @@ function renderA4(r){
           <td>유량 여유율</td>
           <td>${((r.selected.maxQ_kgh / STATE.flowKgh - 1)*100).toFixed(1)} %</td>
           <td>여유율 = (최대유량 / 설계유량 - 1) × 100</td>
-          <td style="color:${r.selected.maxQ_kgh/STATE.flowKgh>=1.2?'#15803d':'#d97706'};font-weight:700">${r.selected.maxQ_kgh/STATE.flowKgh>=1.2?'✓ 충분':'⚠ 협소'}</td>
+          <td style="color:${marginColor};font-weight:700">${marginJdg}</td>
         </tr>
       </tbody>
     </table>
@@ -2970,18 +3015,20 @@ function renderA4(r){
         <tr><th style="text-align:left;padding-left:7px">적용 C 계수</th><td>${matFullName} — C=${r.C} (신설) / C=${r.mat.Ca} (노후 설계 권장)</td></tr>
         <tr><th style="text-align:left;padding-left:7px">관경 채택 원칙</th><td>W-H 기준 관경 vs 유속역산 기준 관경 → 큰 값(안전측) 채택</td></tr>
         <tr><th style="text-align:left;padding-left:7px">적용 기술기준</th><td>기계설비 기술기준(국토교통부 고시 제2021-851호, 제2026-360호 타법개정 2026.7.8. 시행) [별표 8] 2.1.5 — 단위마찰손실과 유속 기준</td></tr>
-        <tr><th style="text-align:left;padding-left:7px">설계기준</th><td>KDS 31 25 25:2021 배관설비 4.1.5 — 단위 압력손실 75~400 Pa/m 권장 (C 계수·유속은 설비공학편람·ASHRAE 참고값)</td></tr>
+        <tr><th style="text-align:left;padding-left:7px">설계기준</th><td>KDS 31 25 25:2026 배관설비 4.1.5 — 단위 압력손실 75~400 Pa/m 권장 (C 계수·유속은 설비공학편람·ASHRAE 참고값)</td></tr>
+        <tr><th style="text-align:left;padding-left:7px">계산 전제</th><td>밀도 1,000 kg/㎥ · 비열 1 kcal/kg℃ 고정(60 ℃ 고온수 밀도 약 983 kg/㎥) · 유속 상한 · C 계수는 MANMIN 참고값(법정값 아님)</td></tr>
       </tbody>
     </table>
 
     <div class="a4-footer">
       <span>냉온수 배관 관경 산정 시스템 [MANMIN-Ver6.1]</span>
-      <span>기계설비 기술기준 [별표 8] · William-Hazen / Darcy-Weisbach</span>
+      <span>기계설비 기술기준 [별표 8] · Hazen-Williams 식</span>
       <span>작성일: ${STATE.projectDate ? STATE.projectDate.replace(/-/g,'.') : today}</span>
     </div>`;
 
   document.getElementById('a4Page').innerHTML = html;
   markLongTables(document.getElementById('a4Page'));
+  if(window.MMWarn) window.MMWarn.run();   /* v6.1.6 — 다시 그린 A4에 「⚠ 입력 확인」 줄 재삽입(교차검증 P3) */
 }
 
 function printA4(){
@@ -3057,7 +3104,7 @@ function renderGuide(){
   const panEl = document.getElementById('guide-result-panel');
   const badge = document.getElementById('guide-result-badge');
   if(!r || !r.selected){
-    if(noEl)  noEl.style.display  = '';
+    if(noEl){ noEl.style.display  = ''; noEl.textContent = '산정 대기 — 유량 · 부하를 입력하세요'; }   /* v6.1.6 P1 */
     if(panEl) panEl.style.display = 'none';
     if(badge){ badge.textContent='산정 대기'; badge.className='cbadge'; }
     return;
@@ -3069,7 +3116,7 @@ function renderGuide(){
   const overAbs  = r.selected.overAbsMax;
   const overDes  = !r.selected.ok && !overAbs;
   if(badge){
-    badge.textContent = overAbs ? '🔴 절대최대 초과' : overDes ? '🟠 목표유속 초과' : '✅ 기준 만족';
+    badge.textContent = overAbs ? '🔴 절대최대 초과' : overDes ? '🟠 적합 관경 없음 — 재검토' : '✅ 기준 만족';   /* v6.1.6 P6 — ok=false는 W-H 또는 목표 유속 불만족 */
     badge.className   = overAbs ? 'cbadge red' : overDes ? 'cbadge org' : 'cbadge grn';
   }
 
@@ -3118,7 +3165,7 @@ function renderGuide(){
   const flowJdg = STATE.flowKgh <= r.selected.maxQ_kgh ? '✅ 허용 범위 내' : '🔴 초과';
   const flowJColor = STATE.flowKgh <= r.selected.maxQ_kgh ? '#15803d' : '#dc2626';
 
-  const prvJdg = r.prvAlert ? '⚠ 구간별 감압밸브 검토' : '✅ 불필요 (300kPa 미만)';
+  const prvJdg = r.prvAlert ? '⚠ 참고 경고 — 최고사용압력 · 팽창탱크 · 보급수 압력 검토' : '참고 경고 없음 (300 kPa 미만)';   /* v6.1.6 P9 */
   const prvColor = r.prvAlert ? '#d97706' : '#15803d';
 
   const pdrecJdg = r.pdropOverRec
@@ -3138,7 +3185,7 @@ function renderGuide(){
       ${row('최대 허용 유량', fmt(r.selected.maxQ_kgh,0)+' KG/H',
             `설계유량 ${fmt(STATE.flowKgh,0)} KG/H`, flowJdg, flowJColor)}
       ${row('정수두', r.staticKpa.toFixed(1)+' kPa',
-            '300 kPa 이상 시 감압 검토(MANMIN 참고)', prvJdg, prvColor)}
+            '300 kPa 이상 참고 경고(MANMIN) · 보급수 감압밸브는 보급수압 ≥ 정수두 + 50 kPa(별표 1 2.7(3))', prvJdg, prvColor)}
       ${row('유량 여유율', ((r.selected.maxQ_kgh/STATE.flowKgh-1)*100).toFixed(1)+'%',
             '20% 이상 권장', (r.selected.maxQ_kgh/STATE.flowKgh-1)*100 >= 20 ? '✅ 충분' : '⚠ 협소',
             (r.selected.maxQ_kgh/STATE.flowKgh-1)*100 >= 20 ? '#15803d' : '#d97706')}
@@ -3163,8 +3210,8 @@ function renderGuide(){
           <div style="font-size:11px;color:#78350f">${STATE.floors}층 기준</div>
         </div>
         <div style="background:#fff;border-radius:7px;padding:8px;border:1px solid ${r.prvAlert?'#fca5a5':'#fed7aa'}">
-          <div style="font-size:11px;color:#92400e;font-weight:700;margin-bottom:3px">감압밸브 예비판정</div>
-          <div style="font-size:12px;font-weight:800;color:${r.prvAlert?'#dc2626':'#15803d'}">${r.prvAlert?'⚠ 검토 필요':'✅ 불필요'}</div>
+          <div style="font-size:11px;color:#92400e;font-weight:700;margin-bottom:3px">정수두 참고 경고</div>
+          <div style="font-size:12px;font-weight:800;color:${r.prvAlert?'#dc2626':'#15803d'}">${r.prvAlert?'⚠ 압력 검토':'참고 경고 없음'}</div>
           <div style="font-size:11px;color:#78350f">300kPa · MANMIN 참고</div>
         </div>
       </div>
@@ -3724,10 +3771,16 @@ input[data-mm-warn]{outline:2px solid #d32f2f!important;outline-offset:1px;backg
 .mm-warn-note{-webkit-print-color-adjust:exact;print-color-adjust:exact;break-inside:avoid;}}
 </style>
 <script id="mm-warn-cfg">
-window.MM_WARN_CFG={report:'#a4Page',rules:[
+/* v6.1.6 (2026-11-24, 교차검증 P3 · P4) — all:true(A4 탭 · 숨은 칸도 판정 → 인쇄 · JPG에 「⚠ 입력 확인」 줄) · cond 로 쓰지 않는 칸 제외 · 음수 · 비유한 → 산정 안 함 */
+window.MM_WARN_CFG={report:'#a4Page',all:true,rules:[
  {sel:'#inp-ts',empty:'7℃',zero:'7℃'},
  {sel:'#inp-tr',empty:'12℃',zero:'12℃',extra:function(el,n){var t=parseFloat(document.getElementById('inp-ts').value);return t===n?'공급 = 환수 온도 → ΔT 1℃ 적용':null;}},
- {sel:'#inp-load',neg:true},{sel:'#inp-flow',neg:true},{sel:'#inp-pdrop-custom',empty:'30 mmAq/m',zero:'30 mmAq/m',neg:true},{sel:'#inp-vel-custom',empty:'1.5 m/s',zero:'1.5 m/s',neg:true},{sel:'#inp-floors',empty:'1층',zero:'1층',neg:true,int:'층'},{sel:'#inp-floorht',empty:'3.0 m',zero:'3.0 m',neg:true}]};
+ {sel:'#inp-load',neg:'음수 — 산정 안 함',cond:function(){return typeof INPUT_MODE==='undefined'||INPUT_MODE==='load';}},
+ {sel:'#inp-flow',neg:'음수 — 산정 안 함',cond:function(){return typeof INPUT_MODE==='undefined'||INPUT_MODE!=='load';}},
+ {sel:'#inp-pdrop-custom',empty:'30 mmAq/m',zero:'30 mmAq/m',neg:'음수 — 산정 안 함',extra:function(el,n){return isFinite(n)?null:'비유한 값 — 산정 안 함';},cond:function(){var s=document.getElementById('sel-pdrop');return !s||s.value==='custom';}},
+ {sel:'#inp-vel-custom',empty:'1.5 m/s',zero:'1.5 m/s',neg:'음수 — 산정 안 함',extra:function(el,n){return isFinite(n)?null:'비유한 값 — 산정 안 함';},cond:function(){var s=document.getElementById('sel-vel');return !s||s.value==='custom';}},
+ {sel:'#inp-floors',empty:'1층',zero:'1층',neg:'음수 — 산정 안 함',int:'층',extra:function(el,n){return isFinite(n)?null:'비유한 값 — 산정 안 함';}},
+ {sel:'#inp-floorht',empty:'3.0 m',zero:'3.0 m',neg:'음수 — 산정 안 함',extra:function(el,n){return isFinite(n)?null:'비유한 값 — 산정 안 함';}}]};
 </script>
 <script id="mm-warn-js">
 (function(){
